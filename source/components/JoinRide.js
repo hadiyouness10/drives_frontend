@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View, StyleSheet, TextInput } from 'react-native';
+import {  View, StyleSheet, TextInput } from 'react-native';
+import MapComponent from './MapComponent';
 
 export default function JoinRide() {
     return (
@@ -13,9 +14,7 @@ export default function JoinRide() {
                 </View>
             </View>
             <View style={styles.mapDiv}>
-                <Text>
-                    Map
-                </Text>
+                <MapComponent />
             </View>
         </View>
     );
