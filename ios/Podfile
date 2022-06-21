@@ -33,6 +33,7 @@ target 'MyReactNative' do
   #   use_flipper!()
   # end
 
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
   post_install do |installer|

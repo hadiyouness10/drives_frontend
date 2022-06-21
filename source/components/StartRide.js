@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(10, 10, 10, 0.07)',
         marginTop: 10,
         marginBottom: 10,
-        fontFamily: 'Segoe UI'
     },
     mapDiv: {
         flexGrow: 1,
