@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import JoinRide from './JoinRide'
-import StartRide from './StartRide'
-import Account from "./Account";
+import JoinRide from '../pages/JoinRide'
+import StartRide from '../pages/StartRide'
+import Account from "../pages/Account";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
