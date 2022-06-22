@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, PermissionsAndroid } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import Geolocation from "react-native-geolocation-service";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as Location from 'expo-location';
 
 export default function MapComponent({ startLocationMarker, setStartLocationMarker, destinationMarker, setDestinationMarker, isDroppingMarker }) {
 
@@ -13,71 +13,27 @@ export default function MapComponent({ startLocationMarker, setStartLocationMark
         longitudeDelta: 0.0421
     })
 
+    const mapRef = useRef(null)
+
     const [userLocation, setUserLocation] = useState()
 
-    const getOneTimeLocation = () => {
-        Geolocation.getCurrentPosition((position) => {
-            setUserLocation({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            });
-        }, (error) => console.warn(error),
-            {
-                enableHighAccuracy: false,
-                timeout: 30000,
-                maximumAge: 1000
-            },
-        );
-    };
-
-    const subscribeLocationLocation = () => {
-        watchID = Geolocation.watchPosition(
-            (position) => {
-                setUserLocation({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                });
-            }, (error) => console.warn(error),
-            {
-                enableHighAccuracy: false,
-                maximumAge: 1000
-            },
-        );
-    };
-
     useEffect(() => {
-        const requestLocationPermission = async () => {
-            if (Platform.OS === 'ios') {
-                getOneTimeLocation();
-                subscribeLocationLocation();
-            } else {
-                try {
-                    const granted = await PermissionsAndroid.request(
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                        {
-                            title: 'Location Access Required',
-                            message: 'This App needs to Access your location',
-                        },
-                    );
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        //To Check, If Permission is granted
-                        getOneTimeLocation();
-                        subscribeLocationLocation();
-                    }
-                } catch (err) {
-                    console.warn(err);
-                }
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
             }
-        };
-        requestLocationPermission();
-        return () => {
-            Geolocation.clearWatch(watchID);
-        };
+
+            let location = await Location.getCurrentPositionAsync({});
+            setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+        })();
     }, []);
 
     return (
         <View style={{ flex: 1 }}>
             <MapView style={{ flex: 1 }}
+                ref={mapRef}
                 region={region}
                 onRegionChangeComplete={region => setRegion(region)}
                 showsUserLocation={true}
@@ -100,9 +56,10 @@ export default function MapComponent({ startLocationMarker, setStartLocationMark
                 />}
             </MapView>
             <TouchableOpacity style={{ position: 'absolute', bottom: isDroppingMarker ? 70 : 30, right: 30, backgroundColor: 'white', padding: 13, borderRadius: 30 }}
-                onPress={() => {
-                    getOneTimeLocation();
-                    setTimeout(() => setRegion({
+                onPress={async () => {
+                    let location = await Location.getCurrentPositionAsync({});
+                    setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+                    setTimeout(() => mapRef.current.animateToRegion({
                         ...userLocation,
                         latitudeDelta: 0.01,
                         longitudeDelta: 0.01
