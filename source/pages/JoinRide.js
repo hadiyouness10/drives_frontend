@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import dateTimeFormatter from '../assets/dateTimeFormatter';
@@ -21,6 +20,7 @@ export default function JoinRide() {
     const [isTyping, setIsTyping] = useState(false)
 
     const textInputRef = useRef(null)
+    const mapRef = useRef(null)
 
     const showDateTimePicker = (mode) => {
         DateTimePickerAndroid.open({
@@ -32,7 +32,6 @@ export default function JoinRide() {
 
     return (
         <View style={{ flex: 1 }}>
-            <StatusBar />
             <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
                 {/*To have shadow only on the bottom, add overflow hidden and padding on parent div */}
                 <View style={[styles.inputDiv, { flex: isTyping ? 1 : 0 }]}>
@@ -42,8 +41,14 @@ export default function JoinRide() {
                             onFocus={() => setIsTyping('startingLocation')} onBlur={() => setIsTyping(null)} />
                         <TouchableOpacity onPress={async () => {
                             textInputRef.current.blur()
-                            let location = await Location.getCurrentPositionAsync({});
-                            setStartLocationMarker({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+                            let location = await Location.getCurrentPositionAsync({})
+                            setStartLocationMarker({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+                            mapRef.current.animateToRegion({
+                                latitude: location.coords.latitude,
+                                longitude: location.coords.longitude,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01
+                            })
                         }}>
                             <MaterialIcons name='my-location' size={30} color='#404040' />
                         </TouchableOpacity>
@@ -81,6 +86,7 @@ export default function JoinRide() {
                     <Text style={{ fontSize: 22, color: 'darkred' }}>Tap on the map to drop pin.</Text>
                 </View>
                 <MapComponent
+                    mapRef={mapRef}
                     startLocationMarker={startLocationMarker}
                     setStartLocationMarker={setStartLocationMarker}
                     destinationMarker={destinationMarker}
