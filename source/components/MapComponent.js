@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, TouchableOpacity, PermissionsAndroid } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
@@ -55,7 +55,7 @@ export default function MapComponent({ startLocationMarker, setStartLocationMark
                     pinColor='green'
                 />}
             </MapView>
-            <TouchableOpacity style={{ position: 'absolute', bottom: isDroppingMarker ? 70 : 30, right: 30, backgroundColor: 'white', padding: 13, borderRadius: 30 }}
+            <TouchableOpacity style={[styles.myLocationButton, { bottom: isDroppingMarker ? 70 : 30 }]}
                 onPress={async () => {
                     let location = await Location.getCurrentPositionAsync({});
                     setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
@@ -71,3 +71,15 @@ export default function MapComponent({ startLocationMarker, setStartLocationMark
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    myLocationButton: {
+        position: 'absolute',
+        right: 30,
+        backgroundColor: 'white',
+        padding: 13,
+        borderRadius: 30,
+        elevation: 2,
+        zIndex: 1
+    }
+})
