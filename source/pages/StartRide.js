@@ -19,7 +19,7 @@ export default function JoinRide() {
     const [isDroppingMarker, setIsDroppingMarker] = useState(null)
     const [isTyping, setIsTyping] = useState(false)
 
-    const textInputRef = useRef(null)
+    const startingInputRef = useRef(null)
     const mapRef = useRef(null)
     const numberOfSeatsRef = useRef(null)
 
@@ -38,14 +38,14 @@ export default function JoinRide() {
                 <View style={[styles.inputDiv, { flex: isTyping ? 1 : 0 }]}>
                     <View style={[styles.input, { marginBottom: 20 }]}>
                         <TextInput style={{ flex: 1, fontSize: 18 }} placeholder='Starting Location' value={startLocationText}
-                            ref={textInputRef} onChangeText={text => setStartLocationText(text)}
+                            ref={startingInputRef} onChangeText={text => setStartLocationText(text)}
                             onFocus={() => setIsTyping('startingLocation')} onBlur={() => setIsTyping(null)} />
                         <TouchableOpacity onPress={() => setIsDroppingMarker('startingLocation')} style={{ marginRight: 5 }}>
                             <Icon name='location-pin' size={30} color='#404040' />
                         </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1, display: isTyping === 'startingLocation' ? 'flex' : 'none' }}>
-                        <LocationSuggestions type='startingLocation' textInputRef={textInputRef} setStartLocationMarker={setStartLocationMarker} />
+                        <LocationSuggestions type='startingLocation' startingInputRef={startingInputRef} setStartLocationMarker={setStartLocationMarker} />
                     </View>
                     <View style={styles.input}>
                         <TextInput style={{ flex: 1, fontSize: 18 }} placeholder='Destination' value={destinationText}

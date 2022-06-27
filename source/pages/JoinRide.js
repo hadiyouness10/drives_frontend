@@ -19,7 +19,9 @@ export default function JoinRide() {
     const [isDroppingMarker, setIsDroppingMarker] = useState(null)
     const [isTyping, setIsTyping] = useState(false)
 
-    const textInputRef = useRef(null)
+    const startingInputRef = useRef(null)
+    const destinationInputRef = useRef(null)
+
     const mapRef = useRef(null)
 
     const showDateTimePicker = (mode) => {
@@ -35,12 +37,15 @@ export default function JoinRide() {
             <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
                 {/*To have shadow only on the bottom, add overflow hidden and padding on parent div */}
                 <View style={[styles.inputDiv, { flex: isTyping ? 1 : 0 }]}>
-                    <View style={[styles.input, { marginBottom: 20 }]}>
+                    <View style={[styles.input, { marginBottom: isTyping === 'startingLocation' ? 10 : 20 }]}>
                         <TextInput style={{ flex: 1, fontSize: 18 }} placeholder='Starting Location' value={startLocationText}
-                            ref={textInputRef} onChangeText={text => setStartLocationText(text)}
+                            ref={startingInputRef} onChangeText={text => setStartLocationText(text)}
                             onFocus={() => setIsTyping('startingLocation')} onBlur={() => setIsTyping(null)} />
+                        <TouchableOpacity style={{ margin: 4 }} onPress={() => setStartLocationText("")}>
+                            <MaterialIcons name='clear' size={20} color='#808080' />
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={async () => {
-                            textInputRef.current.blur()
+                            startingInputRef.current.blur()
                             let location = await Location.getCurrentPositionAsync({})
                             setStartLocationMarker({ latitude: location.coords.latitude, longitude: location.coords.longitude })
                             mapRef.current.animateToRegion({
@@ -56,19 +61,22 @@ export default function JoinRide() {
                             <Icon name='location-pin' size={30} color='#404040' />
                         </TouchableOpacity>
                     </View>
-                    <View style={{ flex: 1, display: isTyping === 'startingLocation' ? 'flex' : 'none' }}>
-                        <LocationSuggestions type='startingLocation' />
+                    <View style={{ flex: 1, display: isTyping === 'startingLocation' ? 'flex' : 'none', margin: 10 }}>
+                        <LocationSuggestions text={startLocationText} setText={setStartLocationText} inputRef={startingInputRef} setLocationMarker={setStartLocationMarker} mapRef={mapRef} />
                     </View>
                     <View style={styles.input}>
                         <TextInput style={{ flex: 1, fontSize: 18 }} placeholder='Destination' value={destinationText}
-                            onChangeText={text => setDestinationText(text)}
+                            ref={destinationInputRef} onChangeText={text => setDestinationText(text)}
                             onFocus={() => setIsTyping('destination')} onBlur={() => setIsTyping(null)} />
+                        <TouchableOpacity style={{ margin: 4 }} onPress={() => setDestinationText("")}>
+                            <MaterialIcons name='clear' size={20} color='#808080' />
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => setIsDroppingMarker('destination')} style={{ marginRight: 5 }}>
                             <Icon name='location-pin' size={30} color='#404040' />
                         </TouchableOpacity>
                     </View>
-                    <View style={{ flex: 1, display: isTyping === 'destination' ? 'flex' : 'none' }}>
-                        <LocationSuggestions type='destination' />
+                    <View style={{ flex: 1, display: isTyping === 'destination' ? 'flex' : 'none', margin: 10, marginTop: 20 }}>
+                        <LocationSuggestions text={destinationText} setText={setDestinationText} inputRef={destinationInputRef} setLocationMarker={setDestinationMarker} mapRef={mapRef} />
                     </View>
                     <Text style={{ height: 50, textAlignVertical: 'center', fontSize: 16 }}>When are you leaving?</Text>
                     <View style={{ height: 50, flexDirection: 'row', justifyContent: 'space-between' }}>
