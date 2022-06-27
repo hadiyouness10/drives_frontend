@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 
 export default function NavigatorBar() {
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginBottom: 10 }}>
             <StatusBar style='dark-content' />
             <Tab.Navigator
                 screenOptions={({ route }) => ({
