@@ -22,7 +22,6 @@ export default function MapComponent({ mapRef, startLocationMarker, setStartLoca
                 console.log('Permission to access location was denied');
                 return;
             }
-
             let location = await Location.getCurrentPositionAsync({});
             setUserLocation({ latitude: location.coords.latitude, longitude: location.coords.longitude });
         })();

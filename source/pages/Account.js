@@ -42,7 +42,6 @@ export default function Account() {
                                     {item.icon}
                                     <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}</Text>
                                 </TouchableOpacity>
-                                {/*<View style={{ position: 'absolute', bottom: 0, left: 20, right: 20, borderBottomWidth: 1, borderBottomColor: 'rgb(0, 125, 200)' }} />*/}
                             </View>
                         }
                     />

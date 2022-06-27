@@ -14,7 +14,9 @@ export default function LocationSuggestions({ text, setText, inputRef, setLocati
             })
                 .then(res => res.json())
                 .then(res => setLocations(res.result.map(location =>
-                    <TouchableOpacity key={location.place_id} onPress={() => getLocationDetails(location.description, location.place_id)}>
+                    <TouchableOpacity
+                        key={location.place_id}
+                        onPress={() => getLocationDetails(location.description, location.place_id)}>
                         <Text style={styles.location}>{location.description}</Text>
                     </TouchableOpacity>
                 )))
@@ -55,7 +57,7 @@ export default function LocationSuggestions({ text, setText, inputRef, setLocati
 
 const styles = StyleSheet.create({
     location: {
-        fontSize: 20,
+        fontSize: 18,
         marginBottom: 20
     }
 })
