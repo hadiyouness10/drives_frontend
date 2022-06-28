@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 
 export default function NavigatorBar() {
     return (
-        <View style={{ flex: 1, marginBottom: 10 }}>
+        <View style={{ flex: 1 }}>
             <StatusBar style='dark-content' />
             <Tab.Navigator
                 screenOptions={({ route }) => ({
@@ -30,7 +30,7 @@ export default function NavigatorBar() {
                     tabBarActiveTintColor: 'rgb(0, 125, 200)',
                     tabBarInactiveTintColor: 'gray',
                     headerShown: false,
-                    tabBarStyle: { height: 55 },
+                    tabBarStyle: { height: 65 },
                     tabBarItemStyle: { height: 50 }
                 })}>
                 <Tab.Screen name="Join Ride" component={JoinRide} />
