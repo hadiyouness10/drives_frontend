@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 
-export default function LocationSuggestions({ text, setText, inputRef, setLocationMarker, mapRef }) {
+export default function LocationSuggestions({ text, setText, inputRef, setLocationMarker, mapRef, setLocationsId, position }) {
 
     const [locations, setLocations] = useState([])
-    const API_URL = "http://192.168.1.12:3737"
+    const API_URL = "http://172.20.10.3:3737"
     const getLocationSuggestions = (text) => {
         if (text) {
             fetch(API_URL + '/locationSuggestions', {
@@ -42,6 +42,7 @@ export default function LocationSuggestions({ text, setText, inputRef, setLocati
                     longitudeDelta: 0.01
                 })
             })
+        setLocationsId(position, place_id)
     }
 
     useEffect(() => {

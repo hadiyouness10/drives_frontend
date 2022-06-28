@@ -9,9 +9,13 @@ import * as Location from 'expo-location';
 import { Picker } from '@react-native-picker/picker';
 
 export default function LocationInput({ type, setStartLocationMarker, setDestinationMarker, isDroppingMarker, setIsDroppingMarker, isTyping, setIsTyping, mapRef }) {
+    const API_URL = "http://172.20.10.3:3737"
 
     const [startLocationText, setStartLocationText] = useState('')
     const [destinationText, setDestinationText] = useState('')
+    const [startId, setStartId] = useState('')
+    const [destinationId, setDestinationId] = useState('')
+    
     const [date, setDate] = useState(new Date())
     const [numberOfSeats, setNumberOfSeats] = useState(1)
 
@@ -26,7 +30,34 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
             onChange: (e, selectedDate) => setDate(selectedDate)
         })
     }
-
+    const setLocationsId = (position, place_id) => {
+        if (position == 'start') {
+            setStartId(place_id)
+        } else {
+            setDestinationId(place_id)
+        }
+        console.log(position)
+        console.log(startId+ " and "+destinationId)
+        if (startId != '' && destinationId != '') {
+            console.log('running possible routes')
+            getPossibleRoutes(startId, destinationId)
+        }
+    }
+    const getPossibleRoutes = (start_id, destination_id) => {
+        fetch(API_URL + '/possibleRoutes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ start_id: start_id, destination_id:destination_id })
+        })
+            .then(res => {
+                res.json()
+                console.log(res)
+            }
+            )
+            // .then(res => setLocations(res.result.map(location =>
+            //     console.log(res)
+            // )))
+    }
     return (
         <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
             {/*To have shadow only on the bottom, add overflow hidden and padding on parent div */}
@@ -74,6 +105,8 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
                         setText={setStartLocationText}
                         inputRef={startingInputRef}
                         setLocationMarker={setStartLocationMarker}
+                        setLocationsId={setLocationsId}
+                        position = 'start'
                         mapRef={mapRef} />
                 </View>
 
@@ -104,6 +137,8 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
                         setText={setDestinationText}
                         inputRef={destinationInputRef}
                         setLocationMarker={setDestinationMarker}
+                        setLocationsId={setLocationsId}
+                        position = 'end'
                         mapRef={mapRef} />
                 </View>
 
