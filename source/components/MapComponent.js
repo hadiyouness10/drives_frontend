@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import * as Location from 'expo-location';
 
@@ -51,6 +52,14 @@ export default function MapComponent({ mapRef, startLocationMarker, setStartLoca
                     coordinate={destinationMarker}
                     pinColor='green'
                 />}
+                {startLocationMarker && destinationMarker && <MapViewDirections 
+                    origin={startLocationMarker}
+                    destination={destinationMarker}
+                    apikey='AIzaSyCkUp9bjBMNJ94Uac9n_YzZXQHJOVutHAQ'
+                    strokeWidth={3}
+                />}
+
+                
             </MapView>
             <TouchableOpacity style={[styles.myLocationButton, { bottom: isDroppingMarker ? 70 : 30 }]}
                 onPress={async () => {
