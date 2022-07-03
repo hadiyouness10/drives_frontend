@@ -4,46 +4,69 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export default function Account() {
 
-    const options = [{
+    const options_main = [{
         icon: <MaterialCommunityIcons name='account-outline' size={24} />,
-        title: 'Profile',
-    }, {
-        icon: <Icon name='list' size={24} />,
-        title: 'My Rides',
-    }, {
-        icon: <Icon name='settings-outline' size={24} />,
-        title: 'Settings',
-    }, {
-        icon: <MaterialCommunityIcons name='head-lightbulb-outline' size={24} />,
-        title: 'Keep in Mind',
-    }, {
-        icon: <Icon name='chatbox-ellipses-outline' size={24} />,
-        title: 'Contact Us',
-    }]
+        title: 'My Profile',
+    },{
+        icon: <MaterialCommunityIcons name='wallet-outline' size={24} />,
+        title: 'My Wallet',
+    },{
+            icon: <Icon name='mail-outline' size={24} />,
+            title: 'Inbox',
+        }, {
+            icon: <Icon name='list' size={24} />,
+            title: 'My Rides',
+        }, {
+            icon: <Icon name='settings-outline' size={24} />,
+            title: 'Settings',
+        }]
+
+    const options_additions = [{
+            icon: <MaterialCommunityIcons name='head-lightbulb-outline' size={24} />,
+            title: 'Keep in Mind',
+        }, {
+            icon: <Icon name='chatbox-ellipses-outline' size={24} />,
+            title: 'Contact Us',
+        }]
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.mainDiv}>
                 <Text style={styles.nameTitle}>
                     Welcome, User
                 </Text>
-                <View style={styles.wallet}>
-                    <Text style={{ fontSize: 26 }}>Your Wallet</Text>
-                    <Text style={{ fontSize: 22 }}>LBP 200,000</Text>
-                    <TouchableOpacity style={styles.withdrawButton}>
-                        <Text style={{ color: 'white', fontSize: 16 }}>Withdraw Money</Text>
-                    </TouchableOpacity>
+                <View style={styles.options}>
+                    <FlatList
+                        data={options_main}
+                        renderItem={({ item, index }) => {
+                            const isEnd = index === options_main.length - 1;
+                            console.log(isEnd);
+                            return (
+                                <View>
+                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? {borderBottomWidth: 0.3} : '']}>
+                                        {item.icon}
+                                        <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            );
+                        }
+                        }
+                    />
                 </View>
                 <View style={styles.options}>
                     <FlatList
-                        data={options}
-                        renderItem={({ item }) =>
-                            <View>
-                                <TouchableOpacity style={styles.optionsItem}>
-                                    {item.icon}
-                                    <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}</Text>
-                                </TouchableOpacity>
-                                {/*<View style={{ position: 'absolute', bottom: 0, left: 20, right: 20, borderBottomWidth: 1, borderBottomColor: 'rgb(0, 125, 200)' }} />*/}
-                            </View>
+                        data={options_additions}
+                        renderItem={({ item, index }) => {
+                            const isEnd = index === options_additions.length - 1;
+                            console.log(isEnd);
+                            return (
+                                <View>
+                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? {borderBottomWidth: 0.3} : '']}>
+                                        {item.icon}
+                                        <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}, {index},  {options_additions.length}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            );
+                        }
                         }
                     />
                 </View>
@@ -59,17 +82,7 @@ const styles = StyleSheet.create({
     nameTitle: {
         fontSize: 28,
         margin: 20,
-        marginTop: 40,
-    },
-    wallet: {
-        backgroundColor: 'white',
-        width: '90%',
-        height: 170,
-        alignSelf: 'center',
-        borderRadius: 20,
-        elevation: 5,
-        padding: 15,
-        justifyContent: "space-between"
+        marginTop: 60,
     },
     withdrawButton: {
         alignSelf: 'flex-end',
@@ -78,19 +91,17 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     options: {
-        flex: 1,
         width: '90%',
         backgroundColor: 'white',
         elevation: 5,
         alignSelf: 'center',
         borderRadius: 20,
         marginTop: 20,
-        marginBottom: 20
     },
     optionsItem: {
         height: 60,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20
+        paddingLeft: 20,
     }
 })
