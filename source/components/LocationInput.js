@@ -153,7 +153,7 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
 
                 </View>
 
-                {type === 'startRide' && <TouchableOpacity style={styles.numberOfSeats} onPress={() => numberOfSeatsRef.current.focus()}>
+                <TouchableOpacity style={styles.numberOfSeats} onPress={() => numberOfSeatsRef.current.focus()}>
                     <Text style={{ height: 50, textAlignVertical: 'center', fontSize: 18 }}>Number of seats</Text>
                     <Picker
                         ref={numberOfSeatsRef}
@@ -166,7 +166,7 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
                         <Picker.Item label="3" value="3" />
                         <Picker.Item label="4" value="4" />
                     </Picker>
-                </TouchableOpacity>}
+                </TouchableOpacity>
 
             </View>
 
