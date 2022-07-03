@@ -24,6 +24,9 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
     const destinationInputRef = useRef(null)
     const numberOfSeatsRef = useRef(null)
 
+    const navigation = useNavigation();
+    navigation.navigate('WallScreen')
+
     const setLocationsId = (position, place_id) => {
         if (position == 'start') {
             setStartId(place_id)
@@ -48,6 +51,7 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
                 console.log(res)
             })
     }
+
     return (
         <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
             {/*To have shadow only on the bottom, add overflow hidden and padding on parent div */}
@@ -169,6 +173,10 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
                 </TouchableOpacity>}
 
             </View>
+            
+   
+            <Text style={styles.searchButton} onPress={() => }>Search</Text>
+   
 
         </View>
     )
@@ -219,5 +227,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         elevation: 4,
         backgroundColor: 'white'
+    },
+    searchButton:{
+        textAlign: 'center', 
+        padding:20, 
+        backgroundColor:'rgba(10, 10, 10, 0.07)',  
+        fontSize: 20
+        
     }
 });
