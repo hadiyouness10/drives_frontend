@@ -1,81 +1,65 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from "react-native";
-import Icon from 'react-native-vector-icons/Ionicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import React from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+} from 'react-native';
+
+import RiderCard from '../components/RiderCard';
 
 export default function Riders() {
 
-    const options_main = [{
-        icon: <MaterialCommunityIcons name='account-outline' size={24} />,
-        title: 'My Profile',
-    },{
-        icon: <MaterialCommunityIcons name='wallet-outline' size={24} />,
-        title: 'My Wallet',
-    },{
-            icon: <Icon name='mail-outline' size={24} />,
-            title: 'Inbox',
-        }, {
-            icon: <Icon name='list' size={24} />,
-            title: 'My Rides',
-        }, {
-            icon: <Icon name='settings-outline' size={24} />,
-            title: 'Settings',
-        }]
+  return (
+    <ScrollView>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView style={styles.container}>
+        <RiderCard style={styles.card}>
+          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
+        </RiderCard>
 
-  
-    return (
-        <View style={{ flex: 1 }}>
-            <View style={styles.mainDiv}>
-                <View style={styles.options}>
-                    <FlatList
-                        data={options_main}
-                        renderItem={({ item, index }) => {
-                            const isEnd = index === options_main.length - 1;
-                            console.log(isEnd);
-                            return (
-                                <View>
-                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? {borderBottomWidth: 0.3} : '']}>
-                                        {item.icon}
-                                        <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        }
-                        }
-                    />
-                </View>
+        <RiderCard style={styles.card}>
+          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
+        </RiderCard>
 
-            </View>
-        </View>
-    )
-}
+        <RiderCard style={styles.card}>
+          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
+        </RiderCard>
+
+        <RiderCard style={styles.card}>
+          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
+        </RiderCard>
+
+
+
+
+      </SafeAreaView>
+    </ScrollView>
+  );
+
+};
 
 const styles = StyleSheet.create({
-    mainDiv: {
-        flex: 1,
-    },
-    nameTitle: {
-        fontSize: 28,
-        margin: 20,
-        marginTop: 60,
-    },
-    withdrawButton: {
-        alignSelf: 'flex-end',
-        backgroundColor: 'rgb(0, 125, 200)',
-        padding: 10,
-        borderRadius: 5
-    },
-    options: {
-        width: '90%',
-        backgroundColor: 'white',
-        elevation: 5,
-        alignSelf: 'center',
-        borderRadius: 20,
-        marginTop: 20,
-    },
-    optionsItem: {
-        height: 60,
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingLeft: 20,
-    }
-})
+  container: {
+    flex: 1,
+    margin: 16,
+    alignItems: 'center', // Centered horizontally
+    
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '500',
+    color: 'white',
+  },
+  card: {
+    height: 180,
+    width: '100%',
+    backgroundColor: '#f18484',
+    justifyContent: 'center', //Centered vertically
+    alignItems: 'center', // Centered horizontally
+    margin: 5
+  },
+});
+

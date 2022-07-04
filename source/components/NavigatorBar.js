@@ -6,6 +6,7 @@ import StartRide from '../pages/StartRide'
 import Account from "../pages/Account";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import Riders from '../pages/Riders';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,8 @@ export default function NavigatorBar() {
                 <Tab.Screen name="Join Ride" component={JoinRide} />
                 <Tab.Screen name="Start Ride" component={StartRide} />
                 <Tab.Screen name="Account" component={Account} />
+                <Tab.Screen name="Riders" component={Riders} />
+
             </Tab.Navigator>
         </View>
     )

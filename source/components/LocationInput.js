@@ -24,8 +24,6 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
     const destinationInputRef = useRef(null)
     const numberOfSeatsRef = useRef(null)
 
-    const navigation = useNavigation();
-    navigation.navigate('WallScreen')
 
     const setLocationsId = (position, place_id) => {
         if (position == 'start') {
@@ -175,7 +173,7 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
             </View>
             
    
-            <Text style={styles.searchButton} onPress={() => }>Search</Text>
+            {/* <Text style={styles.searchButton} onPress={() => }>Search</Text> */}
    
 
         </View>
