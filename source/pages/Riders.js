@@ -16,21 +16,42 @@ export default function Riders() {
     <ScrollView>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.container}>
-        <RiderCard style={styles.card}>
-          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
-        </RiderCard>
 
-        <RiderCard style={styles.card}>
-          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
-        </RiderCard>
+        <RiderCard
+            title={"James Corden"}
+            subTitle={"Devloper"}
+            profile={{
+              uri:
+                "https://i2-prod.mirror.co.uk/incoming/article26827828.ece/ALTERNATES/s1200c/4_MAIN_CHP_280422SLUG_18300.jpg"
+            }}
+            icon={"forward"}
+            iconColor={"grey"}
+          />
 
-        <RiderCard style={styles.card}>
-          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
-        </RiderCard>
+        <RiderCard
+            title={"Tom Holland"}
+            subTitle={"Devloper"}
+            profile={{
+              uri:"https://static.wikia.nocookie.net/marvelcinematicuniverse/images/2/2f/Tom_Holland.jpg/revision/latest?cb=20220213015022"
+    
+            }}
+            icon={"forward"}
+            iconColor={"grey"}
+          />
 
-        <RiderCard style={styles.card}>
-          <Text style={styles.sectionTitle}>Basic CardView Example</Text>
-        </RiderCard>
+        <RiderCard
+            title={"Zendaya"}
+            subTitle={"Devloper"}
+            profile={{
+              uri:
+                "https://assets.teenvogue.com/photos/62ab3da8f40650219cbb86f8/master/pass/GettyImages-1401828538.jpg"
+            }}
+            icon={"forward"}
+            iconColor={"grey"}
+          />
+
+
+       
 
 
 
