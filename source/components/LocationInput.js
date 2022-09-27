@@ -10,7 +10,7 @@ import * as Location from 'expo-location';
 import { Picker } from '@react-native-picker/picker';
 
 export default function LocationInput({ type, setStartLocationMarker, setDestinationMarker, isDroppingMarker, setIsDroppingMarker, isTyping, setIsTyping, mapRef }) {
-    
+
     const [startLocationText, setStartLocationText] = useState('')
     const [destinationText, setDestinationText] = useState('')
     const [startId, setStartId] = useState('')
@@ -30,30 +30,24 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
         } else {
             setDestinationId(place_id)
         }
-        console.log(position)
-        console.log(startId + " and " + destinationId)
         if (startId != '' && destinationId != '') {
-            console.log('running possible routes')
             getPossibleRoutes(startId, destinationId)
         }
     }
     const getPossibleRoutes = (start_id, destination_id) => {
-        client.post('/possibleRoutes', {start_id: start_id, destination_id: destination_id}, {
+        client.post('/possibleRoutes', { start_id: start_id, destination_id: destination_id }, {
             headers: {
-            'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         })
-        .then(res => {
-            console.log(res)
-        })
-        .catch(function(error) {
-            console.log('There has been a problem with your post operation: ' + error.message);
+            .catch(function (error) {
+                console.error('There has been a problem with your post operation: ' + error.message);
             });
     }
     return (
         <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
             {/*To have shadow only on the bottom, add overflow hidden and padding on parent div */}
-            
+
             {dateTimePickerShown && <DateTimePicker
                 value={date}
                 mode={dateTimePickerShown}

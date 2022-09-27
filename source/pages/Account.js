@@ -7,27 +7,28 @@ export default function Account() {
     const options_main = [{
         icon: <MaterialCommunityIcons name='account-outline' size={24} />,
         title: 'My Profile',
-    },{
+    }, {
         icon: <MaterialCommunityIcons name='wallet-outline' size={24} />,
         title: 'My Wallet',
-    },{
-            icon: <Icon name='mail-outline' size={24} />,
-            title: 'Inbox',
-        }, {
-            icon: <Icon name='list' size={24} />,
-            title: 'My Rides',
-        }, {
-            icon: <Icon name='settings-outline' size={24} />,
-            title: 'Settings',
-        }]
+    }, {
+        icon: <Icon name='mail-outline' size={24} />,
+        title: 'Inbox',
+    }, {
+        icon: <Icon name='list' size={24} />,
+        title: 'My Rides',
+    }, {
+        icon: <Icon name='settings-outline' size={24} />,
+        title: 'Settings',
+    }]
 
     const options_additions = [{
-            icon: <MaterialCommunityIcons name='head-lightbulb-outline' size={24} />,
-            title: 'Keep in Mind',
-        }, {
-            icon: <Icon name='chatbox-ellipses-outline' size={24} />,
-            title: 'Contact Us',
-        }]
+        icon: <MaterialCommunityIcons name='head-lightbulb-outline' size={24} />,
+        title: 'Keep in Mind',
+    }, {
+        icon: <Icon name='chatbox-ellipses-outline' size={24} />,
+        title: 'Contact Us',
+    }]
+
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.mainDiv}>
@@ -39,10 +40,9 @@ export default function Account() {
                         data={options_main}
                         renderItem={({ item, index }) => {
                             const isEnd = index === options_main.length - 1;
-                            console.log(isEnd);
                             return (
                                 <View>
-                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? {borderBottomWidth: 0.3} : '']}>
+                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? { borderBottomWidth: 0.7 } : { borderBottomWidth: 0.7 }]}>
                                         {item.icon}
                                         <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}</Text>
                                     </TouchableOpacity>
@@ -57,10 +57,9 @@ export default function Account() {
                         data={options_additions}
                         renderItem={({ item, index }) => {
                             const isEnd = index === options_additions.length - 1;
-                            console.log(isEnd);
                             return (
                                 <View>
-                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? {borderBottomWidth: 0.3} : '']}>
+                                    <TouchableOpacity style={[styles.optionsItem, !isEnd ? { borderBottomWidth: 0.3 } : '']}>
                                         {item.icon}
                                         <Text style={{ color: 'black', fontSize: 18, marginLeft: 10 }}>{item.title}, {index},  {options_additions.length}</Text>
                                     </TouchableOpacity>

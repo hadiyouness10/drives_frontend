@@ -20,7 +20,7 @@ export default function MapComponent({ mapRef, startLocationMarker, setStartLoca
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                console.log('Permission to access location was denied');
+                console.error('Permission to access location was denied');
                 return;
             }
             let location = await Location.getCurrentPositionAsync({});
@@ -52,14 +52,14 @@ export default function MapComponent({ mapRef, startLocationMarker, setStartLoca
                     coordinate={destinationMarker}
                     pinColor='green'
                 />}
-                {startLocationMarker && destinationMarker && <MapViewDirections 
+                {startLocationMarker && destinationMarker && <MapViewDirections
                     origin={startLocationMarker}
                     destination={destinationMarker}
                     apikey='AIzaSyCkUp9bjBMNJ94Uac9n_YzZXQHJOVutHAQ'
                     strokeWidth={3}
                 />}
 
-                
+
             </MapView>
             <TouchableOpacity style={[styles.myLocationButton, { bottom: isDroppingMarker ? 70 : 30 }]}
                 onPress={async () => {
