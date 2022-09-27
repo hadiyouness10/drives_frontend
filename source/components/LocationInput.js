@@ -38,15 +38,17 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
         }
     }
     const getPossibleRoutes = (start_id, destination_id) => {
-        client.post('/possibleRoutes', {"body":JSON.stringify({start_id: start_id, destination_id: destination_id}) }, {
+        client.post('/possibleRoutes', {start_id: start_id, destination_id: destination_id}, {
             headers: {
             'Content-Type': 'application/json'
             }
         })
         .then(res => {
-            res.json()
             console.log(res)
         })
+        .catch(function(error) {
+            console.log('There has been a problem with your post operation: ' + error.message);
+            });
     }
     return (
         <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>

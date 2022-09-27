@@ -7,19 +7,21 @@ export default function LocationSuggestions({ text, setText, inputRef, setLocati
     const [locations, setLocations] = useState([])
     const getLocationSuggestions = (text) => {
         if (text) {
-            client.get('/locationSuggestions', {"body":JSON.stringify({location: text}) }, {
+            client.post('/locationSuggestions', {location: text}, {
                 headers: {
                 'Content-Type': 'application/json'
                 }
             })
-            .then(res => res.json())
-            .then(res => setLocations(res.result.map(location =>
+            .then(res => setLocations(res.data.result.map(location =>
                 <TouchableOpacity
                     key={location.place_id}
                     onPress={() => getLocationDetails(location.description, location.place_id)}>
                     <Text style={styles.location}>{location.description}</Text>
                 </TouchableOpacity>
             )))
+            .catch(function(error) {
+                console.log('There has been a problem with your fetch operation: ' + error.message);
+                });
         }
         else setLocations([])
     }
@@ -27,14 +29,13 @@ export default function LocationSuggestions({ text, setText, inputRef, setLocati
     const getLocationDetails = (location, place_id) => {
         inputRef.current.blur()
         setText(location)
-        client.get('/locationSuggestions', {"body":JSON.stringify({place_id: place_id}) }, {
+        client.post('/locationSuggestions', {place_id: place_id}, {
             headers: {
             'Content-Type': 'application/json'
             }
         })
-        .then(res => res.json())
         .then(res => {
-            setLocationMarker({ latitude: res.result.lat, longitude: res.result.lng })
+            setLocationMarker({ latitude: res.data.result.lat, longitude: res.data.result.lng })
             mapRef.current.animateToRegion({
                 latitude: res.result.lat,
                 longitude: res.result.lng,
@@ -42,6 +43,9 @@ export default function LocationSuggestions({ text, setText, inputRef, setLocati
                 longitudeDelta: 0.01
             })
         })
+        .catch(function(error) {
+            console.log('There has been a problem with your fetch operation: ' + error.message);
+            });
         setLocationsId(position, place_id)
     }
 
