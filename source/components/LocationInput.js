@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import client from '../api/client';
 import dateTimeFormatter from '../assets/dateTimeFormatter';
 import Icon from 'react-native-vector-icons/Entypo'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -9,8 +10,7 @@ import * as Location from 'expo-location';
 import { Picker } from '@react-native-picker/picker';
 
 export default function LocationInput({ type, setStartLocationMarker, setDestinationMarker, isDroppingMarker, setIsDroppingMarker, isTyping, setIsTyping, mapRef }) {
-    const API_URL = "http://172.20.10.3:3737"
-
+    
     const [startLocationText, setStartLocationText] = useState('')
     const [destinationText, setDestinationText] = useState('')
     const [startId, setStartId] = useState('')
@@ -38,15 +38,15 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
         }
     }
     const getPossibleRoutes = (start_id, destination_id) => {
-        fetch(API_URL + '/possibleRoutes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ start_id: start_id, destination_id: destination_id })
+        client.post('/possibleRoutes', {"body":JSON.stringify({start_id: start_id, destination_id: destination_id}) }, {
+            headers: {
+            'Content-Type': 'application/json'
+            }
         })
-            .then(res => {
-                res.json()
-                console.log(res)
-            })
+        .then(res => {
+            res.json()
+            console.log(res)
+        })
     }
     return (
         <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
