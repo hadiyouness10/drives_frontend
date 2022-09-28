@@ -1,12 +1,18 @@
+import 'react-native-gesture-handler';
 import { registerRootComponent } from 'expo';
 import React from 'react';
+import AppRouter from './source/routes/app-router';
 import { NavigationContainer } from '@react-navigation/native';
-import NavigatorBar from './source/components/NavigatorBar';
+import { View } from "react-native"
+import { StatusBar } from 'expo-status-bar';
 
 export default function App() {
   return (
     <NavigationContainer>
-      <NavigatorBar />
+      <View style={{ flex: 1 }}>
+        <StatusBar style='dark-content' />
+        <AppRouter />
+      </View>
     </NavigationContainer>
   );
 }
