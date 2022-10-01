@@ -1,9 +1,5 @@
-import React from 'react'
-import Background from '../components/Background'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
-import Button from '../components/Button'
+import React from "react";
+import { Background, Logo, Header, Paragraph, Button } from "components";
 
 export default function Dashboard({ navigation }) {
   return (
@@ -19,12 +15,12 @@ export default function Dashboard({ navigation }) {
         onPress={() =>
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Start' }],
+            routes: [{ name: "Start" }],
           })
         }
       >
         Logout
       </Button>
     </Background>
-  )
+  );
 }

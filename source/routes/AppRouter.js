@@ -1,12 +1,12 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Account, JoinRide, StartRide } from "../pages";
+import { Account, JoinRide, StartRide } from "pages";
 import { stackScreenOptions, tabScreenOptions } from "./screen-options";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export default AppRouter = () => {
+export const AppRouter = () => {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen name="Join Ride" component={JoinRideNavigator} />

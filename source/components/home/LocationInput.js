@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import dateTimeFormatter from "../assets/dateTimeFormatter";
+import { dateTimeFormatter } from "utils";
 import Icon from "react-native-vector-icons/Entypo";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { LocationSuggestions } from "./LocationSuggestions";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
-import { usePossibleRoutesQuery } from "../api/queries";
+import { usePossibleRoutesQuery } from "api/queries";
 
 export const LocationInput = ({
   type,
