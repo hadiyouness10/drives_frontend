@@ -54,10 +54,7 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
         <View style={[styles.mainDiv, { display: isDroppingMarker ? 'none' : 'flex', flexGrow: isTyping ? 1 : 0 }]}>
             {/*To have shadow only on the bottom, add overflow hidden and padding on parent div */}
             
-            {dateTimePickerShown && <DateTimePicker
-                value={date}
-                mode={dateTimePickerShown}
-                onChange={(e, selectedDate) => { setDate(selectedDate); setDateTimePickerShown(null) }} />}
+
 
             <View style={[styles.inputDiv, { flex: isTyping ? 1 : 0 }]}>
 
@@ -143,15 +140,26 @@ export default function LocationInput({ type, setStartLocationMarker, setDestina
 
                 <Text style={{ height: 50, padding: 10, textAlignVertical: 'center', fontSize: 16 }}>When are you leaving?</Text>
 
-                <View style={{ height: 50, flexDirection: 'row', justifyContent: 'space-between' }}>
-
-                    <TouchableOpacity style={[styles.buttonDiv, { marginRight: 10 }]} onPress={() => setDateTimePickerShown('date')} >
+                <View style={{height: 40, flexDirection: 'row', alignItems: 'stretch'  }}>
+                <DateTimePicker
+                    style={{width: 150}}
+                    themeVariant='light'
+                    value={date}
+                    mode={'date'}
+                    onChange={(e, selectedDate) => { setDate(selectedDate); setDateTimePickerShown(null) }} />
+                    <DateTimePicker
+                        style={{width: 150}}
+                    themeVariant='light'
+                    value={date}
+                    mode={'time'}
+                    onChange={(e, selectedDate) => { setDate(selectedDate); setDateTimePickerShown(null) }} />
+                    {/* <TouchableOpacity style={[styles.buttonDiv, { marginRight: 10 }]} onPress={() => setDateTimePickerShown('date')} >
                         <Text style={styles.buttonText}>{dateTimeFormatter(date, 'date')}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
-                    <TouchableOpacity style={styles.buttonDiv} onPress={() => setDateTimePickerShown('time')} >
+                    {/* <TouchableOpacity style={styles.buttonDiv} onPress={() => setDateTimePickerShown('time')} >
                         <Text style={styles.buttonText}>{dateTimeFormatter(date, 'time')}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                 </View>
 
