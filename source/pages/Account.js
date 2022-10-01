@@ -4,6 +4,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ImageBackground,
+  Image,
+  Button,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -45,8 +49,34 @@ export const Account = () => {
 
   return (
     <View style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../assets/background.jpg")}
+        style={{
+          flex: 1,
+          width: null,
+          height: 250,
+          borderRadius: 10,
+          marginBottom: 20,
+        }}
+      >
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Image
+            style={{ height: 150, width: 159, borderRadius: 5, marginTop: 150 }}
+            source={require("../assets/MyPicture.png")}
+          />
+          <Text style={styles.nameTitle}>Hadi Youness</Text>
+          <Pressable style={styles.editProfile}>
+            <View>
+              <Text style={{ fontSize: 16, color: "#7D7BFF" }}>
+                Edit Profile
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+      </ImageBackground>
       <View style={styles.mainDiv}>
-        <Text style={styles.nameTitle}>Welcome, User</Text>
         <View style={styles.options}>
           <FlatList
             data={options_main}
@@ -108,10 +138,17 @@ const styles = StyleSheet.create({
   mainDiv: {
     flex: 1,
   },
+  editProfile: {
+    fontSize: 28,
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+  },
   nameTitle: {
     fontSize: 28,
     margin: 20,
-    marginTop: 60,
+    fontWeight: "600",
   },
   withdrawButton: {
     alignSelf: "flex-end",
