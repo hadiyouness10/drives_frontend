@@ -1,12 +1,12 @@
 import { registerRootComponent } from 'expo';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import NavigatorBar from './source/components/NavigatorBar';
+import MainNavigator from './source/components/MainNavigator';
 
 export default function App() {
   return (
     <NavigationContainer>
-      <NavigatorBar />
+      <MainNavigator />
     </NavigationContainer>
   );
 }

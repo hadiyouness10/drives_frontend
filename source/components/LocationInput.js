@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import client from '../api/client';
-import dateTimeFormatter from '../assets/dateTimeFormatter';
+import dateTimeFormatter from '../utils/dateTimeFormatter';
 import Icon from 'react-native-vector-icons/Entypo'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import LocationSuggestions from '../components/LocationSuggestions';
