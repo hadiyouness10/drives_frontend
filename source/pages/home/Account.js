@@ -4,133 +4,128 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ImageBackground,
+  Image,
+  Button,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export const Account = () => {
-  const options_main = [
-    {
-      icon: <MaterialCommunityIcons name="account-outline" size={24} />,
-      title: "My Profile",
-    },
-    {
-      icon: <MaterialCommunityIcons name="wallet-outline" size={24} />,
-      title: "My Wallet",
-    },
-    {
-      icon: <Icon name="mail-outline" size={24} />,
-      title: "Inbox",
-    },
-    {
-      icon: <Icon name="list" size={24} />,
-      title: "My Rides",
-    },
-    {
-      icon: <Icon name="settings-outline" size={24} />,
-      title: "Settings",
-    },
-  ];
-
-  const options_additions = [
-    {
-      icon: <MaterialCommunityIcons name="head-lightbulb-outline" size={24} />,
-      title: "Keep in Mind",
-    },
-    {
-      icon: <Icon name="chatbox-ellipses-outline" size={24} />,
-      title: "Contact Us",
-    },
-  ];
-
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.mainDiv}>
-        <Text style={styles.nameTitle}>Welcome, User</Text>
-        <View style={styles.options}>
-          <FlatList
-            data={options_main}
-            renderItem={({ item, index }) => {
-              const isEnd = index === options_main.length - 1;
-              return (
-                <View>
-                  <TouchableOpacity
-                    style={[
-                      styles.optionsItem,
-                      !isEnd
-                        ? { borderBottomWidth: 0.7 }
-                        : { borderBottomWidth: 0.7 },
-                    ]}
-                  >
-                    {item.icon}
-                    <Text
-                      style={{ color: "black", fontSize: 18, marginLeft: 10 }}
-                    >
-                      {item.title}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      <ImageBackground
+        source={require("../assets/background.jpg")}
+        style={{
+          flex: 1,
+          width: null,
+          height: 250,
+          borderRadius: 10,
+          marginBottom: 100,
+        }}
+      >
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Image
+            style={{
+              height: 150,
+              width: 159,
+              borderRadius: 10,
+              marginTop: 300,
             }}
+            source={require("../assets/MyPicture.png")}
           />
+          <Text style={styles.nameTitle}>Hadi Youness</Text>
+          <Pressable style={styles.editProfile}>
+            <View>
+              <Text style={{ fontSize: 16, color: "#7D7BFF" }}>
+                Edit Profile
+              </Text>
+            </View>
+          </Pressable>
         </View>
-        <View style={styles.options}>
-          <FlatList
-            data={options_additions}
-            renderItem={({ item, index }) => {
-              const isEnd = index === options_additions.length - 1;
-              return (
-                <View>
-                  <TouchableOpacity
-                    style={[
-                      styles.optionsItem,
-                      !isEnd ? { borderBottomWidth: 0.3 } : "",
-                    ]}
-                  >
-                    {item.icon}
-                    <Text
-                      style={{ color: "black", fontSize: 18, marginLeft: 10 }}
-                    >
-                      {item.title}, {index}, {options_additions.length}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            }}
-          />
+      </ImageBackground>
+      <View style={styles.mainDiv}>
+        <View>
+          <View style={styles.drawLine} />
+          <View style={styles.optionsObject}>
+            <Text style={styles.options}>Privacy Settings</Text>
+            <Icon style={styles.icons} name="settings-outline" size={24} />
+          </View>
+        </View>
+        <View>
+          <View style={styles.drawLine} />
+          <View style={styles.optionsObject}>
+            <Text style={styles.options}>Notifications</Text>
+            <Icon style={styles.icons} name="notifications" size={24} />
+          </View>
+        </View>
+        <View>
+          <View style={styles.drawLine} />
+          <View style={styles.optionsObject}>
+            <Text style={styles.options}>Ride History</Text>
+            <Icon style={styles.icons} name="list" size={24} />
+          </View>
+        </View>
+        <View>
+          <View style={styles.drawLine} />
+          <View style={styles.optionsObject}>
+            <Text style={styles.options}>Inbox</Text>
+            <MaterialCommunityIcons
+              style={styles.icons}
+              name="inbox"
+              size={24}
+            />
+          </View>
         </View>
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   mainDiv: {
     flex: 1,
+    marginTop: 30,
+  },
+  editProfile: {
+    fontSize: 28,
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 15,
+    paddingLeft: 30,
+    paddingRight: 30,
+    borderColor: "gray",
+    marginBottom: 20,
   },
   nameTitle: {
     fontSize: 28,
     margin: 20,
-    marginTop: 60,
-  },
-  withdrawButton: {
-    alignSelf: "flex-end",
-    backgroundColor: "rgb(0, 125, 200)",
-    padding: 10,
-    borderRadius: 5,
+    fontWeight: "600",
   },
   options: {
-    width: "90%",
-    backgroundColor: "white",
-    elevation: 5,
-    alignSelf: "center",
-    borderRadius: 20,
-    marginTop: 20,
-  },
-  optionsItem: {
-    height: 60,
-    flexDirection: "row",
-    alignItems: "center",
+    marginTop: 10,
     paddingLeft: 20,
+    fontSize: 16,
+    fontWeight: "400",
+  },
+  drawLine: {
+    borderBottomColor: "gray",
+    marginTop: 20,
+    borderBottomWidth: 0.4,
+    width: "90%",
+    marginLeft: "5%",
+    marginRight: "5%",
+  },
+  icons: {
+    marginTop: 10,
+    paddingRight: 20,
+    fontSize: 25,
+  },
+  optionsObject: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
