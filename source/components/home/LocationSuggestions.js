@@ -3,7 +3,7 @@ import { Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import {
   useLocationSuggestionsQuery,
   useLocationDetailsQuery,
-} from "../api/queries";
+} from "api/queries";
 
 export const LocationSuggestions = ({
   type,

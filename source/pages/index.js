@@ -1,4 +1,2 @@
-export * from "./Account";
-export * from "./JoinRide";
-export * from "./RideDetails";
-export * from "./StartRide";
+export * from "./home";
+export * from "./login";

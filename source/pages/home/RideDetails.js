@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { MapComponent } from "../components";
+import { MapComponent } from "components";
 
 export const RideDetails = () => {
   const mapRef = useRef(null);
