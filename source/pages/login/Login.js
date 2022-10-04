@@ -26,7 +26,7 @@ export const Login = ({ navigation }) => {
     }
     navigation.reset({
       index: 0,
-      routes: [{ name: "JoinRide" }],
+      routes: [{ name: "Home" }],
     });
   };
 
