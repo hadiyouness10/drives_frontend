@@ -2,7 +2,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Account, JoinRide, StartRide } from "pages";
 import { stackScreenOptions, tabScreenOptions } from "./screen-options";
-
+import { Provider } from "react-native-paper";
+import { theme } from "core/theme";
+import { Start, Login, Register, ResetPassword } from "pages";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const isLoggedIn = true;
