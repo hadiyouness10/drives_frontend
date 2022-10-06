@@ -1,84 +1,53 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { MapComponent, LocationInput } from "components";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
+import { MapComponent, InputDetails } from "components";
 
-export const StartRide = () => {
-  const [startLocationMarker, setStartLocationMarker] = useState();
-  const [destinationMarker, setDestinationMarker] = useState();
+export const StartRide = ({ navigation }) => {
+  const [startLocationId, setStartLocationId] = useState("");
+  const [destinationLocationId, setDestinationLocationId] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [numberOfSeats, setNumberOfSeats] = useState(1);
 
-  const [isDroppingMarker, setIsDroppingMarker] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const mapRef = useRef(null);
+  const inputDetailsProps = {
+    navigation,
+    startLocationId,
+    setStartLocationId,
+    destinationLocationId,
+    setDestinationLocationId,
+    date,
+    setDate,
+    numberOfSeats,
+    setNumberOfSeats,
+  };
 
   return (
-    <View style={{ flex: 1 }}>
-      <LocationInput
-        type="startRide"
-        setStartLocationMarker={setStartLocationMarker}
-        setDestinationMarker={setDestinationMarker}
-        isDroppingMarker={isDroppingMarker}
-        setIsDroppingMarker={setIsDroppingMarker}
-        isTyping={isTyping}
-        setIsTyping={setIsTyping}
-        mapRef={mapRef}
-      />
-
-      <View style={[styles.mapDiv, { flexGrow: isTyping ? 0 : 1 }]}>
-        <View
-          style={[
-            styles.dropMarkerText,
-            { display: isDroppingMarker ? "flex" : "none" },
-          ]}
-        >
-          <Text style={{ fontSize: 22, color: "darkred" }}>
-            Tap on the map to drop pin.
-          </Text>
-        </View>
-
-        <MapComponent
-          mapRef={mapRef}
-          startLocationMarker={startLocationMarker}
-          setStartLocationMarker={setStartLocationMarker}
-          destinationMarker={destinationMarker}
-          setDestinationMarker={setDestinationMarker}
-          isDroppingMarker={isDroppingMarker}
-        />
-
-        <View
-          style={[
-            styles.confirmButtonView,
-            { display: isDroppingMarker ? "none" : "flex" },
-          ]}
-          pointerEvents="auto"
-        >
-          <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
-            <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={[
-            styles.dropDoneButtonView,
-            { display: isDroppingMarker ? "flex" : "none" },
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.dropDoneButton}
-            onPress={() => setIsDroppingMarker(null)}
-          >
-            <Text style={{ color: "white", fontSize: 18 }}>Done</Text>
-          </TouchableOpacity>
-        </View>
+    <ImageBackground
+      source={require("../../assets/map_background.png")}
+      style={styles.mainDiv}
+    >
+      <View>
+        <InputDetails type="startRide" {...inputDetailsProps} />
       </View>
-    </View>
+
+      <View style={[styles.confirmButtonView]} pointerEvents="auto">
+        <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
+          <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  mapDiv: {
-    flexGrow: 1,
-    marginTop: -10,
+  mainDiv: {
+    flex: 1,
+    backgroundColor: "white",
   },
   confirmButtonView: {
     display: "flex",
@@ -97,31 +66,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(0, 125, 200)",
     width: 150,
     elevation: 5,
-  },
-  dropMarkerText: {
-    position: "absolute",
-    zIndex: 1,
-    top: 50,
-    left: 0,
-    right: 0,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dropDoneButtonView: {
-    position: "absolute",
-    zIndex: 1,
-    left: 0,
-    right: 0,
-    bottom: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dropDoneButton: {
-    width: "90%",
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgb(0, 150, 255)",
-    elevation: 2,
   },
 });
