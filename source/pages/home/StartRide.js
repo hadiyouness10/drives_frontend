@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
-import { MapComponent, LocationInput } from "components";
+import { MapComponent, InputDetails } from "components";
 
 export const StartRide = () => {
   const [startLocationMarker, setStartLocationMarker] = useState();
@@ -12,70 +12,40 @@ export const StartRide = () => {
   const mapRef = useRef(null);
 
   return (
-    <View style={{ flex: 1 }}>
-      <LocationInput
-        type="startRide"
-        setStartLocationMarker={setStartLocationMarker}
-        setDestinationMarker={setDestinationMarker}
-        isDroppingMarker={isDroppingMarker}
-        setIsDroppingMarker={setIsDroppingMarker}
-        isTyping={isTyping}
-        setIsTyping={setIsTyping}
-        mapRef={mapRef}
-      />
-
-      <View style={[styles.mapDiv, { flexGrow: isTyping ? 0 : 1 }]}>
-        <View
-          style={[
-            styles.dropMarkerText,
-            { display: isDroppingMarker ? "flex" : "none" },
-          ]}
-        >
-          <Text style={{ fontSize: 22, color: "darkred" }}>
-            Tap on the map to drop pin.
-          </Text>
-        </View>
-
-        <MapComponent
-          mapRef={mapRef}
-          startLocationMarker={startLocationMarker}
+    <View style={styles.mainDiv}>
+      <View style={{ height: "70%" }}>
+        <InputDetails
+          type="startRide"
           setStartLocationMarker={setStartLocationMarker}
-          destinationMarker={destinationMarker}
           setDestinationMarker={setDestinationMarker}
           isDroppingMarker={isDroppingMarker}
+          setIsDroppingMarker={setIsDroppingMarker}
+          isTyping={isTyping}
+          setIsTyping={setIsTyping}
+          mapRef={mapRef}
         />
+      </View>
 
-        <View
-          style={[
-            styles.confirmButtonView,
-            { display: isDroppingMarker ? "none" : "flex" },
-          ]}
-          pointerEvents="auto"
-        >
-          <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
-            <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={[
-            styles.dropDoneButtonView,
-            { display: isDroppingMarker ? "flex" : "none" },
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.dropDoneButton}
-            onPress={() => setIsDroppingMarker(null)}
-          >
-            <Text style={{ color: "white", fontSize: 18 }}>Done</Text>
-          </TouchableOpacity>
-        </View>
+      <View
+        style={[
+          styles.confirmButtonView,
+          { display: isDroppingMarker ? "none" : "flex" },
+        ]}
+        pointerEvents="auto"
+      >
+        <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
+          <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainDiv: {
+    flex: 1,
+    backgroundColor: "white",
+  },
   mapDiv: {
     flexGrow: 1,
     marginTop: -10,

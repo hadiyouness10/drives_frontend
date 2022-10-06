@@ -1,3 +1,3 @@
-export * from "./LocationInput";
-export * from "./LocationSuggestions";
+export * from "./InputDetails";
+export * from "./InputLocation";
 export * from "./MapComponent";
