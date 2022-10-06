@@ -5,13 +5,16 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { MapComponent } from "components";
 
-export const RideDetails = () => {
+export const RideDetails = ({ navigation }) => {
   const mapRef = useRef(null);
 
   return (
     <View style={{ flex: 1 }}>
       <View style={{ backgroundColor: "white", padding: 20 }}>
-        <TouchableOpacity style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={{ flexDirection: "row" }}
+          onPress={() => navigation.navigate("RiderDetails")}
+        >
           <View style={styles.profilePic}></View>
           <View style={styles.driverDetails}>
             <Text style={{ fontSize: 34 }}>John Doe</Text>

@@ -1,10 +1,17 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Account, JoinRide, StartRide } from "pages";
+import { Account, JoinRide, RideDetails, StartRide } from "pages";
 import { stackScreenOptions, tabScreenOptions } from "./screen-options";
 import { Provider } from "react-native-paper";
 import { theme } from "core/theme";
-import { Start, Login, Register, ResetPassword, DropPin } from "pages";
+import {
+  Start,
+  Login,
+  Register,
+  ResetPassword,
+  DropPin,
+  RiderDetails,
+} from "pages";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -25,6 +32,7 @@ const JoinRideNavigator = () => {
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={JoinRide} />
       <Stack.Screen name="Drop Pin (joinRide)" component={DropPin} />
+      <Stack.Screen name="RiderDetails" component={RiderDetails} />
     </Stack.Navigator>
   );
 };
