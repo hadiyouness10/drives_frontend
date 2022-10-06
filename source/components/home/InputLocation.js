@@ -73,7 +73,7 @@ export const InputLocation = ({
 
   const showSuggestions = isTyping && locationSuggestions?.length > 0;
   return (
-    <View style={{ marginBottom: showSuggestions ? 0 : 40 }}>
+    <View style={{ marginBottom: showSuggestions ? 0 : 30 }}>
       <View style={styles.input}>
         <TextInput
           ref={inputRef}

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { InputDetails } from "components";
 
 export const JoinRide = ({ navigation }) => {
@@ -21,16 +27,19 @@ export const JoinRide = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.mainDiv}>
-      <View style={{ height: "70%" }}>
+    <ImageBackground
+      source={require("../../assets/map_background.png")}
+      style={styles.mainDiv}
+    >
+      <View>
         <InputDetails type="joinRide" {...inputDetailsProps} />
       </View>
-      <TouchableOpacity
-        style={{ backgroundColor: "red", width: 200, margin: 20 }}
-      >
-        <Text>View Available Rides</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={[styles.ridersListButtonView]} pointerEvents="auto">
+        <TouchableOpacity style={styles.ridersListButton} onPress={() => {}}>
+          <Text style={{ color: "white", fontSize: 20 }}>View Riders List</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -38,5 +47,23 @@ const styles = StyleSheet.create({
   mainDiv: {
     flex: 1,
     backgroundColor: "white",
+  },
+  ridersListButtonView: {
+    display: "flex",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 30,
+    left: 0,
+    right: 0,
+  },
+  ridersListButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 30,
+    backgroundColor: "rgb(0, 125, 200)",
+    width: 300,
+    elevation: 5,
   },
 });

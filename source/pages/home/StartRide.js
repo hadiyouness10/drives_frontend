@@ -1,5 +1,11 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from "react-native";
 import { MapComponent, InputDetails } from "components";
 
 export const StartRide = ({ navigation }) => {
@@ -21,17 +27,20 @@ export const StartRide = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.mainDiv}>
-      <View style={{ height: "70%" }}>
+    <ImageBackground
+      source={require("../../assets/map_background.png")}
+      style={styles.mainDiv}
+    >
+      <View>
         <InputDetails type="startRide" {...inputDetailsProps} />
       </View>
 
-      <View style={[styles.confirmButtonView, ,]} pointerEvents="auto">
+      <View style={[styles.confirmButtonView]} pointerEvents="auto">
         <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
           <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 

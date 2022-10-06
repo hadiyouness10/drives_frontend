@@ -1,10 +1,35 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, LogBox } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { dateTimeFormatter } from "utils";
 import { InputLocation } from "./InputLocation";
 import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/Entypo";
 
+const WrapperView = ({ children, icon, label }) => {
+  return (
+    <View style={styles.wrapperViewDiv}>
+      <View style={styles.wrapperViewTitle}>
+        <Icon
+          name={icon}
+          size={30}
+          color="#404040"
+          style={{ marginBottom: 10 }}
+        />
+        <Text
+          style={{
+            fontSize: 20,
+            backgroundColor: "white",
+            paddingHorizontal: 10,
+          }}
+        >
+          {label}
+        </Text>
+      </View>
+      {children}
+    </View>
+  );
+};
 export const InputDetails = ({
   type,
   navigation,
@@ -23,10 +48,6 @@ export const InputDetails = ({
   const numberOfSeatsRef = useRef(null);
 
   // const { data: possibleRoutes } = usePossibleRoutesQuery(startId, destinationId)
-
-  LogBox.ignoreLogs([
-    "Non-serializable values were found in the navigation state",
-  ]);
 
   const inputLocationProps = {
     type,
@@ -51,82 +72,73 @@ export const InputDetails = ({
           }}
         />
       )}
+      <WrapperView icon="map" label="Choose Location">
+        <InputLocation
+          position="start"
+          setLocationMarker={setStartLocationMarker}
+          locationId={startLocationId}
+          setLocationId={setStartLocationId}
+          {...inputLocationProps}
+        />
 
-      <InputLocation
-        position="start"
-        setLocationMarker={setStartLocationMarker}
-        locationId={startLocationId}
-        setLocationId={setStartLocationId}
-        {...inputLocationProps}
-      />
+        <InputLocation
+          position="destination"
+          setLocationMarker={setDestinationMarker}
+          locationId={destinationLocationId}
+          setLocationId={setDestinationLocationId}
+          {...inputLocationProps}
+        />
+      </WrapperView>
 
-      <InputLocation
-        position="destination"
-        setLocationMarker={setDestinationMarker}
-        locationId={destinationLocationId}
-        setLocationId={setDestinationLocationId}
-        {...inputLocationProps}
-      />
-
-      <Text
-        style={{
-          height: 50,
-          padding: 10,
-          textAlignVertical: "center",
-          fontSize: 16,
-        }}
-      >
-        When are you leaving?
-      </Text>
-
-      <View
-        style={{
-          height: 50,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: 40,
-        }}
-      >
-        <TouchableOpacity
-          style={[styles.buttonDiv, { marginRight: 10 }]}
-          onPress={() => setDateTimePickerShown("date")}
-        >
-          <Text style={styles.buttonText}>
-            {dateTimeFormatter(date, "date")}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonDiv}
-          onPress={() => setDateTimePickerShown("time")}
-        >
-          <Text style={styles.buttonText}>
-            {dateTimeFormatter(date, "time")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity
-        style={styles.numberOfSeats}
-        onPress={() => numberOfSeatsRef.current.focus()}
-      >
-        <Text style={{ height: 50, textAlignVertical: "center", fontSize: 18 }}>
-          Number of seats
-        </Text>
-        <Picker
-          ref={numberOfSeatsRef}
-          style={{ width: 100 }}
-          selectedValue={numberOfSeats.toString()}
-          onValueChange={(itemValue, itemIndex) => {
-            setNumberOfSeats(parseInt(itemValue));
+      <WrapperView icon="clock" label="Time of Departure">
+        <View
+          style={{
+            height: 50,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
           }}
         >
-          <Picker.Item label="1" value="1" />
-          <Picker.Item label="2" value="2" />
-          <Picker.Item label="3" value="3" />
-          <Picker.Item label="4" value="4" />
-        </Picker>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.buttonDiv, { marginRight: 10 }]}
+            onPress={() => setDateTimePickerShown("date")}
+          >
+            <Text style={styles.buttonText}>
+              {dateTimeFormatter(date, "date")}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.buttonDiv}
+            onPress={() => setDateTimePickerShown("time")}
+          >
+            <Text style={styles.buttonText}>
+              {dateTimeFormatter(date, "time")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </WrapperView>
+
+      <WrapperView icon="user" label="Number of Seats">
+        <TouchableOpacity
+          style={styles.numberOfSeats}
+          onPress={() => numberOfSeatsRef.current.focus()}
+        >
+          <Picker
+            ref={numberOfSeatsRef}
+            style={{ width: 100 }}
+            selectedValue={numberOfSeats.toString()}
+            onValueChange={(itemValue, itemIndex) => {
+              setNumberOfSeats(parseInt(itemValue));
+            }}
+          >
+            <Picker.Item label="1" value="1" />
+            <Picker.Item label="2" value="2" />
+            <Picker.Item label="3" value="3" />
+            <Picker.Item label="4" value="4" />
+          </Picker>
+        </TouchableOpacity>
+      </WrapperView>
     </View>
   );
 };
@@ -134,10 +146,28 @@ export const InputDetails = ({
 const styles = StyleSheet.create({
   mainDiv: {
     flexGrow: 1,
-    marginTop: 100,
+    marginTop: 30,
     marginHorizontal: 15,
     display: "flex",
     justifyContent: "space-between",
+  },
+  wrapperViewDiv: {
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingTop: 50,
+    marginTop: 60,
+    borderColor: "grey",
+    elevation: 5,
+    backgroundColor: "white",
+  },
+  wrapperViewTitle: {
+    position: "absolute",
+    top: -37,
+    left: 0,
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonDiv: {
     flex: 1,
@@ -153,13 +183,8 @@ const styles = StyleSheet.create({
   },
   numberOfSeats: {
     height: 50,
-    marginTop: 10,
-    paddingRight: 10,
-    paddingLeft: 10,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    elevation: 4,
-    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "flex-end",
   },
 });
