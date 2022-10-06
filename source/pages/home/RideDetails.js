@@ -10,10 +10,10 @@ export const RideDetails = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ backgroundColor: "white", padding: 20 }}>
+      <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
         <TouchableOpacity
           style={{ flexDirection: "row" }}
-          onPress={() => navigation.navigate("RiderDetails")}
+          onPress={() => navigation.push("Rider Details")}
         >
           <View style={styles.profilePic}></View>
           <View style={styles.driverDetails}>

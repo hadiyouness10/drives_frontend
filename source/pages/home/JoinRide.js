@@ -35,7 +35,10 @@ export const JoinRide = ({ navigation }) => {
         <InputDetails type="joinRide" {...inputDetailsProps} />
       </View>
       <View style={[styles.ridersListButtonView]} pointerEvents="auto">
-        <TouchableOpacity style={styles.ridersListButton} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.ridersListButton}
+          onPress={() => navigation.push("Ride Details")}
+        >
           <Text style={{ color: "white", fontSize: 20 }}>View Riders List</Text>
         </TouchableOpacity>
       </View>
