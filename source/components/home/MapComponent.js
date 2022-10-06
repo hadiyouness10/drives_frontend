@@ -49,7 +49,7 @@ export const MapComponent = ({
           if (position === "start") {
             setTempStartLocationMarker(e.nativeEvent.coordinate);
             setStartLocationMarker(e.nativeEvent.coordinate);
-          } else if (position === "end") {
+          } else {
             setTempDestinationMarker(e.nativeEvent.coordinate);
             setDestinationMarker(e.nativeEvent.coordinate);
           }

@@ -24,7 +24,7 @@ const JoinRideNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={JoinRide} />
-      <Stack.Screen name="Drop Pin (JoinRide)" component={DropPin} />
+      <Stack.Screen name="Drop Pin (joinRide)" component={DropPin} />
     </Stack.Navigator>
   );
 };
@@ -33,6 +33,7 @@ const StartRideNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={StartRide} />
+      <Stack.Screen name="Drop Pin (startRide)" component={DropPin} />
     </Stack.Navigator>
   );
 };

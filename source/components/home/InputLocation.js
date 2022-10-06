@@ -71,8 +71,9 @@ export const InputLocation = ({
     [JSON.stringify(locationSuggestions)]
   );
 
+  const showSuggestions = isTyping && locationSuggestions?.length > 0;
   return (
-    <View>
+    <View style={{ marginBottom: showSuggestions ? 0 : 40 }}>
       <View style={styles.input}>
         <TextInput
           ref={inputRef}
@@ -90,6 +91,7 @@ export const InputLocation = ({
         <TouchableOpacity
           style={{ margin: 4 }}
           onPress={() => {
+            setIsTyping(false);
             setSearchText("");
             inputRef.current.blur();
           }}
@@ -99,7 +101,7 @@ export const InputLocation = ({
 
         <TouchableOpacity
           onPress={() =>
-            navigation.push("Drop Pin (JoinRide)", {
+            navigation.push(`Drop Pin (${type})`, {
               locationMarkers,
               position,
             })
@@ -109,17 +111,16 @@ export const InputLocation = ({
           <Icon name="location-pin" size={30} color="#404040" />
         </TouchableOpacity>
       </View>
-      {/* <ScrollView
+      <ScrollView
         style={{
-          flex: 1,
-          // display: isTyping === "destination" ? "flex" : "none",
+          display: showSuggestions ? "flex" : "none",
           margin: 10,
           marginTop: 20,
         }}
         keyboardShouldPersistTaps="always"
       >
         {locations}
-      </ScrollView> */}
+      </ScrollView>
     </View>
   );
 };
@@ -137,6 +138,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     backgroundColor: "rgba(10, 10, 10, 0.07)",
-    marginBottom: 40,
   },
 });

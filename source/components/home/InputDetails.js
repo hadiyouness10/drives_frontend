@@ -1,19 +1,9 @@
 import React, { useState, useRef } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, LogBox } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { dateTimeFormatter } from "utils";
-import Icon from "react-native-vector-icons/Entypo";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { InputLocation } from "./InputLocation";
-import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
-import { usePossibleRoutesQuery } from "api/queries";
 
 export const InputDetails = ({
   type,
@@ -34,6 +24,10 @@ export const InputDetails = ({
 
   // const { data: possibleRoutes } = usePossibleRoutesQuery(startId, destinationId)
 
+  LogBox.ignoreLogs([
+    "Non-serializable values were found in the navigation state",
+  ]);
+
   const inputLocationProps = {
     type,
     navigation,
@@ -44,6 +38,7 @@ export const InputDetails = ({
       setDestinationMarker,
     },
   };
+
   return (
     <View style={[styles.mainDiv]}>
       {dateTimePickerShown && (
@@ -66,10 +61,10 @@ export const InputDetails = ({
       />
 
       <InputLocation
-        position="end"
+        position="destination"
         setLocationMarker={setDestinationMarker}
         locationId={destinationLocationId}
-        setLocationsId={setDestinationLocationId}
+        setLocationId={setDestinationLocationId}
         {...inputLocationProps}
       />
 
