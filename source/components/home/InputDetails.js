@@ -68,18 +68,16 @@ export const InputDetails = ({
 
   return (
     <View style={[styles.mainDiv]}>
-      {dateTimePickerShown &&
-        Platform.OS ===
-          "android"(
-            <DateTimePicker
-              value={date}
-              mode={dateTimePickerShown}
-              onChange={(e, selectedDate) => {
-                setDate(selectedDate);
-                setDateTimePickerShown(null);
-              }}
-            />
-          )}
+      {dateTimePickerShown && Platform.OS === "android" && (
+        <DateTimePicker
+          value={date}
+          mode={dateTimePickerShown}
+          onChange={(e, selectedDate) => {
+            setDate(selectedDate);
+            setDateTimePickerShown(null);
+          }}
+        />
+      )}
       <WrapperView icon="map" label="Choose Location">
         <InputLocation
           position="start"
