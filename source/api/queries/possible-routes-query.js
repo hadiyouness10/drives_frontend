@@ -14,11 +14,7 @@ const getPossibleRoutes = (start_id, destination_id) => async () => {
       }
     )
     .then((res) => res.data.result)
-    .catch(function (error) {
-      console.error(
-        "There has been a problem with your post operation: " + error.message
-      );
-    });
+    .catch((error) => {});
 };
 
 export const usePossibleRoutesQuery = (start_id, destination_id) =>

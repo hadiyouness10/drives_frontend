@@ -14,6 +14,7 @@ import {
   RiderDetails,
   RideDetails,
   Account,
+  Riders,
 } from "pages";
 
 const Tab = createBottomTabNavigator();
@@ -35,6 +36,7 @@ const JoinRideNavigator = () => {
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={JoinRide} />
       <Stack.Screen name="Drop Pin (joinRide)" component={DropPin} />
+      <Stack.Screen name="Riders" component={Riders} />
       <Stack.Screen name="Ride Details" component={RideDetails} />
       <Stack.Screen name="Rider Details" component={RiderDetails} />
     </Stack.Navigator>
