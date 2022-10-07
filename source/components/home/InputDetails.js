@@ -1,5 +1,11 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { dateTimeFormatter } from "utils";
 import { InputLocation } from "./InputLocation";
@@ -62,16 +68,18 @@ export const InputDetails = ({
 
   return (
     <View style={[styles.mainDiv]}>
-      {dateTimePickerShown && (
-        <DateTimePicker
-          value={date}
-          mode={dateTimePickerShown}
-          onChange={(e, selectedDate) => {
-            setDate(selectedDate);
-            setDateTimePickerShown(null);
-          }}
-        />
-      )}
+      {dateTimePickerShown &&
+        Platform.OS ===
+          "android"(
+            <DateTimePicker
+              value={date}
+              mode={dateTimePickerShown}
+              onChange={(e, selectedDate) => {
+                setDate(selectedDate);
+                setDateTimePickerShown(null);
+              }}
+            />
+          )}
       <WrapperView icon="map" label="Choose Location">
         <InputLocation
           position="start"
@@ -91,32 +99,65 @@ export const InputDetails = ({
       </WrapperView>
 
       <WrapperView icon="clock" label="Time of Departure">
-        <View
-          style={{
-            height: 50,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: 20,
-          }}
-        >
-          <TouchableOpacity
-            style={[styles.buttonDiv, { marginRight: 10 }]}
-            onPress={() => setDateTimePickerShown("date")}
+        {Platform.OS === "ios" ? (
+          <View
+            style={{
+              height: 50,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: 20,
+            }}
           >
-            <Text style={styles.buttonText}>
-              {dateTimeFormatter(date, "date")}
-            </Text>
-          </TouchableOpacity>
+            <DateTimePicker
+              style={{ width: 150 }}
+              themeVariant="light"
+              value={date}
+              mode={"date"}
+              onChange={(e, selectedDate) => {
+                setDate(selectedDate);
+                setDateTimePickerShown(null);
+              }}
+            />
 
-          <TouchableOpacity
-            style={styles.buttonDiv}
-            onPress={() => setDateTimePickerShown("time")}
+            <DateTimePicker
+              style={{ width: 150 }}
+              themeVariant="light"
+              value={date}
+              mode={"time"}
+              onChange={(e, selectedDate) => {
+                setDate(selectedDate);
+                setDateTimePickerShown(null);
+              }}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              height: 50,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: 20,
+            }}
           >
-            <Text style={styles.buttonText}>
-              {dateTimeFormatter(date, "time")}
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={[styles.buttonDiv, { marginRight: 10 }]}
+              onPress={() => setDateTimePickerShown("date")}
+            >
+              <Text style={styles.buttonText}>
+                {dateTimeFormatter(date, "date")}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.buttonDiv}
+              onPress={() => setDateTimePickerShown("time")}
+            >
+              <Text style={styles.buttonText}>
+                {dateTimeFormatter(date, "time")}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </WrapperView>
 
       <WrapperView icon="user" label="Number of Seats">

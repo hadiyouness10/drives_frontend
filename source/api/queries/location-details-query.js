@@ -14,11 +14,7 @@ const getLocationDetails = (place_id) => async () => {
       }
     )
     .then((res) => res.data.result)
-    .catch(function (error) {
-      console.error(
-        "There has been a problem with your fetch operation: " + error.message
-      );
-    });
+    .catch((error) => {});
 };
 
 export const useLocationDetailsQuery = (place_id) =>

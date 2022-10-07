@@ -10,7 +10,7 @@ import {
 
 import RiderCard from "components/home/RiderCard";
 
-export default function Riders() {
+export const Riders = ({ navigation }) => {
   return (
     <ScrollView>
       <StatusBar barStyle="dark-content" />
@@ -23,6 +23,7 @@ export default function Riders() {
           }}
           icon={"forward"}
           iconColor={"grey"}
+          navigation={navigation}
         />
 
         <RiderCard
@@ -33,6 +34,7 @@ export default function Riders() {
           }}
           icon={"forward"}
           iconColor={"grey"}
+          navigation={navigation}
         />
 
         <RiderCard
@@ -43,11 +45,12 @@ export default function Riders() {
           }}
           icon={"forward"}
           iconColor={"grey"}
+          navigation={navigation}
         />
       </SafeAreaView>
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

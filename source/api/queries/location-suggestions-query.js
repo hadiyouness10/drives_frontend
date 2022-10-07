@@ -13,11 +13,7 @@ const getLocationSuggestions = (searchText) => async () => {
       }
     )
     .then((res) => res.data.result)
-    .catch((error) => {
-      console.error(
-        "There has been a problem with your fetch operation: " + error.message
-      );
-    });
+    .catch((error) => {});
 };
 
 export const useLocationSuggestionsQuery = (type, position, searchText) =>

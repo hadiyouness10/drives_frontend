@@ -1,5 +1,12 @@
 import React from "react";
-import { View, StyleSheet, Dimensions, Text, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -8,7 +15,7 @@ const RiderCard = (props) => {
   let screenHeight = Dimensions.get("window").height;
 
   return (
-    <View
+    <TouchableOpacity
       style={[
         styles.cardContainer,
         {
@@ -16,6 +23,7 @@ const RiderCard = (props) => {
           width: screenWidth - scale(20),
         },
       ]}
+      onPress={() => props.navigation.push("Ride Details")}
     >
       <View
         style={{
@@ -92,7 +100,7 @@ const RiderCard = (props) => {
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
