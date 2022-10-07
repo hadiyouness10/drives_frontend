@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "react-query";
-import {LoginNavigator} from "routes"
+import { LoginNavigator } from "routes";
 
 const queryClient = new QueryClient();
 
@@ -15,7 +15,7 @@ export default function App() {
       <NavigationContainer>
         <View style={{ flex: 1 }}>
           <StatusBar style="dark-content" />
-          <LoginNavigator/>
+          <LoginNavigator />
         </View>
       </NavigationContainer>
     </QueryClientProvider>

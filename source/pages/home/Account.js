@@ -16,7 +16,7 @@ export const Account = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ImageBackground
-        source={require("../assets/background.jpg")}
+        source={require("../../assets/background.jpg")}
         style={{
           flex: 1,
           width: null,
@@ -35,7 +35,7 @@ export const Account = () => {
               borderRadius: 10,
               marginTop: 300,
             }}
-            source={require("../assets/MyPicture.png")}
+            source={require("../../assets/MyPicture.png")}
           />
           <Text style={styles.nameTitle}>Hadi Youness</Text>
           <Pressable style={styles.editProfile}>

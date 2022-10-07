@@ -11,7 +11,7 @@ export const MapComponent = ({
   setStartLocationMarker,
   destinationMarker,
   setDestinationMarker,
-  isDroppingMarker,
+  position,
 }) => {
   const [region, setRegion] = useState({
     latitude: 33.8938,
@@ -19,6 +19,11 @@ export const MapComponent = ({
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+
+  const [tempStartLocationMarker, setTempStartLocationMarker] =
+    useState(startLocationMarker);
+  const [tempDestinationMarker, setTempDestinationMarker] =
+    useState(destinationMarker);
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -41,37 +46,37 @@ export const MapComponent = ({
         showsUserLocation={true}
         showsMyLocationButton={false}
         onPress={(e) => {
-          if (isDroppingMarker === "startingLocation")
+          if (position === "start") {
+            setTempStartLocationMarker(e.nativeEvent.coordinate);
             setStartLocationMarker(e.nativeEvent.coordinate);
-          else if (isDroppingMarker === "destination")
+          } else {
+            setTempDestinationMarker(e.nativeEvent.coordinate);
             setDestinationMarker(e.nativeEvent.coordinate);
+          }
         }}
       >
-        {startLocationMarker && (
-          <Marker title="Start Location" coordinate={startLocationMarker} />
+        {tempStartLocationMarker && (
+          <Marker title="Start Location" coordinate={tempStartLocationMarker} />
         )}
 
-        {destinationMarker && (
+        {tempDestinationMarker && (
           <Marker
             title="Destination"
-            coordinate={destinationMarker}
+            coordinate={tempDestinationMarker}
             pinColor="green"
           />
         )}
-        {startLocationMarker && destinationMarker && (
+        {tempStartLocationMarker && tempDestinationMarker && (
           <MapViewDirections
-            origin={startLocationMarker}
-            destination={destinationMarker}
+            origin={tempStartLocationMarker}
+            destination={tempDestinationMarker}
             apikey="AIzaSyCkUp9bjBMNJ94Uac9n_YzZXQHJOVutHAQ"
             strokeWidth={3}
           />
         )}
       </MapView>
       <TouchableOpacity
-        style={[
-          styles.myLocationButton,
-          { bottom: isDroppingMarker ? 70 : 30 },
-        ]}
+        style={[styles.myLocationButton, { bottom: 70 }]}
         onPress={async () => {
           let location = await Location.getCurrentPositionAsync({});
           mapRef.current.animateToRegion({
