@@ -1,9 +1,5 @@
 import { useRef, React } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { MapComponent } from "components";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import CarouselCardItem, {
   ITEM_WIDTH,

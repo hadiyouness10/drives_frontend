@@ -1,19 +1,11 @@
 import React from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from "react-native";
+import { SafeAreaView, StyleSheet, ScrollView, StatusBar } from "react-native";
 
 import RiderCard from "components/home/RiderCard";
 
 export const Riders = ({ navigation }) => {
   return (
-    <ScrollView>
-      <StatusBar barStyle="dark-content" />
+    <ScrollView style={{ marginTop: 20 }}>
       <SafeAreaView style={styles.container}>
         <RiderCard
           title={"James Corden"}

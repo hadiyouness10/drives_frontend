@@ -6,6 +6,9 @@ import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { LoginNavigator } from "routes";
+import { LogBox } from "react-native"
+
+LogBox.ignoreAllLogs(true)
 
 const queryClient = new QueryClient();
 

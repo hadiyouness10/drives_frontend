@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { scale, verticalScale, moderateScale } from "react-native-size-matters";
+import { scale, verticalScale } from "react-native-size-matters";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const RiderCard = (props) => {
