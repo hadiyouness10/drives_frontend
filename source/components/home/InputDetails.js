@@ -24,9 +24,8 @@ const WrapperView = ({ children, icon, label }) => {
         />
         <Text
           style={{
-            fontSize: 20,
-            backgroundColor: "white",
-            paddingHorizontal: 10,
+            fontSize: 18,
+            color: "grey",
           }}
         >
           {label}
@@ -197,7 +196,6 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     marginTop: 60,
     borderColor: "grey",
-    elevation: 5,
     backgroundColor: "white",
   },
   wrapperViewTitle: {

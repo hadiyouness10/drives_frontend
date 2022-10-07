@@ -7,11 +7,11 @@ import * as Location from "expo-location";
 
 export const MapComponent = ({
   mapRef,
-  startLocationMarker,
-  setStartLocationMarker,
-  destinationMarker,
-  setDestinationMarker,
-  position,
+  startLocationMarker = null,
+  setStartLocationMarker = () => {},
+  destinationMarker = null,
+  setDestinationMarker = () => {},
+  position = null,
 }) => {
   const [region, setRegion] = useState({
     latitude: 33.8938,
@@ -49,7 +49,7 @@ export const MapComponent = ({
           if (position === "start") {
             setTempStartLocationMarker(e.nativeEvent.coordinate);
             setStartLocationMarker(e.nativeEvent.coordinate);
-          } else {
+          } else if (position === "destination") {
             setTempDestinationMarker(e.nativeEvent.coordinate);
             setDestinationMarker(e.nativeEvent.coordinate);
           }
@@ -76,7 +76,10 @@ export const MapComponent = ({
         )}
       </MapView>
       <TouchableOpacity
-        style={[styles.myLocationButton, { bottom: 70 }]}
+        style={[
+          styles.myLocationButton,
+          { bottom: position === null ? 20 : 70 },
+        ]}
         onPress={async () => {
           let location = await Location.getCurrentPositionAsync({});
           mapRef.current.animateToRegion({

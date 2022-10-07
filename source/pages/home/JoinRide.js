@@ -7,6 +7,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { InputDetails } from "components";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export const JoinRide = ({ navigation }) => {
   const [startLocationId, setStartLocationId] = useState("");
@@ -39,7 +40,15 @@ export const JoinRide = ({ navigation }) => {
           style={styles.ridersListButton}
           onPress={() => navigation.push("Riders")}
         >
-          <Text style={{ color: "white", fontSize: 20 }}>View Riders List</Text>
+          <Text style={{ color: "rgb(0, 125, 200)", fontSize: 20 }}>
+            View Available Drivers
+          </Text>
+          <Icon
+            name={"search"}
+            size={30}
+            color="#404040"
+            style={{ marginLeft: "auto" }}
+          />
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -52,8 +61,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   ridersListButtonView: {
-    display: "flex",
-    alignItems: "center",
     position: "absolute",
     bottom: 30,
     left: 0,
@@ -64,9 +71,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    borderRadius: 30,
-    backgroundColor: "rgb(0, 125, 200)",
-    width: 300,
-    elevation: 5,
+    backgroundColor: "white",
+    borderTopRightRadius: 100,
+    borderBottomRightRadius: 100,
+    borderWidth: 1,
+    borderColor: "grey",
+    marginHorizontal: 15,
+    paddingHorizontal: 15,
+    flexDirection: "row",
   },
 });

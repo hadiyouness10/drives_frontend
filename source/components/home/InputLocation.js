@@ -89,7 +89,7 @@ export const InputLocation = ({
         />
 
         <TouchableOpacity
-          style={{ margin: 4 }}
+          style={{ margin: 10 }}
           onPress={() => {
             setIsTyping(false);
             setSearchText("");
@@ -106,7 +106,7 @@ export const InputLocation = ({
               position,
             })
           }
-          style={{ marginRight: 5 }}
+          style={styles.dropPinIcon}
         >
           <Icon name="location-pin" size={30} color="#404040" />
         </TouchableOpacity>
@@ -138,5 +138,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     backgroundColor: "rgba(10, 10, 10, 0.07)",
+  },
+  dropPinIcon: {
+    marginRight: 5,
+    borderWidth: 1,
+    borderRadius: 20,
+    borderStyle: "dashed",
+    backgroundColor: "white",
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
