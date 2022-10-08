@@ -4,14 +4,8 @@ import client from "../client";
 const getPossibleRoutes = (start_id, destination_id) => async () => {
   if (start_id === "" || destination_id === "") return undefined;
   return await client
-    .post(
-      "/possibleRoutes",
-      { start_id: start_id, destination_id: destination_id },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    .get(
+      `/possibleRoutes?start_id=${start_id}&destination_id=${destination_id}`
     )
     .then((res) => res.data.result)
     .catch((error) => {});

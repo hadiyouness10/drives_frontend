@@ -4,15 +4,7 @@ import client from "../client";
 const getLocationDetails = (place_id) => async () => {
   if (!place_id) return undefined;
   return await client
-    .post(
-      "/locationDetails",
-      { place_id: place_id },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    .get(`/locationDetails/${place_id}`)
     .then((res) => res.data.result)
     .catch((error) => {});
 };

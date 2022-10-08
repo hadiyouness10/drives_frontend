@@ -3,15 +3,7 @@ import client from "../client";
 
 const getLocationSuggestions = (searchText) => async () => {
   return await client
-    .post(
-      `/locationSuggestions`,
-      { location: searchText },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    .get(`/locationSuggestions/${searchText}`)
     .then((res) => res.data.result)
     .catch((error) => {});
 };
