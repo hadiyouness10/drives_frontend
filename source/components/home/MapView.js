@@ -4,7 +4,6 @@ import { Text, View, FlatList, Dimensions, StyleSheet } from "react-native";
 import Androw from "react-native-androw";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
-import { isIPhoneXFamily } from "@freakycoder/react-native-helpers";
 
 const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get("window");
 
@@ -135,7 +134,7 @@ const _listStyle = (height) => ({
   height,
   borderWidth: 0,
   borderColor: "transparent",
-  width: isIPhoneXFamily() ? "60%" : "55%",
+  width: "55%",
 });
 
 const _container = (

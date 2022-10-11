@@ -1,194 +1,92 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Text, View, FlatList, Dimensions } from "react-native";
-import Androw from "react-native-androw";
-import MapView, { Marker } from "react-native-maps";
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  View,
+} from "react-native";
+
 import RiderCard from "components/home/RiderCard";
-import { isIPhoneXFamily } from "@freakycoder/react-native-helpers";
+import {} from "react-native";
+import MapCardView from "@paraboly/react-native-map-card-view";
 
-const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get("window");
+const dummyData = [
+  {
+    name: "Azamat Zhanisov",
+    source:
+      "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80",
+  },
+  {
+    name: "Ayo Ogunseinde",
+    source:
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3000&q=80",
+  },
+];
 
-const ASPECT_RATIO = ScreenWidth / ScreenHeight;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-const INITIAL_REGION = {
-  latitude: LATITUDE,
-  longitude: LONGITUDE,
-  latitudeDelta: LATITUDE_DELTA,
-  longitudeDelta: LONGITUDE_DELTA,
-};
-
-const MapCardView = (props) => {
-  const {
-    data,
-    width,
-    title,
-    height,
-    styles,
-    markers,
-    mapStyle,
-    markerLat,
-    markerLng,
-    titleStyle,
-    listHeight,
-    borderColor,
-    shadowStyle,
-    shadowColor,
-    borderLeftWidth,
-    backgroundColor,
-    mapInitialRegion,
-  } = props;
-
-  renderRiderCard = (list, index) => {
-    const { item } = list;
-    return (
-      <View key={index} style={{ marginTop: 3 }}>
-        <RiderCard name={item.name} source={item.source} {...props} />
-      </View>
-    );
-  };
-
+export const Riders = ({ navigation }) => {
   return (
-    <Androw style={shadowStyle || _shadowStyle(shadowColor)}>
-      <View
-        style={
-          styles ||
-          _container(
-            height,
-            width,
-            borderColor,
-            borderLeftWidth,
-            backgroundColor
-          )
-        }
-      >
-        <Androw style={_styles.mapContainer}>
-          <MapView
-            liteMode
-            initialRegion={mapInitialRegion}
-            style={mapStyle || _styles.mapStyle}
-          >
-            {markers || (
-              <Marker
-                coordinate={{ latitude: markerLat, longitude: markerLng }}
-              />
-            )}
-          </MapView>
-        </Androw>
-        <View style={_styles.listContainer}>
-          <Text style={titleStyle || _styles.titleStyle}>{title}</Text>
-          <View style={_styles.listContainerGlue}>
-            <FlatList
-              style={_listStyle(listHeight)}
-              renderItem={renderRiderCard}
-              keyExtractor={(item, index) => item.name}
-              data={data && data.length > 0 && data}
-            />
-          </View>
-        </View>
-      </View>
-    </Androw>
+    <ScrollView style={{ marginTop: 20 }}>
+      <SafeAreaView style={styles.container}>
+        <RiderCard
+          title={"James Corden"}
+          subTitle={"Devloper"}
+          profile={{
+            uri: "https://i2-prod.mirror.co.uk/incoming/article26827828.ece/ALTERNATES/s1200c/4_MAIN_CHP_280422SLUG_18300.jpg",
+          }}
+          icon={"forward"}
+          iconColor={"grey"}
+          navigation={navigation}
+        />
+
+        <RiderCard
+          title={"Tom Holland"}
+          subTitle={"Devloper"}
+          profile={{
+            uri: "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/2/2f/Tom_Holland.jpg/revision/latest?cb=20220213015022",
+          }}
+          icon={"forward"}
+          iconColor={"grey"}
+          navigation={navigation}
+        />
+
+        <RiderCard
+          title={"Zendaya"}
+          subTitle={"Devloper"}
+          profile={{
+            uri: "https://assets.teenvogue.com/photos/62ab3da8f40650219cbb86f8/master/pass/GettyImages-1401828538.jpg",
+          }}
+          icon={"forward"}
+          iconColor={"grey"}
+          navigation={navigation}
+        />
+        <MapCardView
+          data={dummyData}
+          title="Hello"
+          colors={["red", "black", "gray"]}
+        />
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
-MapCardView.propTypes = {
-  title: PropTypes.string,
-  shadowColor: PropTypes.string,
-  borderColor: PropTypes.string,
-  borderLeftWidth: PropTypes.number,
-  backgroundColor: PropTypes.string,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  listHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
-MapCardView.defaultProps = {
-  height: 150,
-  listHeight: 85,
-  shadowColor: "#ccc",
-  borderLeftWidth: 5,
-  markerLat: LATITUDE,
-  markerLng: LONGITUDE,
-  title: "Testimonial",
-  borderColor: "#f54242",
-  backgroundColor: "#fff",
-  width: ScreenWidth * 0.9,
-  mapInitialRegion: INITIAL_REGION,
-};
-
-export const _shadowStyle = (shadowColor) => ({
-  shadowColor,
-  shadowOpacity: 0.7,
-  shadowRadius: 10,
-  shadowOffset: {
-    width: 0,
-    height: 0,
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 16,
+    alignItems: "center", // Centered horizontally
   },
-  alignItems: "center",
-  justifyContent: "center",
-});
-
-const _listStyle = (height) => ({
-  height,
-  borderWidth: 0,
-  borderColor: "transparent",
-  width: isIPhoneXFamily() ? "60%" : "55%",
-});
-
-const _container = (
-  height,
-  width,
-  borderColor,
-  borderLeftWidth,
-  backgroundColor
-) => ({
-  width,
-  height,
-  borderColor,
-  borderLeftWidth,
-  backgroundColor,
-  borderRadius: 24,
-  flexDirection: "row",
-});
-
-const _styles = StyleSheet.create({
-  mapContainer: {
-    marginLeft: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#ccc",
-    shadowOpacity: 0.7,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "500",
+    color: "white",
   },
-  mapStyle: {
-    width: 125,
-    height: 125,
-    borderRadius: 24,
-  },
-  listContainer: {
-    marginTop: 12,
-    marginBottom: 12,
-    marginLeft: 20,
-    marginRight: 12,
-  },
-  listContainerGlue: {
-    marginTop: 3,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  titleStyle: {
-    fontSize: 18,
-    marginLeft: 5,
-    fontWeight: "600",
+  card: {
+    height: 180,
+    width: "100%",
+    backgroundColor: "#f18484",
+    justifyContent: "center", //Centered vertically
+    alignItems: "center", // Centered horizontally
+    margin: 5,
   },
 });
-
-export default MapCardView;
