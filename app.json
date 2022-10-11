@@ -3,11 +3,10 @@
     "name": "MyReactNative",
     "slug": "MyReactNative",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
-      "permissions": ["ACCESS_FINE_LOCATION"]
+      "permissions": ["ACCESS_FINE_LOCATION"],
+      "softwareKeyboardLayoutMode": "pan"
     }
   },
   "name": "MyReactNative"
