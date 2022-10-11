@@ -1,18 +1,19 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   ImageBackground,
   Image,
-  Button,
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { AuthenticationContext } from "routes/authentication-context";
+import { CommonActions } from "@react-navigation/native";
 
-export const Account = () => {
+export const Account = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ImageBackground
@@ -80,6 +81,35 @@ export const Account = () => {
             />
           </View>
         </View>
+
+        <AuthenticationContext.Consumer>
+          {({ signOut }) => (
+            <TouchableOpacity
+              onPress={async () => {
+                await AsyncStorage.removeItem("token");
+                await AsyncStorage.removeItem("userID");
+                signOut();
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "Start" }],
+                  })
+                );
+              }}
+            >
+              <View style={styles.drawLine} />
+              <View style={styles.optionsObject}>
+                <Text style={styles.options}>Log Out</Text>
+                <MaterialCommunityIcons
+                  style={styles.icons}
+                  name="logout"
+                  color={"darkred"}
+                  size={24}
+                />
+              </View>
+            </TouchableOpacity>
+          )}
+        </AuthenticationContext.Consumer>
       </View>
     </View>
   );

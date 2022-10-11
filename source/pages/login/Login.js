@@ -11,6 +11,7 @@ import {
 } from "components";
 import { theme } from "core";
 import { emailValidator, passwordValidator } from "utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -61,7 +62,15 @@ export const Login = ({ navigation }) => {
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
-      <Button mode="contained" onPress={onLoginPressed}>
+      {/* <Button mode="contained" onPress={onLoginPressed}> */}
+      <Button
+        mode="contained"
+        onPress={async () => {
+          await AsyncStorage.setItem("token", "123");
+          await AsyncStorage.setItem("userID", "1");
+          navigation.navigate("Home");
+        }}
+      >
         Login
       </Button>
       <View style={styles.row}>

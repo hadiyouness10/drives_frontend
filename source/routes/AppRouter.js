@@ -18,7 +18,9 @@ import {
 } from "pages";
 import { useUserDetailsQuery } from "api/queries/user-details-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AuthenticationContext } from "./authentication-context";
+import { View } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -64,30 +66,41 @@ const AccountNavigator = () => {
 };
 
 export const LoginNavigator = () => {
-  // const { data } = useUserDetailsQuery(1);
-  const getUserDetails = async () => {
-    const userID = parseInt(await AsyncStorage.getItem("userID"));
-    if (!userID) await AsyncStorage.setItem("userID", "1");
+  const [authenticationToken, setAuthenticationToken] = useState(undefined);
+
+  const getToken = async () => {
+    const token = parseInt(await AsyncStorage.getItem("token"));
+    if (!token) setAuthenticationToken(null);
+    else setAuthenticationToken(token);
   };
 
   useEffect(() => {
-    getUserDetails();
+    getToken();
   }, []);
 
-  return (
+  return typeof authenticationToken === "undefined" ? (
+    <View />
+  ) : (
     <Provider theme={theme}>
-      <Stack.Navigator
-        initialRouteName={isLoggedIn ? "Home" : "Start"}
-        screenOptions={{
-          headerShown: false,
+      <AuthenticationContext.Provider
+        value={{
+          token: authenticationToken,
+          signOut: () => setAuthenticationToken(null),
         }}
       >
-        <Stack.Screen name="Start" component={Start} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="ResetPasswordScreen" component={ResetPassword} />
-        <Stack.Screen name="Home" component={AppRouter} />
-      </Stack.Navigator>
+        <Stack.Navigator
+          initialRouteName={authenticationToken ? "Home" : "Start"}
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Start" component={Start} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="ResetPasswordScreen" component={ResetPassword} />
+          <Stack.Screen name="Home" component={AppRouter} />
+        </Stack.Navigator>
+      </AuthenticationContext.Provider>
     </Provider>
   );
 };
