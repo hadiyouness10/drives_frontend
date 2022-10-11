@@ -1,125 +1,49 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Text,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import { scale, verticalScale } from "react-native-size-matters";
-import Icon from "react-native-vector-icons/FontAwesome";
+import PropTypes from "prop-types";
+import { Text, View, Image, StyleSheet } from "react-native";
+import UserAvatar from "react-native-user-avatar";
 
 const RiderCard = (props) => {
-  let screenWidth = Dimensions.get("window").width;
-  let screenHeight = Dimensions.get("window").height;
-
+  const { name, source, size, colors, imageStyle, textStyle } = props;
   return (
-    <TouchableOpacity
-      style={[
-        styles.cardContainer,
-        {
-          backgroundColor: props.background ? props.background : "#fff",
-          width: screenWidth - scale(20),
-        },
-      ]}
-      onPress={() => props.navigation.push("Ride Details")}
-    >
-      <View
-        style={{
-          height: verticalScale(95),
-          marginRight: scale(10),
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            flex: 1,
-          }}
-        >
-          {props.profile ? (
-            <View
-              style={{
-                backgroundColor: "transparent",
-                flex: 1,
-                borderBottomLeftRadius: 12,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={props.profile}
-                style={{
-                  width: scale(props.width || 50),
-                  height: scale(props.height || 50),
-                }}
-                borderRadius={50}
-              />
-            </View>
-          ) : null}
-          <View
-            style={{
-              backgroundColor: "transparent",
-              flex: props.profile ? 2.5 : 5,
-              justifyContent: "center",
-              marginLeft: 3,
-            }}
-          >
-            <Text
-              style={{
-                color: "black",
-                fontSize: scale(15),
-                margin: 3,
-              }}
-            >
-              {props.title}
-            </Text>
-            {props.background ? null : (
-              <Text
-                style={{ color: "#adb3bf", fontSize: scale(11), margin: 3 }}
-              >
-                {props.subTitle}
-              </Text>
-            )}
-          </View>
-          <View
-            style={{
-              flex: 1,
-              borderBottomRightRadius: 12,
-              justifyContent: "center",
-              alignItems: "flex-end",
-            }}
-          >
-            {props.icon ? (
-              <Icon
-                name={props.icon}
-                color={props.iconColor}
-                size={scale(20)}
-              />
-            ) : null}
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <UserAvatar
+        size={size}
+        name={name}
+        src={source}
+        colors={colors}
+        style={imageStyle || styles.imageStyle}
+      />
+      <Text numberOfLines={1} style={textStyle || styles.textStyle}>
+        {name}
+      </Text>
+    </View>
   );
 };
 
+RiderCard.propTypes = {
+  size: PropTypes.string,
+  colors: PropTypes.array,
+};
+
+RiderCard.defaultProps = {
+  size: "30",
+  colors: ["#b888a0", "#ccc", "#e36259", "#ccaabb", "#b888a0"],
+};
+
 const styles = StyleSheet.create({
-  cardContainer: {
-    margin: scale(10),
-    alignSelf: "center",
-    borderRadius: 12,
-    elevation: 2,
-    flexDirection: "column",
-    shadowColor: "#000",
-    shadowOpacity: 0.16,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 1,
-      width: 0,
-    },
-    height: 120,
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  imageStyle: {
+    width: 30,
+    height: 30,
+  },
+  textStyle: {
+    marginLeft: 8,
+    color: "#757575",
   },
 });
-
 export default RiderCard;

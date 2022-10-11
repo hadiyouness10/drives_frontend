@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Text, View, FlatList, Dimensions } from "react-native";
+import { Text, View, FlatList, Dimensions, StyleSheet } from "react-native";
 import Androw from "react-native-androw";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
