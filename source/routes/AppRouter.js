@@ -16,6 +16,9 @@ import {
   Account,
   Riders,
 } from "pages";
+import { useUserDetailsQuery } from "api/queries/user-details-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -61,6 +64,16 @@ const AccountNavigator = () => {
 };
 
 export const LoginNavigator = () => {
+  // const { data } = useUserDetailsQuery(1);
+  const getUserDetails = async () => {
+    const userID = parseInt(await AsyncStorage.getItem("userID"));
+    if (!userID) await AsyncStorage.setItem("userID", "1");
+  };
+
+  useEffect(() => {
+    getUserDetails();
+  }, []);
+
   return (
     <Provider theme={theme}>
       <Stack.Navigator

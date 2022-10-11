@@ -5,9 +5,9 @@ const getPossibleRoutes = (start_id, destination_id) => async () => {
   if (start_id === "" || destination_id === "") return undefined;
   return await client
     .get(
-      `/possibleRoutes?start_id=${start_id}&destination_id=${destination_id}`
+      `/locations/possibleRoutes?start_id=${start_id}&destination_id=${destination_id}`
     )
-    .then((res) => res.data.result)
+    .then((res) => res.data)
     .catch((error) => {});
 };
 
