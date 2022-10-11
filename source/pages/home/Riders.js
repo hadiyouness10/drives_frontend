@@ -9,7 +9,7 @@ import {
 
 import RiderCard from "components/home/RiderCard";
 import {} from "react-native";
-import MapCardView from "@paraboly/react-native-map-card-view";
+import MapCardView from "components/home/MapCardView";
 
 const dummyData = [
   {
@@ -28,37 +28,10 @@ export const Riders = ({ navigation }) => {
   return (
     <ScrollView style={{ marginTop: 20 }}>
       <SafeAreaView style={styles.container}>
-        <RiderCard
-          title={"James Corden"}
-          subTitle={"Devloper"}
-          profile={{
-            uri: "https://i2-prod.mirror.co.uk/incoming/article26827828.ece/ALTERNATES/s1200c/4_MAIN_CHP_280422SLUG_18300.jpg",
-          }}
-          icon={"forward"}
-          iconColor={"grey"}
-          navigation={navigation}
-        />
-
-        <RiderCard
-          title={"Tom Holland"}
-          subTitle={"Devloper"}
-          profile={{
-            uri: "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/2/2f/Tom_Holland.jpg/revision/latest?cb=20220213015022",
-          }}
-          icon={"forward"}
-          iconColor={"grey"}
-          navigation={navigation}
-        />
-
-        <RiderCard
-          title={"Zendaya"}
-          subTitle={"Devloper"}
-          profile={{
-            uri: "https://assets.teenvogue.com/photos/62ab3da8f40650219cbb86f8/master/pass/GettyImages-1401828538.jpg",
-          }}
-          icon={"forward"}
-          iconColor={"grey"}
-          navigation={navigation}
+        <MapCardView
+          data={dummyData}
+          title="Hello"
+          colors={["red", "black", "gray"]}
         />
         <MapCardView
           data={dummyData}
