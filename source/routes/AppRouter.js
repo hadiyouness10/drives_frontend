@@ -16,7 +16,6 @@ import {
   Account,
   Riders,
 } from "pages";
-import { useUserDetailsQuery } from "api/queries/user-details-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { AuthenticationContext } from "./authentication-context";
@@ -24,7 +23,6 @@ import { View } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-const isLoggedIn = true;
 
 export const AppRouter = () => {
   return (
@@ -66,30 +64,32 @@ const AccountNavigator = () => {
 };
 
 export const LoginNavigator = () => {
-  const [authenticationToken, setAuthenticationToken] = useState(undefined);
+  const [authentication, setAuthentication] = useState(undefined);
 
   const getToken = async () => {
-    const token = parseInt(await AsyncStorage.getItem("token"));
-    if (!token) setAuthenticationToken(null);
-    else setAuthenticationToken(token);
+    const storedAuthentication = await AsyncStorage.getItem("authentication");
+    if (!storedAuthentication) setAuthentication(null);
+    else setAuthentication(JSON.parse(storedAuthentication));
   };
 
   useEffect(() => {
     getToken();
   }, []);
 
-  return typeof authenticationToken === "undefined" ? (
+  return typeof authentication === "undefined" ? (
     <View />
   ) : (
     <Provider theme={theme}>
       <AuthenticationContext.Provider
         value={{
-          token: authenticationToken,
-          signOut: () => setAuthenticationToken(null),
+          token: authentication?.token,
+          userID: authentication?.userID,
+          signIn: (token, userID) => setAuthentication({ token, userID }),
+          signOut: () => setAuthentication(null),
         }}
       >
         <Stack.Navigator
-          initialRouteName={authenticationToken ? "Home" : "Start"}
+          initialRouteName={authentication ? "Home" : "Start"}
           screenOptions={{
             headerShown: false,
           }}

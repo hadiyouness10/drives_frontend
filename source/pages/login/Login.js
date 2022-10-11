@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import {
@@ -12,10 +12,13 @@ import {
 import { theme } from "core";
 import { emailValidator, passwordValidator } from "utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthenticationContext } from "routes/authentication-context";
 
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  const { signIn } = useContext(AuthenticationContext);
 
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value);
@@ -66,8 +69,14 @@ export const Login = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={async () => {
-          await AsyncStorage.setItem("token", "123");
-          await AsyncStorage.setItem("userID", "1");
+          await AsyncStorage.setItem(
+            "authentication",
+            JSON.stringify({
+              token: "123",
+              userID: 1,
+            })
+          );
+          signIn("123", 1);
           navigation.navigate("Home");
         }}
       >

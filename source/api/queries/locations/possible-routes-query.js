@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import client from "../client";
+import client from "api/client";
 
 const getPossibleRoutes = (start_id, destination_id) => async () => {
   if (start_id === "" || destination_id === "") return undefined;

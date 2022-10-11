@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import client from "../client";
+import client from "api/client";
 
 const getUserDetails = (userID) => async () => {
   if (!userID) return undefined;

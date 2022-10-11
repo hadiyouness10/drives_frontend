@@ -1,8 +1,11 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
+import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
+import { AuthenticationContext } from "routes/authentication-context";
+import { dateTimeFormatter } from "utils";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -22,8 +25,21 @@ const DetailView = ({ label, value, icon }) => {
   );
 };
 export const RideDetails = ({ navigation }) => {
-  const mapRef = useRef(null);
+  const { userID } = useContext(AuthenticationContext);
+  const { data: rideDetails } = useRideDetailsQuery(userID);
+  const { data: userDetails } = useUserDetailsQuery(userID);
 
+  const {
+    departureLocation = "",
+    destinationLocation = "",
+    dateOfDeparture = null,
+  } = rideDetails ?? {};
+
+  const { firstName = "", lastName = "", rating = "" } = userDetails ?? {};
+
+  const date = new Date(dateOfDeparture);
+
+  const mapRef = useRef(null);
   return (
     <View style={{ flex: 1 }}>
       <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
@@ -33,8 +49,8 @@ export const RideDetails = ({ navigation }) => {
         >
           <View style={styles.profilePic}></View>
           <View style={styles.driverDetails}>
-            <Text style={{ fontSize: 34 }}>John Doe</Text>
-            <Text style={{ fontSize: 16 }}>Rating: 4.5/5</Text>
+            <Text style={{ fontSize: 34 }}>{`${firstName} ${lastName}`}</Text>
+            <Text style={{ fontSize: 16 }}>{`Rating: ${rating}/5`}</Text>
             <Text style={{ fontSize: 16 }}>Previous Rides: 3</Text>
           </View>
           <SimpleLineIcons
@@ -46,15 +62,26 @@ export const RideDetails = ({ navigation }) => {
         </TouchableOpacity>
         <DetailView
           label="Date of Departure"
-          value="Monday, July 3rd at 7:55 AM"
+          value={
+            dateOfDeparture
+              ? `${dateTimeFormatter(date, "date")} at ${dateTimeFormatter(
+                  date,
+                  "time"
+                )}`
+              : ""
+          }
           icon="time-outline"
         />
         <DetailView
           label="Starting Location"
-          value="Mazraa, Beirut"
+          value={departureLocation}
           icon="location-outline"
         />
-        <DetailView label="Destination" value="LAU Byblos" icon="location" />
+        <DetailView
+          label="Destination"
+          value={destinationLocation}
+          icon="location"
+        />
 
         <Button title="Request Pickup" />
       </View>
