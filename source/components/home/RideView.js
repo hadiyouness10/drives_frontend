@@ -4,6 +4,7 @@ import { Text, View, FlatList, Dimensions, StyleSheet } from "react-native";
 import Androw from "react-native-androw";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
+import Icon from "react-native-vector-icons/Entypo";
 
 const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get("window");
 
@@ -20,11 +21,11 @@ const INITIAL_REGION = {
   longitudeDelta: LONGITUDE_DELTA,
 };
 
-const MapCardView = (props) => {
+const RideView = (props) => {
   const {
-    data,
     width,
-    title,
+    riderInfo,
+    rideInfo,
     height,
     styles,
     markers,
@@ -40,15 +41,6 @@ const MapCardView = (props) => {
     backgroundColor,
     mapInitialRegion,
   } = props;
-
-  renderRiderCard = (list, index) => {
-    const { item } = list;
-    return (
-      <View key={index} style={{ marginTop: 3 }}>
-        <RiderCard name={item.name} source={item.source} {...props} />
-      </View>
-    );
-  };
 
   return (
     <Androw style={shadowStyle || _shadowStyle(shadowColor)}>
@@ -77,15 +69,33 @@ const MapCardView = (props) => {
             )}
           </MapView>
         </Androw>
+
         <View style={_styles.listContainer}>
-          <Text style={titleStyle || _styles.titleStyle}>{title}</Text>
-          <View style={_styles.listContainerGlue}>
-            <FlatList
-              style={_listStyle(listHeight)}
-              renderItem={renderRiderCard}
-              keyExtractor={(item, index) => item.name}
-              data={data && data.length > 0 && data}
+          <View style={_styles.riderinfoStyle}>
+            <RiderCard
+              name={riderInfo.name}
+              source={riderInfo.source}
+              {...props}
             />
+          </View>
+
+          <View style={_styles.listContainer}>
+            <View style={_styles.listContainerGlue}>
+              <Icon
+                name="user"
+                size="20%"
+                color="#404040"
+                style={{ marginBottom: 10 }}
+              />
+              <Text style={titleStyle || _styles.titleStyle}>
+                {rideInfo.nbofRiders}{" "}
+              </Text>
+            </View>
+            <View style={_styles.listContainerGlue}>
+              <Text style={titleStyle || _styles.titleStyle}>
+                {rideInfo.price} $
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -93,7 +103,7 @@ const MapCardView = (props) => {
   );
 };
 
-MapCardView.propTypes = {
+RideView.propTypes = {
   title: PropTypes.string,
   shadowColor: PropTypes.string,
   borderColor: PropTypes.string,
@@ -104,7 +114,7 @@ MapCardView.propTypes = {
   listHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
-MapCardView.defaultProps = {
+RideView.defaultProps = {
   height: 150,
   listHeight: 85,
   shadowColor: "#ccc",
@@ -128,6 +138,7 @@ export const _shadowStyle = (shadowColor) => ({
   },
   alignItems: "center",
   justifyContent: "center",
+  marginBottom: 10,
 });
 
 const _listStyle = (height) => ({
@@ -176,12 +187,16 @@ const _styles = StyleSheet.create({
     marginBottom: 12,
     marginLeft: 20,
     marginRight: 12,
+    flexShrink: 1,
   },
   listContainerGlue: {
     marginTop: 3,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
+  },
+  riderinfoStyle: {
+    marginVertical: 4,
   },
   titleStyle: {
     fontSize: 18,
@@ -190,4 +205,4 @@ const _styles = StyleSheet.create({
   },
 });
 
-export default MapCardView;
+export default RideView;

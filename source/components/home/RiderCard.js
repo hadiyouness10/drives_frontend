@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Text, View, Image, StyleSheet } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import UserAvatar from "react-native-user-avatar";
 
 const RiderCard = (props) => {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    marginHorizontal: -10,
   },
   imageStyle: {
     width: 30,
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   textStyle: {
     marginLeft: 8,
     color: "#757575",
+    width: "70%",
   },
 });
 export default RiderCard;

@@ -9,18 +9,35 @@ import {
 
 import RiderCard from "components/home/RiderCard";
 import {} from "react-native";
-import MapCardView from "components/home/MapCardView";
+import RideView from "components/home/RideView";
 
-const dummyData = [
+const riderdummydata = [
   {
-    name: "Azamat Zhanisov",
+    name: "Sara Al Arab",
     source:
       "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80",
   },
   {
-    name: "Ayo Ogunseinde",
+    name: "Khaled Jalloul",
     source:
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3000&q=80",
+      "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80",
+  },
+];
+
+const ridedummydata = [
+  {
+    price: 20,
+    nbofRiders: 3,
+    destination: "LAU",
+    departure: "Bchamoun",
+    date: "10/15/2020 at 12:00 P.M.",
+  },
+  {
+    price: 18,
+    nbofRiders: 4,
+    destination: "LAU",
+    departure: "Beirut",
+    date: "10/15/2020 at 10:00 A.M.",
   },
 ];
 
@@ -28,15 +45,15 @@ export const Riders = ({ navigation }) => {
   return (
     <ScrollView style={{ marginTop: 20 }}>
       <SafeAreaView style={styles.container}>
-        <MapCardView
-          data={dummyData}
-          title="Hello"
-          colors={["red", "black", "gray"]}
+        <RideView
+          riderInfo={riderdummydata[0]}
+          rideInfo={ridedummydata[0]}
+          colors={["blue", "black", "gray"]}
         />
-        <MapCardView
-          data={dummyData}
-          title="Hello"
-          colors={["red", "black", "gray"]}
+        <RideView
+          riderInfo={riderdummydata[1]}
+          rideInfo={ridedummydata[1]}
+          colors={["blue", "black", "gray"]}
         />
       </SafeAreaView>
     </ScrollView>
