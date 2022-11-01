@@ -15,6 +15,7 @@ import {
   RideDetails,
   Account,
   Riders,
+  YourRides,
 } from "pages";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -29,6 +30,7 @@ export const AppRouter = () => {
     <Tab.Navigator screenOptions={tabScreenOptions}>
       <Tab.Screen name="Join Ride" component={JoinRideNavigator} />
       <Tab.Screen name="Start Ride" component={StartRideNavigator} />
+      <Tab.Screen name="Your Rides" component={YourRidesNavigator} />
       <Tab.Screen name="Account" component={AccountNavigator} />
     </Tab.Navigator>
   );
@@ -51,6 +53,14 @@ const StartRideNavigator = () => {
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={StartRide} />
       <Stack.Screen name="Drop Pin (startRide)" component={DropPin} />
+    </Stack.Navigator>
+  );
+};
+
+const YourRidesNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={stackScreenOptions}>
+      <Stack.Screen name="/" component={YourRides} />
     </Stack.Navigator>
   );
 };
