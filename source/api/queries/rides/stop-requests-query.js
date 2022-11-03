@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 import client from "api/client";
 
 const getStopRequests = (queryParams) => async () => {
+  // Can be rideID or studentID
   const params = Object.keys(queryParams).map(
     (param) => `${param}=${queryParams[param]}`
   );
