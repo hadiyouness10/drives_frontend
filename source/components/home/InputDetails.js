@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  ImageBackground,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { dateTimeFormatter } from "utils";
@@ -67,17 +68,32 @@ export const InputDetails = ({
 
   return (
     <View style={[styles.mainDiv]}>
-      {dateTimePickerShown && Platform.OS === "android" && (
-        <DateTimePicker
-          value={date}
-          mode={dateTimePickerShown}
-          onChange={(e, selectedDate) => {
-            setDate(selectedDate);
-            setDateTimePickerShown(null);
+      <ImageBackground
+        source={require("../../assets/map_background.png")}
+        style={styles.background}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "800",
+            color: "white",
+            marginBottom: 20,
           }}
-        />
-      )}
-      <WrapperView icon="map" label="Choose Location">
+        >
+          Where to, Hadi?
+        </Text>
+      </ImageBackground>
+      <View style={styles.infoSection}>
+        {dateTimePickerShown && Platform.OS === "android" && (
+          <DateTimePicker
+            value={date}
+            mode={dateTimePickerShown}
+            onChange={(e, selectedDate) => {
+              setDate(selectedDate);
+              setDateTimePickerShown(null);
+            }}
+          />
+        )}
         <InputLocation
           position="start"
           setLocationMarker={setStartLocationMarker}
@@ -93,9 +109,7 @@ export const InputDetails = ({
           setLocationId={setDestinationLocationId}
           {...inputLocationProps}
         />
-      </WrapperView>
 
-      <WrapperView icon="clock" label="Time of Departure">
         {Platform.OS === "ios" ? (
           <View
             style={{
@@ -155,9 +169,7 @@ export const InputDetails = ({
             </TouchableOpacity>
           </View>
         )}
-      </WrapperView>
 
-      <WrapperView icon="user" label="Number of Seats">
         <TouchableOpacity
           style={styles.numberOfSeats}
           onPress={() => numberOfSeatsRef.current.focus()}
@@ -176,7 +188,7 @@ export const InputDetails = ({
             <Picker.Item label="4" value="4" />
           </Picker>
         </TouchableOpacity>
-      </WrapperView>
+      </View>
     </View>
   );
 };
@@ -184,10 +196,15 @@ export const InputDetails = ({
 const styles = StyleSheet.create({
   mainDiv: {
     flexGrow: 1,
-    marginTop: 30,
-    marginHorizontal: 15,
     display: "flex",
     justifyContent: "space-between",
+  },
+  infoSection: {
+    // marginHorizontal: 15,
+    paddingTop: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    marginTop: -10,
   },
   wrapperViewDiv: {
     padding: 10,
@@ -223,5 +240,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
+  },
+  background: {
+    height: 200,
+    width: "100%",
+    flexDirection: "column",
+    flexGrow: 1,
+    justifyContent: "flex-end",
   },
 });

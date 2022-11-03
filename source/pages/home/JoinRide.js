@@ -28,10 +28,7 @@ export const JoinRide = ({ navigation }) => {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/map_background.png")}
-      style={styles.mainDiv}
-    >
+    <View style={styles.mainDiv}>
       <View>
         <InputDetails type="joinRide" {...inputDetailsProps} />
       </View>
@@ -51,7 +48,7 @@ export const JoinRide = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
