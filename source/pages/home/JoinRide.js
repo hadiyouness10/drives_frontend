@@ -32,20 +32,14 @@ export const JoinRide = ({ navigation }) => {
       <View>
         <InputDetails type="joinRide" {...inputDetailsProps} />
       </View>
-      <View style={[styles.ridersListButtonView]} pointerEvents="auto">
+      <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
         <TouchableOpacity
           style={styles.ridersListButton}
           onPress={() => navigation.push("Riders")}
         >
-          <Text style={{ color: "rgb(0, 125, 200)", fontSize: 20 }}>
-            View Available Drivers
+          <Text style={{ color: "#595959", fontSize: 20 }}>
+            Search For Drivers
           </Text>
-          <Icon
-            name={"search"}
-            size={30}
-            color="#404040"
-            style={{ marginLeft: "auto" }}
-          />
         </TouchableOpacity>
       </View>
     </View>
@@ -68,13 +62,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "white",
-    borderTopRightRadius: 100,
-    borderBottomRightRadius: 100,
-    borderWidth: 1,
+    backgroundColor: "#ccf2ff",
+    // borderTopRightRadius: 100,
+    // borderBottomRightRadius: 100,
     borderColor: "grey",
-    marginHorizontal: 15,
-    paddingHorizontal: 15,
     flexDirection: "row",
+    borderRadius: 10,
   },
 });

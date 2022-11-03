@@ -69,7 +69,7 @@ export const InputDetails = ({
   return (
     <View style={[styles.mainDiv]}>
       <ImageBackground
-        source={require("../../assets/map_background.png")}
+        source={require("../../assets/carpooling_logo.jpg")}
         style={styles.background}
       >
         <Text
@@ -84,110 +84,137 @@ export const InputDetails = ({
         </Text>
       </ImageBackground>
       <View style={styles.infoSection}>
-        {dateTimePickerShown && Platform.OS === "android" && (
-          <DateTimePicker
-            value={date}
-            mode={dateTimePickerShown}
-            onChange={(e, selectedDate) => {
-              setDate(selectedDate);
-              setDateTimePickerShown(null);
-            }}
+        <View style={{ marginLeft: 10, marginRight: 10 }}>
+          {dateTimePickerShown && Platform.OS === "android" && (
+            <DateTimePicker
+              value={date}
+              mode={dateTimePickerShown}
+              onChange={(e, selectedDate) => {
+                setDate(selectedDate);
+                setDateTimePickerShown(null);
+              }}
+            />
+          )}
+          <InputLocation
+            position="start"
+            setLocationMarker={setStartLocationMarker}
+            locationId={startLocationId}
+            setLocationId={setStartLocationId}
+            {...inputLocationProps}
           />
-        )}
-        <InputLocation
-          position="start"
-          setLocationMarker={setStartLocationMarker}
-          locationId={startLocationId}
-          setLocationId={setStartLocationId}
-          {...inputLocationProps}
-        />
 
-        <InputLocation
-          position="destination"
-          setLocationMarker={setDestinationMarker}
-          locationId={destinationLocationId}
-          setLocationId={setDestinationLocationId}
-          {...inputLocationProps}
-        />
+          <InputLocation
+            position="destination"
+            setLocationMarker={setDestinationMarker}
+            locationId={destinationLocationId}
+            setLocationId={setDestinationLocationId}
+            {...inputLocationProps}
+          />
 
-        {Platform.OS === "ios" ? (
-          <View
-            style={{
-              height: 50,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 20,
-            }}
-          >
-            <DateTimePicker
-              style={{ width: 150 }}
-              themeVariant="light"
-              value={date}
-              mode={"date"}
-              onChange={(e, selectedDate) => {
-                setDate(selectedDate);
-                setDateTimePickerShown(null);
+          {Platform.OS === "ios" ? (
+            <View style={[{ flexDirection: "row", alignItems: "center" }]}>
+              <View style={[{ flexDirection: "row" }]}>
+                <Text
+                  style={{
+                    fontWeight: "400",
+                    fontSize: 18,
+                    marginTop: 5,
+                    marginLeft: 5,
+                  }}
+                >
+                  Date & Time
+                </Text>
+                <DateTimePicker
+                  style={{ width: 120, marginLeft: 30 }}
+                  themeVariant="light"
+                  value={date}
+                  mode={"date"}
+                  onChange={(e, selectedDate) => {
+                    setDate(selectedDate);
+                    setDateTimePickerShown(null);
+                  }}
+                />
+              </View>
+              <View
+                style={[
+                  {
+                    justifyContent: "space-evenly",
+                    marginVertical: 10,
+                    marginRight: 100,
+                  },
+                ]}
+              >
+                <DateTimePicker
+                  style={{ width: 100 }}
+                  themeVariant="light"
+                  value={date}
+                  mode={"time"}
+                  onChange={(e, selectedDate) => {
+                    setDate(selectedDate);
+                    setDateTimePickerShown(null);
+                  }}
+                />
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                height: 50,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 20,
               }}
-            />
-
-            <DateTimePicker
-              style={{ width: 150 }}
-              themeVariant="light"
-              value={date}
-              mode={"time"}
-              onChange={(e, selectedDate) => {
-                setDate(selectedDate);
-                setDateTimePickerShown(null);
-              }}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              height: 50,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 20,
-            }}
-          >
-            <TouchableOpacity
-              style={[styles.buttonDiv, { marginRight: 10 }]}
-              onPress={() => setDateTimePickerShown("date")}
             >
-              <Text style={styles.buttonText}>
-                {dateTimeFormatter(date, "date")}
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.buttonDiv, { marginRight: 10 }]}
+                onPress={() => setDateTimePickerShown("date")}
+              >
+                <Text style={styles.buttonText}>
+                  {dateTimeFormatter(date, "date")}
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.buttonDiv}
-              onPress={() => setDateTimePickerShown("time")}
+              <TouchableOpacity
+                style={styles.buttonDiv}
+                onPress={() => setDateTimePickerShown("time")}
+              >
+                <Text style={styles.buttonText}>
+                  {dateTimeFormatter(date, "time")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          <View style={[{ flexDirection: "row", alignItems: "center" }]}>
+            <View style={[{ flex: 1, flexDirection: "row" }]}>
+              <Text style={{ fontSize: 20, fontWeight: "400" }}>
+                Number Of Seats
+              </Text>
+            </View>
+            <View
+              style={[{ justifyContent: "space-evenly", marginVertical: 10 }]}
             >
-              <Text style={styles.buttonText}>
-                {dateTimeFormatter(date, "time")}
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.numberOfSeats}
+                onPress={() => numberOfSeatsRef.current.focus()}
+              >
+                <Picker
+                  ref={numberOfSeatsRef}
+                  style={{ width: 160 }}
+                  selectedValue={numberOfSeats.toString()}
+                  onValueChange={(itemValue, itemIndex) => {
+                    setNumberOfSeats(parseInt(itemValue));
+                  }}
+                  itemStyle={{ height: 50 }}
+                >
+                  <Picker.Item label="1" value="1" />
+                  <Picker.Item label="2" value="2" />
+                  <Picker.Item label="3" value="3" />
+                  <Picker.Item label="4" value="4" />
+                </Picker>
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
-
-        <TouchableOpacity
-          style={styles.numberOfSeats}
-          onPress={() => numberOfSeatsRef.current.focus()}
-        >
-          <Picker
-            ref={numberOfSeatsRef}
-            style={{ width: 100 }}
-            selectedValue={numberOfSeats.toString()}
-            onValueChange={(itemValue, itemIndex) => {
-              setNumberOfSeats(parseInt(itemValue));
-            }}
-          >
-            <Picker.Item label="1" value="1" />
-            <Picker.Item label="2" value="2" />
-            <Picker.Item label="3" value="3" />
-            <Picker.Item label="4" value="4" />
-          </Picker>
-        </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
