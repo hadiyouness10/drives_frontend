@@ -4,7 +4,14 @@ import { Text, View, StyleSheet } from "react-native";
 import UserAvatar from "react-native-user-avatar";
 
 const RiderCard = (props) => {
-  const { name, source, size, colors, imageStyle, textStyle } = props;
+  const {
+    name,
+    source = "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80",
+    size,
+    colors,
+    imageStyle,
+    textStyle,
+  } = props;
   return (
     <View style={styles.container}>
       <UserAvatar
@@ -34,6 +41,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 10,
   },
   imageStyle: {
     width: 30,

@@ -70,16 +70,7 @@ export const Login = ({ navigation }) => {
         mode="contained"
         onPress={async () => {
           // Login logic will get us the ID and name of the user
-          await AsyncStorage.setItem(
-            "authentication",
-            JSON.stringify({
-              token: "123",
-              userID: 1,
-              firstName: "User",
-              lastName: "Generic",
-            })
-          );
-          signIn("123", 1);
+          signIn("123", 1, "User", "Generic");
           navigation.navigate("Home");
         }}
       >

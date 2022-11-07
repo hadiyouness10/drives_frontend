@@ -91,8 +91,18 @@ export const LoginNavigator = () => {
           firstName: authentication?.firstName,
           lastName: authentication?.lastName,
 
-          signIn: (token, userID, firstName, lastName) =>
-            setAuthentication({ token, userID, firstName, lastName }),
+          signIn: async (token, userID, firstName, lastName) => {
+            await AsyncStorage.setItem(
+              "authentication",
+              JSON.stringify({
+                token: "123",
+                userID: 1,
+                firstName: "User",
+                lastName: "Generic",
+              })
+            );
+            setAuthentication({ token, userID, firstName, lastName });
+          },
           signOut: () => setAuthentication(null),
         }}
       >

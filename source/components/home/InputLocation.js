@@ -102,7 +102,6 @@ export const InputLocation = ({
 
         <TouchableOpacity
           onPress={() => {
-            console.log(type);
             navigation.push(`Drop Pin`, {
               locationMarkers,
               position,

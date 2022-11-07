@@ -24,7 +24,7 @@ const DetailView = ({ label, value, icon }) => {
   );
 };
 export const RideDetails = ({ route, navigation }) => {
-  const { rideID, driverID } = route?.params;
+  const { rideID, driverID, pageIndex } = route?.params;
   // const { userID } = useContext(AuthenticationContext);
   const { data: rideDetails } = useRideDetailsQuery(rideID);
   const { data: driverDetails } = useUserDetailsQuery(driverID);
@@ -46,7 +46,11 @@ export const RideDetails = ({ route, navigation }) => {
         <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
           <TouchableOpacity
             style={{ flexDirection: "row", marginBottom: 20 }}
-            onPress={() => navigation.push("Rider Details")}
+            onPress={() =>
+              navigation.push(
+                pageIndex == 0 ? "Rider Details" : "Rider Details (Your Rides)"
+              )
+            }
           >
             <View style={styles.profilePic}></View>
             <View style={styles.driverDetails}>
