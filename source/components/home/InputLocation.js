@@ -72,6 +72,7 @@ export const InputLocation = ({
   );
 
   const showSuggestions = isTyping && locationSuggestions?.length > 0;
+
   return (
     <View style={{ marginBottom: showSuggestions ? 0 : 15 }}>
       <View style={styles.input}>
@@ -100,12 +101,13 @@ export const InputLocation = ({
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.push(`Drop Pin (${type})`, {
+          onPress={() => {
+            console.log(type);
+            navigation.push(`Drop Pin`, {
               locationMarkers,
               position,
-            })
-          }
+            });
+          }}
           style={styles.dropPinIcon}
         >
           <Icon name="location-pin" size={30} color="#404040" />

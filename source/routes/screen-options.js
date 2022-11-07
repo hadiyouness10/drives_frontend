@@ -3,7 +3,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 export const tabScreenOptions = ({ route }) => ({
   tabBarIcon: ({ focused, color, size }) => {
-    if (route.name === "Join Ride") {
+    if (route.name === "New Ride") {
       return (
         <Icon
           name={focused ? "car-sport" : "car-sport-outline"}
@@ -11,10 +11,10 @@ export const tabScreenOptions = ({ route }) => ({
           color={color}
         />
       );
-    } else if (route.name === "Start Ride") {
+    } else if (route.name === "Your Rides") {
       return (
         <Icon
-          name={focused ? "create" : "create-outline"}
+          name={focused ? "ios-list" : "ios-list-outline"}
           size={size}
           color={color}
         />

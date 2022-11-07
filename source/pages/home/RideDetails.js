@@ -1,8 +1,10 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
+import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
+import { dateTimeFormatter } from "utils";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -21,46 +23,73 @@ const DetailView = ({ label, value, icon }) => {
     </View>
   );
 };
-export const RideDetails = ({ navigation }) => {
+export const RideDetails = ({ route, navigation }) => {
+  const { rideID, driverID } = route?.params;
+  // const { userID } = useContext(AuthenticationContext);
+  const { data: rideDetails } = useRideDetailsQuery(rideID);
+  const { data: driverDetails } = useUserDetailsQuery(driverID);
+
+  const {
+    departureLocation = "",
+    destinationLocation = "",
+    dateOfDeparture = null,
+  } = rideDetails ?? {};
+
+  const { firstName = "", lastName = "", rating = "" } = driverDetails ?? {};
+
+  const date = new Date(dateOfDeparture);
+
   const mapRef = useRef(null);
-
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
-        <TouchableOpacity
-          style={{ flexDirection: "row", marginBottom: 20 }}
-          onPress={() => navigation.push("Rider Details")}
-        >
-          <View style={styles.profilePic}></View>
-          <View style={styles.driverDetails}>
-            <Text style={{ fontSize: 34 }}>John Doe</Text>
-            <Text style={{ fontSize: 16 }}>Rating: 4.5/5</Text>
-            <Text style={{ fontSize: 16 }}>Previous Rides: 3</Text>
-          </View>
-          <SimpleLineIcons
-            name="arrow-right"
-            color="grey"
-            size={30}
-            style={{ marginLeft: "auto", alignSelf: "center" }}
+  if (rideID)
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
+          <TouchableOpacity
+            style={{ flexDirection: "row", marginBottom: 20 }}
+            onPress={() => navigation.push("Rider Details")}
+          >
+            <View style={styles.profilePic}></View>
+            <View style={styles.driverDetails}>
+              <Text style={{ fontSize: 34 }}>{`${firstName} ${lastName}`}</Text>
+              <Text style={{ fontSize: 16 }}>{`Rating: ${rating}/5`}</Text>
+              <Text style={{ fontSize: 16 }}>Previous Rides: 3</Text>
+            </View>
+            <SimpleLineIcons
+              name="arrow-right"
+              color="grey"
+              size={30}
+              style={{ marginLeft: "auto", alignSelf: "center" }}
+            />
+          </TouchableOpacity>
+          <DetailView
+            label="Date of Departure"
+            value={
+              dateOfDeparture
+                ? `${dateTimeFormatter(date, "date")} at ${dateTimeFormatter(
+                    date,
+                    "time"
+                  )}`
+                : ""
+            }
+            icon="time-outline"
           />
-        </TouchableOpacity>
-        <DetailView
-          label="Date of Departure"
-          value="Monday, July 3rd at 7:55 AM"
-          icon="time-outline"
-        />
-        <DetailView
-          label="Starting Location"
-          value="Mazraa, Beirut"
-          icon="location-outline"
-        />
-        <DetailView label="Destination" value="LAU Byblos" icon="location" />
+          <DetailView
+            label="Starting Location"
+            value={departureLocation}
+            icon="location-outline"
+          />
+          <DetailView
+            label="Destination"
+            value={destinationLocation}
+            icon="location"
+          />
 
-        <Button title="Request Pickup" />
+          <Button title="Request Pickup" />
+        </View>
+        <MapComponent mapRef={mapRef} />
       </View>
-      <MapComponent mapRef={mapRef} />
-    </View>
-  );
+    );
+  else return <View />;
 };
 
 const styles = StyleSheet.create({

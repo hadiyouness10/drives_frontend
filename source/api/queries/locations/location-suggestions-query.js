@@ -1,10 +1,11 @@
 import { useQuery } from "react-query";
-import client from "../client";
+import client from "api/client";
 
 const getLocationSuggestions = (searchText) => async () => {
+  if (!searchText) return [];
   return await client
-    .get(`/locationSuggestions/${searchText}`)
-    .then((res) => res.data.result)
+    .get(`/locations/suggestions/${searchText}`)
+    .then((res) => res.data)
     .catch((error) => {});
 };
 

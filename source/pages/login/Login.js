@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import {
@@ -11,10 +11,14 @@ import {
 } from "components";
 import { theme } from "core";
 import { emailValidator, passwordValidator } from "utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthenticationContext } from "routes/authentication-context";
 
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  const { signIn } = useContext(AuthenticationContext);
 
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value);
@@ -61,7 +65,24 @@ export const Login = ({ navigation }) => {
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
-      <Button mode="contained" onPress={onLoginPressed}>
+      {/* <Button mode="contained" onPress={onLoginPressed}> */}
+      <Button
+        mode="contained"
+        onPress={async () => {
+          // Login logic will get us the ID and name of the user
+          await AsyncStorage.setItem(
+            "authentication",
+            JSON.stringify({
+              token: "123",
+              userID: 1,
+              firstName: "User",
+              lastName: "Generic",
+            })
+          );
+          signIn("123", 1);
+          navigation.navigate("Home");
+        }}
+      >
         Login
       </Button>
       <View style={styles.row}>

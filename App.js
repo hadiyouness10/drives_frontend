@@ -17,7 +17,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
         <View style={{ flex: 1 }}>
-          <StatusBar style="dark-content" />
+          <StatusBar style="light" />
           <LoginNavigator />
         </View>
       </NavigationContainer>
