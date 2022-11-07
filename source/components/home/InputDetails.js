@@ -68,21 +68,6 @@ export const InputDetails = ({
 
   return (
     <View style={[styles.mainDiv]}>
-      <ImageBackground
-        source={require("../../assets/carpooling_logo.jpg")}
-        style={styles.background}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "800",
-            color: "white",
-            marginBottom: 20,
-          }}
-        >
-          Where to, Hadi?
-        </Text>
-      </ImageBackground>
       <View style={styles.infoSection}>
         <View style={{ marginLeft: 10, marginRight: 10 }}>
           {dateTimePickerShown && Platform.OS === "android" && (
@@ -230,8 +215,6 @@ const styles = StyleSheet.create({
     // marginHorizontal: 15,
     paddingTop: 20,
     backgroundColor: "white",
-    borderRadius: 10,
-    marginTop: -10,
   },
   wrapperViewDiv: {
     padding: 10,
@@ -267,12 +250,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
-  },
-  background: {
-    height: 200,
-    width: "100%",
-    flexDirection: "column",
-    flexGrow: 1,
-    justifyContent: "flex-end",
   },
 });

@@ -8,8 +8,7 @@ import {
   Login,
   Register,
   ResetPassword,
-  JoinRide,
-  StartRide,
+  NewRide,
   DropPin,
   RiderDetails,
   RideDetails,
@@ -28,31 +27,21 @@ const Stack = createStackNavigator();
 export const AppRouter = () => {
   return (
     <Tab.Navigator screenOptions={tabScreenOptions}>
-      <Tab.Screen name="Join Ride" component={JoinRideNavigator} />
-      <Tab.Screen name="Start Ride" component={StartRideNavigator} />
+      <Tab.Screen name="New Ride" component={NewRideNavigator} />
       <Tab.Screen name="Your Rides" component={YourRidesNavigator} />
       <Tab.Screen name="Account" component={AccountNavigator} />
     </Tab.Navigator>
   );
 };
 
-const JoinRideNavigator = () => {
+const NewRideNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
-      <Stack.Screen name="/" component={JoinRide} />
-      <Stack.Screen name="Drop Pin (joinRide)" component={DropPin} />
+      <Stack.Screen name="/" component={NewRide} />
+      <Stack.Screen name="Drop Pin" component={DropPin} />
       <Stack.Screen name="Riders" component={Riders} />
       <Stack.Screen name="Ride Details" component={RideDetails} />
       <Stack.Screen name="Rider Details" component={RiderDetails} />
-    </Stack.Navigator>
-  );
-};
-
-const StartRideNavigator = () => {
-  return (
-    <Stack.Navigator screenOptions={stackScreenOptions}>
-      <Stack.Screen name="/" component={StartRide} />
-      <Stack.Screen name="Drop Pin (startRide)" component={DropPin} />
     </Stack.Navigator>
   );
 };
