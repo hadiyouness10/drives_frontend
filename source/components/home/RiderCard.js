@@ -27,7 +27,6 @@ RiderCard.propTypes = {
 };
 
 RiderCard.defaultProps = {
-  size: "30",
   colors: ["#b888a0", "#ccc", "#e36259", "#ccaabb", "#b888a0"],
 };
 
@@ -35,16 +34,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: -10,
   },
   imageStyle: {
     width: 30,
     height: 30,
   },
   textStyle: {
-    marginLeft: 8,
-    color: "#757575",
-    width: "70%",
+    marginLeft: 12,
+    fontSize: 18,
   },
 });
 export default RiderCard;

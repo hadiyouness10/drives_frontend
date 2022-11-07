@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  View,
-  Dimensions,
-} from "react-native";
+import { SafeAreaView, StyleSheet, ScrollView, View, Text } from "react-native";
 
 import { RideView } from "components";
 
@@ -42,32 +35,29 @@ const ridedummydata = [
 
 export const Riders = ({ navigation }) => {
   return (
-    <ScrollView style={{ marginTop: 20 }}>
-      <SafeAreaView style={styles.container}>
-        <RideView riderInfo={riderdummydata[0]} rideInfo={ridedummydata[0]} />
-        <RideView riderInfo={riderdummydata[1]} rideInfo={ridedummydata[1]} />
-      </SafeAreaView>
-    </ScrollView>
+    <View style={styles.mainView}>
+      <Text style={{ marginLeft: 26, marginTop: 40, fontSize: 24 }}>
+        Available Rides
+      </Text>
+      <ScrollView contentContainerStyle={{ flex: 1 }}>
+        <RideView
+          riderInfo={riderdummydata[0]}
+          rideInfo={ridedummydata[0]}
+          navigation={navigation}
+        />
+        <RideView
+          riderInfo={riderdummydata[1]}
+          rideInfo={ridedummydata[1]}
+          navigation={navigation}
+        />
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainView: {
     flex: 1,
-    margin: 16,
-    alignItems: "center", // Centered horizontally
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "500",
-    color: "white",
-  },
-  card: {
-    height: 180,
-    width: "100%",
-    backgroundColor: "#f18484",
-    justifyContent: "center", //Centered vertically
-    alignItems: "center", // Centered horizontally
-    margin: 5,
+    backgroundColor: "white",
   },
 });

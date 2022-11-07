@@ -22,6 +22,8 @@ export const dateTimeFormatter = (date, mode) => {
       " " +
       date.getDate()
     );
+  else if (mode === "short-date")
+    return months[date.getMonth()].substring(0, 3) + " " + date.getDate();
   else
     return (
       (date.getHours() % 12 === 0 ? 12 : date.getHours() % 12) +

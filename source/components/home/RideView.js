@@ -1,18 +1,32 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Text, View, FlatList, Dimensions, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
 import Icon from "react-native-vector-icons/Entypo";
-import Androw from "react-native-androw";
+import { dateTimeFormatter } from "utils";
 
-const { width: ScreenWidth } = Dimensions.get("window");
-
-export const RideView = (props) => {
-  const { riderInfo, rideInfo, markerLat, markerLng, mapInitialRegion } = props;
-
+const Detail = ({ title, icon, value }) => (
+  <View style={{ flexDirection: "row", alignItems: "center", marginTop: 12 }}>
+    <Icon name={icon} size={20} color="#404040" style={{ marginRight: 10 }} />
+    <View>
+      <Text style={{ color: "grey", fontSize: 12 }}>{title}</Text>
+      <Text style={{ fontSize: 13 }}>{value} </Text>
+    </View>
+  </View>
+);
+export const RideView = ({
+  riderInfo,
+  rideInfo,
+  markerLat,
+  markerLng,
+  mapInitialRegion,
+  navigation,
+}) => {
   return (
-    <View style={styles.riderView}>
+    <TouchableOpacity
+      style={styles.riderView}
+      onPress={() => navigation.push("Ride Details")}
+    >
       <View style={styles.mapContainer}>
         <MapView
           liteMode
@@ -24,31 +38,42 @@ export const RideView = (props) => {
         </MapView>
       </View>
 
-      <View style={styles.listContainer}>
-        <View style={styles.riderinfoStyle}>
-          <RiderCard
-            name={riderInfo.name}
-            source={riderInfo.source}
-            {...props}
-          />
-        </View>
-
-        <View style={styles.listContainer}>
-          <View style={styles.listContainerGlue}>
-            <Icon
-              name="user"
-              size={14}
-              color="#404040"
-              style={{ marginBottom: 10 }}
+      <View
+        style={{
+          flex: 1,
+          margin: 20,
+          marginRight: 25,
+          marginLeft: 15,
+        }}
+      >
+        <RiderCard name={riderInfo.name} source={riderInfo.source} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            flex: 1,
+          }}
+        >
+          <View style={{ justifyContent: "space-around" }}>
+            <Detail
+              title="Date"
+              icon="calendar"
+              value={dateTimeFormatter(new Date(), "short-date")}
             />
-            <Text style={styles.titleStyle}>{rideInfo.nbofRiders} </Text>
+            <Detail
+              title="Time"
+              icon="clock"
+              value={dateTimeFormatter(new Date())}
+            />
           </View>
-          <View style={styles.listContainerGlue}>
-            <Text style={styles.titleStyle}>{rideInfo.price} $</Text>
+          <View style={{ justifyContent: "space-around" }}>
+            <Detail title="Price" icon="credit" value={`${rideInfo.price} $`} />
+            <Detail title="Riders" icon="user" value={rideInfo.nbofRiders} />
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -66,45 +91,24 @@ RideView.defaultProps = {
 const styles = StyleSheet.create({
   riderView: {
     flexDirection: "row",
+    marginHorizontal: 16,
     backgroundColor: "white",
     borderRadius: 24,
-    height: 150,
-    marginTop: 10,
+    height: 160,
+    marginTop: 15,
     alignItems: "center",
+    elevation: 8,
   },
   mapContainer: {
-    marginLeft: 16,
+    marginLeft: 10,
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    width: 125,
-    height: 125,
   },
   mapStyle: {
     width: 125,
-    height: 125,
+    height: 140,
     borderColor: "black",
-  },
-  listContainer: {
-    marginTop: 12,
-    marginBottom: 12,
-    marginLeft: 20,
-    marginRight: 12,
-    flexShrink: 1,
-  },
-  listContainerGlue: {
-    marginTop: 3,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  riderinfoStyle: {
-    marginVertical: 4,
-  },
-  titleStyle: {
-    fontSize: 18,
-    marginLeft: 5,
-    fontWeight: "600",
   },
 });
