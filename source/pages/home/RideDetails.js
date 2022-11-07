@@ -4,7 +4,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
 import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
-import { AuthenticationContext } from "routes/authentication-context";
 import { dateTimeFormatter } from "utils";
 
 const DetailView = ({ label, value, icon }) => {

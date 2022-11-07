@@ -69,11 +69,14 @@ export const Login = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={async () => {
+          // Login logic will get us the ID and name of the user
           await AsyncStorage.setItem(
             "authentication",
             JSON.stringify({
               token: "123",
               userID: 1,
+              firstName: "User",
+              lastName: "Generic",
             })
           );
           signIn("123", 1);

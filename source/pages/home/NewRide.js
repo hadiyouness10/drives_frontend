@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  useWindowDimensions,
 } from "react-native";
 import { InputDetails } from "components";
-import { useWindowDimensions } from "react-native";
-import { useContext } from "react";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
+import { useUserDetailsQuery } from "api/queries";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
   return (
@@ -61,7 +61,7 @@ export const NewRide = ({ navigation }) => {
     setNumberOfSeats,
   };
 
-  const { userID } = useContext(AuthenticationContext);
+  const { firstName } = useContext(AuthenticationContext);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "JoinRide", title: "Join a Ride" },
@@ -119,9 +119,10 @@ export const NewRide = ({ navigation }) => {
             fontWeight: "800",
             color: "white",
             marginBottom: 20,
+            marginLeft: 10,
           }}
         >
-          Where to, Hadi?
+          Where to, {firstName}?
         </Text>
       </ImageBackground>
       <View
@@ -145,6 +146,7 @@ export const NewRide = ({ navigation }) => {
 const styles = StyleSheet.create({
   mainDiv: {
     flex: 1,
+    backgroundColor: "white",
   },
   ridersListButtonView: {
     position: "absolute",

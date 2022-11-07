@@ -50,6 +50,11 @@ const YourRidesNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={YourRides} />
+      <Stack.Screen name="Ride Details (Your Rides)" component={RideDetails} />
+      <Stack.Screen
+        name="Rider Details (Your Rides)"
+        component={RiderDetails}
+      />
     </Stack.Navigator>
   );
 };
@@ -83,7 +88,11 @@ export const LoginNavigator = () => {
         value={{
           token: authentication?.token,
           userID: authentication?.userID,
-          signIn: (token, userID) => setAuthentication({ token, userID }),
+          firstName: authentication?.firstName,
+          lastName: authentication?.lastName,
+
+          signIn: (token, userID, firstName, lastName) =>
+            setAuthentication({ token, userID, firstName, lastName }),
           signOut: () => setAuthentication(null),
         }}
       >
