@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import MapViewDirections from "react-native-maps-directions";
+// import MapViewDirections from "react-native-maps-directions";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import * as Location from "expo-location";
 
@@ -66,14 +66,14 @@ export const MapComponent = ({
             pinColor="green"
           />
         )}
-        {tempStartLocationMarker && tempDestinationMarker && (
+        {/* {tempStartLocationMarker && tempDestinationMarker && (
           <MapViewDirections
             origin={tempStartLocationMarker}
             destination={tempDestinationMarker}
             apikey="AIzaSyCkUp9bjBMNJ94Uac9n_YzZXQHJOVutHAQ"
             strokeWidth={3}
           />
-        )}
+        )} */}
       </MapView>
       <TouchableOpacity
         style={[
