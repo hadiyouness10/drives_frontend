@@ -1,186 +1,90 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Text, View, FlatList, Dimensions, StyleSheet } from "react-native";
-import Androw from "react-native-androw";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
 import Icon from "react-native-vector-icons/Entypo";
+import Androw from "react-native-androw";
 
-const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get("window");
+const { width: ScreenWidth } = Dimensions.get("window");
 
-const ASPECT_RATIO = ScreenWidth / ScreenHeight;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-const INITIAL_REGION = {
-  latitude: LATITUDE,
-  longitude: LONGITUDE,
-  latitudeDelta: LATITUDE_DELTA,
-  longitudeDelta: LONGITUDE_DELTA,
-};
-
-const RideView = (props) => {
-  const {
-    width,
-    riderInfo,
-    rideInfo,
-    height,
-    styles,
-    markers,
-    mapStyle,
-    markerLat,
-    markerLng,
-    titleStyle,
-    listHeight,
-    borderColor,
-    shadowStyle,
-    shadowColor,
-    borderLeftWidth,
-    backgroundColor,
-    mapInitialRegion,
-  } = props;
+export const RideView = (props) => {
+  const { riderInfo, rideInfo, markerLat, markerLng, mapInitialRegion } = props;
 
   return (
-    <Androw style={shadowStyle || _shadowStyle(shadowColor)}>
-      <View
-        style={
-          styles ||
-          _container(
-            height,
-            width,
-            borderColor,
-            borderLeftWidth,
-            backgroundColor
-          )
-        }
-      >
-        <Androw style={_styles.mapContainer}>
-          <MapView
-            liteMode
-            initialRegion={mapInitialRegion}
-            style={mapStyle || _styles.mapStyle}
-          >
-            {markers || (
-              <Marker
-                coordinate={{ latitude: markerLat, longitude: markerLng }}
-              />
-            )}
-          </MapView>
-        </Androw>
+    <View style={styles.riderView}>
+      <View style={styles.mapContainer}>
+        <MapView
+          liteMode
+          initialRegion={mapInitialRegion}
+          style={styles.mapStyle}
+          toolbarEnabled={false}
+        >
+          <Marker coordinate={{ latitude: markerLat, longitude: markerLng }} />
+        </MapView>
+      </View>
 
-        <View style={_styles.listContainer}>
-          <View style={_styles.riderinfoStyle}>
-            <RiderCard
-              name={riderInfo.name}
-              source={riderInfo.source}
-              {...props}
+      <View style={styles.listContainer}>
+        <View style={styles.riderinfoStyle}>
+          <RiderCard
+            name={riderInfo.name}
+            source={riderInfo.source}
+            {...props}
+          />
+        </View>
+
+        <View style={styles.listContainer}>
+          <View style={styles.listContainerGlue}>
+            <Icon
+              name="user"
+              size={14}
+              color="#404040"
+              style={{ marginBottom: 10 }}
             />
+            <Text style={styles.titleStyle}>{rideInfo.nbofRiders} </Text>
           </View>
-
-          <View style={_styles.listContainer}>
-            <View style={_styles.listContainerGlue}>
-              <Icon
-                name="user"
-                size="20%"
-                color="#404040"
-                style={{ marginBottom: 10 }}
-              />
-              <Text style={titleStyle || _styles.titleStyle}>
-                {rideInfo.nbofRiders}{" "}
-              </Text>
-            </View>
-            <View style={_styles.listContainerGlue}>
-              <Text style={titleStyle || _styles.titleStyle}>
-                {rideInfo.price} $
-              </Text>
-            </View>
+          <View style={styles.listContainerGlue}>
+            <Text style={styles.titleStyle}>{rideInfo.price} $</Text>
           </View>
         </View>
       </View>
-    </Androw>
+    </View>
   );
 };
 
-RideView.propTypes = {
-  title: PropTypes.string,
-  shadowColor: PropTypes.string,
-  borderColor: PropTypes.string,
-  borderLeftWidth: PropTypes.number,
-  backgroundColor: PropTypes.string,
-  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  listHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
 RideView.defaultProps = {
-  height: 150,
-  listHeight: 85,
-  shadowColor: "#ccc",
-  borderLeftWidth: 5,
-  markerLat: LATITUDE,
-  markerLng: LONGITUDE,
-  title: "Testimonial",
-  borderColor: "#f54242",
-  backgroundColor: "#fff",
-  width: ScreenWidth * 0.9,
-  mapInitialRegion: INITIAL_REGION,
+  markerLat: 37.78825,
+  markerLng: -122.4324,
+  mapInitialRegion: {
+    latitude: 37.78825,
+    longitude: -122.4324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0922,
+  },
 };
 
-export const _shadowStyle = (shadowColor) => ({
-  shadowColor,
-  shadowOpacity: 0.7,
-  shadowRadius: 10,
-  shadowOffset: {
-    width: 0,
-    height: 0,
+const styles = StyleSheet.create({
+  riderView: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 24,
+    height: 150,
+    marginTop: 10,
+    alignItems: "center",
   },
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: 10,
-});
-
-const _listStyle = (height) => ({
-  height,
-  borderWidth: 0,
-  borderColor: "transparent",
-  width: "55%",
-});
-
-const _container = (
-  height,
-  width,
-  borderColor,
-  borderLeftWidth,
-  backgroundColor
-) => ({
-  width,
-  height,
-  borderColor,
-  borderLeftWidth,
-  backgroundColor,
-  borderRadius: 24,
-  flexDirection: "row",
-});
-
-const _styles = StyleSheet.create({
   mapContainer: {
     marginLeft: 16,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#ccc",
-    shadowOpacity: 0.7,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
+    overflow: "hidden",
+    width: 125,
+    height: 125,
   },
   mapStyle: {
     width: 125,
     height: 125,
-    borderRadius: 24,
+    borderColor: "black",
   },
   listContainer: {
     marginTop: 12,
@@ -204,5 +108,3 @@ const _styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
-export default RideView;

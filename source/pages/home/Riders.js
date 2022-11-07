@@ -5,11 +5,10 @@ import {
   ScrollView,
   StatusBar,
   View,
+  Dimensions,
 } from "react-native";
 
-import RiderCard from "components/home/RiderCard";
-import {} from "react-native";
-import RideView from "components/home/RideView";
+import { RideView } from "components";
 
 const riderdummydata = [
   {
@@ -45,16 +44,8 @@ export const Riders = ({ navigation }) => {
   return (
     <ScrollView style={{ marginTop: 20 }}>
       <SafeAreaView style={styles.container}>
-        <RideView
-          riderInfo={riderdummydata[0]}
-          rideInfo={ridedummydata[0]}
-          colors={["blue", "black", "gray"]}
-        />
-        <RideView
-          riderInfo={riderdummydata[1]}
-          rideInfo={ridedummydata[1]}
-          colors={["blue", "black", "gray"]}
-        />
+        <RideView riderInfo={riderdummydata[0]} rideInfo={ridedummydata[0]} />
+        <RideView riderInfo={riderdummydata[1]} rideInfo={ridedummydata[1]} />
       </SafeAreaView>
     </ScrollView>
   );
