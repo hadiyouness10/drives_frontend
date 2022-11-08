@@ -3,7 +3,7 @@ import {
   useRidesQuery,
   useStopRequestsQuery,
 } from "api/queries";
-import { RideView } from "components";
+import { LoadingRideView, RideView } from "components";
 import { useContext, useState } from "react";
 import {
   Text,
@@ -16,30 +16,41 @@ import { TabView, TabBar } from "react-native-tab-view";
 import { AuthenticationContext } from "routes/authentication-context";
 
 const JoinedRideCard = ({ ride, navigation }) => {
-  const { data } = useRideDetailsQuery(ride.rideID);
-  if (data) return <RideView {...data} pageIndex={1} navigation={navigation} />;
-  else return <View />;
+  const { data, isLoading } = useRideDetailsQuery(ride.rideID);
+  return isLoading ? (
+    <LoadingRideView />
+  ) : (
+    <RideView {...data} pageIndex={1} navigation={navigation} />
+  );
 };
 
 const Joined = ({ userID, navigation }) => {
-  const { data } = useStopRequestsQuery({ studentID: userID });
-  const joinedRidesCards = data?.map((ride) => (
-    <JoinedRideCard key={ride.id} ride={ride} navigation={navigation} />
-  ));
+  const { data, isLoading } = useStopRequestsQuery({ studentID: userID });
+  const joinedRidesCards = isLoading ? (
+    <LoadingRideView />
+  ) : (
+    data?.map((ride) => (
+      <JoinedRideCard key={ride.id} ride={ride} navigation={navigation} />
+    ))
+  );
   return <View style={{ flex: 1, marginTop: 5 }}>{joinedRidesCards}</View>;
 };
 
 const Started = ({ userID, navigation }) => {
-  const { data } = useRidesQuery(userID);
-  const startedRidesCards = data?.map((ride) => (
-    <RideView
-      key={ride.id}
-      pageIndex={1}
-      displayDriver={false}
-      navigation={navigation}
-      {...ride}
-    />
-  ));
+  const { data, isLoading } = useRidesQuery(userID);
+  const startedRidesCards = isLoading ? (
+    <LoadingRideView displayDriver={false} />
+  ) : (
+    data?.map((ride) => (
+      <RideView
+        key={ride.id}
+        pageIndex={1}
+        displayDriver={false}
+        navigation={navigation}
+        {...ride}
+      />
+    ))
+  );
   return <View style={{ flex: 1, marginTop: 5 }}>{startedRidesCards}</View>;
 };
 

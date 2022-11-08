@@ -5,16 +5,18 @@ import RiderCard from "components/home/RiderCard";
 import Icon from "react-native-vector-icons/Entypo";
 import { dateTimeFormatter } from "utils";
 import { useUserDetailsQuery } from "api/queries";
+import SkeletonContent from "react-native-skeleton-content";
 
-const Detail = ({ title, icon, value }) => (
+const Detail = ({ title, icon, children }) => (
   <View style={{ flexDirection: "row", alignItems: "center" }}>
     <Icon name={icon} size={20} color="#404040" style={{ marginRight: 10 }} />
     <View>
       <Text style={{ color: "grey", fontSize: 12 }}>{title}</Text>
-      <Text style={{ fontSize: 13 }}>{value} </Text>
+      {children}
     </View>
   </View>
 );
+
 export const RideView = ({
   id,
   driverID,
@@ -26,13 +28,15 @@ export const RideView = ({
   pageIndex = 0,
   displayDriver = true,
 }) => {
-  const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
-    useUserDetailsQuery(driverID);
-  if (displayDriver && !firstName) return <View />;
+  const {
+    data: { firstName, lastName } = { firstName: "", lastName: "" },
+    isLoading,
+  } = useUserDetailsQuery(driverID);
+  if (displayDriver && isLoading) return <LoadingRideView />;
   else
     return (
       <TouchableOpacity
-        style={styles.riderView}
+        style={styles.rideView}
         onPress={() =>
           navigation.push(
             pageIndex === 0 ? "Ride Details" : "Ride Details (Your Rides)",
@@ -84,19 +88,16 @@ export const RideView = ({
                   : "space-around",
               }}
             >
-              <Detail
-                title="Date"
-                icon="calendar"
-                value={dateTimeFormatter(
-                  new Date(dateOfDeparture),
-                  "short-date"
-                )}
-              />
-              <Detail
-                title="Time"
-                icon="clock"
-                value={dateTimeFormatter(new Date(dateOfDeparture))}
-              />
+              <Detail title="Date" icon="calendar">
+                <Text style={{ fontSize: 13 }}>
+                  {dateTimeFormatter(new Date(dateOfDeparture), "short-date")}{" "}
+                </Text>
+              </Detail>
+              <Detail title="Time" icon="clock">
+                <Text style={{ fontSize: 13 }}>
+                  {dateTimeFormatter(new Date(dateOfDeparture))}
+                </Text>
+              </Detail>
             </View>
             <View
               style={{
@@ -105,12 +106,12 @@ export const RideView = ({
                   : "space-around",
               }}
             >
-              <Detail
-                title="Price"
-                icon="credit"
-                value={`${pricePerRider} $`}
-              />
-              <Detail title="Riders" icon="user" value={numberOfRiders} />
+              <Detail title="Price" icon="credit">
+                <Text style={{ fontSize: 13 }}>{`${pricePerRider} $`}</Text>
+              </Detail>
+              <Detail title="Riders" icon="user">
+                <Text style={{ fontSize: 13 }}>{`${numberOfRiders} $`}</Text>
+              </Detail>
             </View>
           </View>
         </View>
@@ -118,8 +119,95 @@ export const RideView = ({
     );
 };
 
+const CustomSkeletonContent = ({ style }) => (
+  <SkeletonContent
+    containerStyle={{ flexShrink: 1 }}
+    isLoading={true}
+    layout={[style || { height: 20, width: 30 }]}
+  />
+);
+
+export const LoadingRideView = ({ displayDriver = true }) => {
+  return (
+    <View style={styles.rideView}>
+      <CustomSkeletonContent
+        style={{
+          width: 125,
+          height: 140,
+          marginLeft: 10,
+          borderRadius: 14,
+        }}
+      />
+
+      <View
+        style={{
+          flexGrow: 1,
+          margin: 15,
+          marginRight: 25,
+          marginLeft: 15,
+        }}
+      >
+        {displayDriver && (
+          <SkeletonContent
+            containerStyle={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+            isLoading={true}
+            layout={[
+              {
+                height: 36,
+                width: 36,
+                borderRadius: 20,
+              },
+              {
+                marginLeft: 12,
+                height: 20,
+                width: 120,
+              },
+            ]}
+          />
+        )}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: displayDriver ? "space-between" : "space-around",
+            }}
+          >
+            <Detail title="Date" icon="calendar">
+              <CustomSkeletonContent style={{ height: 20, width: 60 }} />
+            </Detail>
+            <Detail title="Time" icon="clock">
+              <CustomSkeletonContent style={{ height: 20, width: 60 }} />
+            </Detail>
+          </View>
+          <View
+            style={{
+              justifyContent: displayDriver ? "space-between" : "space-around",
+            }}
+          >
+            <Detail title="Price" icon="credit">
+              <CustomSkeletonContent />
+            </Detail>
+            <Detail title="Riders" icon="user">
+              <CustomSkeletonContent />
+            </Detail>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  riderView: {
+  rideView: {
     flexDirection: "row",
     marginHorizontal: 16,
     backgroundColor: "white",
