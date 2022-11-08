@@ -8,20 +8,11 @@ const RiderCard = (props) => {
     name,
     source = "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80",
     size,
-    colors,
-    imageStyle,
-    textStyle,
   } = props;
   return (
     <View style={styles.container}>
-      <UserAvatar
-        size={size}
-        name={name}
-        src={source}
-        colors={colors}
-        style={imageStyle || styles.imageStyle}
-      />
-      <Text numberOfLines={1} style={textStyle || styles.textStyle}>
+      <UserAvatar size={size || 36} name={name} src={source} />
+      <Text numberOfLines={1} style={styles.textStyle}>
         {name}
       </Text>
     </View>
@@ -42,10 +33,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
-  },
-  imageStyle: {
-    width: 30,
-    height: 30,
   },
   textStyle: {
     marginLeft: 12,

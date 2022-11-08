@@ -11,13 +11,19 @@ export const MapComponent = ({
   setStartLocationMarker = () => {},
   destinationMarker = null,
   setDestinationMarker = () => {},
+  initialRegion = {
+    latitude: 33.8938,
+    longitude: 35.5018,
+  },
+  initialDelta = {
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  },
   position = null,
 }) => {
   const [region, setRegion] = useState({
-    latitude: 33.8938,
-    longitude: 35.5018,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    ...initialRegion,
+    ...initialDelta,
   });
 
   const [tempStartLocationMarker, setTempStartLocationMarker] =
@@ -45,6 +51,7 @@ export const MapComponent = ({
         onRegionChangeComplete={(region) => setRegion(region)}
         showsUserLocation={true}
         showsMyLocationButton={false}
+        toolbarEnabled={false}
         onPress={(e) => {
           if (position === "start") {
             setTempStartLocationMarker(e.nativeEvent.coordinate);

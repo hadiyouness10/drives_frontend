@@ -21,14 +21,7 @@ export const RideView = ({
   dateOfDeparture,
   pricePerRider,
   numberOfRiders,
-  markerLat = 37.78825,
-  markerLng = -122.4324,
-  mapInitialRegion = {
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0922,
-  },
+  departureCoordinates,
   navigation,
   pageIndex = 0,
   displayDriver = true,
@@ -50,12 +43,20 @@ export const RideView = ({
         <View style={styles.mapContainer}>
           <MapView
             liteMode
-            initialRegion={mapInitialRegion}
+            initialRegion={{
+              latitude: departureCoordinates.latitude,
+              longitude: departureCoordinates.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
             style={styles.mapStyle}
             toolbarEnabled={false}
           >
             <Marker
-              coordinate={{ latitude: markerLat, longitude: markerLng }}
+              coordinate={{
+                latitude: departureCoordinates.latitude,
+                longitude: departureCoordinates.longitude,
+              }}
             />
           </MapView>
         </View>
@@ -63,7 +64,7 @@ export const RideView = ({
         <View
           style={{
             flex: 1,
-            margin: 20,
+            margin: 15,
             marginRight: 25,
             marginLeft: 15,
           }}
@@ -104,7 +105,11 @@ export const RideView = ({
                   : "space-around",
               }}
             >
-              <Detail title="Price" icon="credit" value={pricePerRider} />
+              <Detail
+                title="Price"
+                icon="credit"
+                value={`${pricePerRider} $`}
+              />
               <Detail title="Riders" icon="user" value={numberOfRiders} />
             </View>
           </View>
@@ -120,9 +125,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 24,
     height: 160,
-    marginTop: 15,
+    marginTop: 5,
+    marginBottom: 15,
     alignItems: "center",
-    elevation: 8,
+    elevation: 4,
   },
   mapContainer: {
     marginLeft: 10,

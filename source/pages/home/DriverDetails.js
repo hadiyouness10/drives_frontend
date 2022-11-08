@@ -5,7 +5,19 @@ import CarouselCardItem, {
   ITEM_WIDTH,
   SLIDER_WIDTH,
 } from "components/home/CarouselCardItem";
-export const RiderDetails = () => {
+import UserAvatar from "react-native-user-avatar";
+
+export const DriverDetails = ({ route }) => {
+  const {
+    driverDetails: {
+      firstName,
+      lastName,
+      rating,
+      email,
+      completedRides,
+      numberOfReviews,
+    },
+  } = route?.params;
   const mapRef = useRef(null);
   const data = [
     {
@@ -37,10 +49,25 @@ export const RiderDetails = () => {
         }}
       >
         <View style={styles.driverDetails}>
-          <View style={styles.profilePic}></View>
-          <Text style={{ fontSize: 30 }}>John Doe</Text>
-          <Text style={{ fontSize: 20, color: "gray", width: "100%" }}>
-            4th year computer engineering student
+          <UserAvatar
+            size={150}
+            name={""}
+            src={
+              "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+            }
+          />
+          <Text
+            style={{ fontSize: 30, marginTop: 10 }}
+          >{`${firstName} ${lastName}`}</Text>
+          <Text
+            style={{
+              fontSize: 20,
+              color: "gray",
+              width: "100%",
+              marginVertical: 10,
+            }}
+          >
+            Description
           </Text>
           <View style={{ flexDirection: "row", margin: 5 }}>
             <TouchableOpacity>
@@ -75,19 +102,19 @@ export const RiderDetails = () => {
         <View style={styles.container}>
           <View style={{ width: "33%", alignItems: "flex-start" }}>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.numbers}>33</Text>
+              <Text style={styles.numbers}>{completedRides}</Text>
               <Text style={styles.labels}>Rides</Text>
             </View>
           </View>
           <View style={{ width: "33%", alignItems: "center" }}>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.numbers}>3.5</Text>
+              <Text style={styles.numbers}>{rating}</Text>
               <Text style={styles.labels}>Rating</Text>
             </View>
           </View>
           <View style={{ width: "33%", alignItems: "flex-end" }}>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.numbers}>5</Text>
+              <Text style={styles.numbers}>{numberOfReviews}</Text>
               <Text style={styles.labels}>Reviews</Text>
             </View>
           </View>
@@ -112,13 +139,6 @@ export const RiderDetails = () => {
 };
 
 const styles = StyleSheet.create({
-  profilePic: {
-    backgroundColor: "grey",
-    height: 150,
-    width: 150,
-    borderRadius: 90,
-    alignContent: "center",
-  },
   driverDetails: {
     marginLeft: 20,
     padding: 10,

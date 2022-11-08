@@ -10,7 +10,7 @@ import {
   ResetPassword,
   NewRide,
   DropPin,
-  RiderDetails,
+  DriverDetails,
   RideDetails,
   Account,
   Riders,
@@ -41,7 +41,7 @@ const NewRideNavigator = () => {
       <Stack.Screen name="Drop Pin" component={DropPin} />
       <Stack.Screen name="Riders" component={Riders} />
       <Stack.Screen name="Ride Details" component={RideDetails} />
-      <Stack.Screen name="Rider Details" component={RiderDetails} />
+      <Stack.Screen name="Driver Details" component={DriverDetails} />
     </Stack.Navigator>
   );
 };
@@ -52,8 +52,8 @@ const YourRidesNavigator = () => {
       <Stack.Screen name="/" component={YourRides} />
       <Stack.Screen name="Ride Details (Your Rides)" component={RideDetails} />
       <Stack.Screen
-        name="Rider Details (Your Rides)"
-        component={RiderDetails}
+        name="Driver Details (Your Rides)"
+        component={DriverDetails}
       />
     </Stack.Navigator>
   );

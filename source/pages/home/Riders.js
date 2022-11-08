@@ -8,15 +8,24 @@ export const Riders = ({ navigation }) => {
   if (data)
     return (
       <View style={styles.mainView}>
-        <Text style={{ marginLeft: 26, marginTop: 40, fontSize: 24 }}>
+        <Text
+          style={{
+            marginLeft: 26,
+            marginTop: 40,
+            marginBottom: 15,
+            fontSize: 24,
+          }}
+        >
           Available Rides
         </Text>
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
+        <ScrollView>
           {data.map((ride) => (
             <RideView
+              key={ride.id}
               id={ride.id}
               driverID={ride.driverID}
               dateOfDeparture={ride.dateOfDeparture}
+              departureCoordinates={ride.departureCoordinates}
               pricePerRider={ride.pricePerRider}
               numberOfRiders={ride.numberOfRiders}
               navigation={navigation}

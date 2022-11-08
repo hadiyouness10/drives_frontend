@@ -5,6 +5,8 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
 import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
 import { dateTimeFormatter } from "utils";
+import { Rating } from "react-native-ratings";
+import UserAvatar from "react-native-user-avatar";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -30,17 +32,19 @@ export const RideDetails = ({ route, navigation }) => {
   const { data: driverDetails } = useUserDetailsQuery(driverID);
 
   const {
-    departureLocation = "",
-    destinationLocation = "",
-    dateOfDeparture = null,
+    departureLocation,
+    destinationLocation,
+    departureCoordinates,
+    destinationCoordinates,
+    dateOfDeparture,
   } = rideDetails ?? {};
 
-  const { firstName = "", lastName = "", rating = "" } = driverDetails ?? {};
+  const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
 
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);
-  if (rideID)
+  if (rideDetails && driverDetails)
     return (
       <View style={{ flex: 1 }}>
         <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
@@ -48,15 +52,35 @@ export const RideDetails = ({ route, navigation }) => {
             style={{ flexDirection: "row", marginBottom: 20 }}
             onPress={() =>
               navigation.push(
-                pageIndex == 0 ? "Rider Details" : "Rider Details (Your Rides)"
+                pageIndex == 0
+                  ? "Driver Details"
+                  : "Driver Details (Your Rides)",
+                { driverDetails }
               )
             }
           >
-            <View style={styles.profilePic}></View>
+            <UserAvatar
+              size={90}
+              name={""}
+              src={
+                "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+              }
+            />
             <View style={styles.driverDetails}>
               <Text style={{ fontSize: 34 }}>{`${firstName} ${lastName}`}</Text>
-              <Text style={{ fontSize: 16 }}>{`Rating: ${rating}/5`}</Text>
-              <Text style={{ fontSize: 16 }}>Previous Rides: 3</Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ fontSize: 16 }}>Rating: </Text>
+                <Rating
+                  type="star"
+                  startingValue={rating}
+                  ratingCount={5}
+                  imageSize={20}
+                  readonly={true}
+                />
+              </View>
+              <Text style={{ fontSize: 16 }}>
+                Completed Rides: {completedRides}
+              </Text>
             </View>
             <SimpleLineIcons
               name="arrow-right"
@@ -90,19 +114,22 @@ export const RideDetails = ({ route, navigation }) => {
 
           <Button title="Request Pickup" />
         </View>
-        <MapComponent mapRef={mapRef} />
+        <MapComponent
+          mapRef={mapRef}
+          initialRegion={departureCoordinates}
+          startLocationMarker={departureCoordinates}
+          destinationMarker={destinationCoordinates}
+          initialDelta={{
+            latitudeDelta: 0.922,
+            longitudeDelta: 0.0421,
+          }}
+        />
       </View>
     );
   else return <View />;
 };
 
 const styles = StyleSheet.create({
-  profilePic: {
-    backgroundColor: "grey",
-    height: 90,
-    width: 90,
-    borderRadius: 45,
-  },
   driverDetails: {
     marginLeft: 20,
     justifyContent: "center",

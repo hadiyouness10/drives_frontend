@@ -26,7 +26,7 @@ const Joined = ({ userID, navigation }) => {
   const joinedRidesCards = data?.map((ride) => (
     <JoinedRideCard key={ride.id} ride={ride} navigation={navigation} />
   ));
-  return <View style={{ flex: 1 }}>{joinedRidesCards}</View>;
+  return <View style={{ flex: 1, marginTop: 5 }}>{joinedRidesCards}</View>;
 };
 
 const Started = ({ userID, navigation }) => {
@@ -40,7 +40,7 @@ const Started = ({ userID, navigation }) => {
       {...ride}
     />
   ));
-  return <View style={{ flex: 1 }}>{startedRidesCards}</View>;
+  return <View style={{ flex: 1, marginTop: 5 }}>{startedRidesCards}</View>;
 };
 
 export const YourRides = ({ navigation }) => {
@@ -49,7 +49,7 @@ export const YourRides = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "joined", title: "Rides You Joined" },
-    { key: "started", title: "Your Rides" },
+    { key: "started", title: "Rides You Started" },
   ]);
 
   const renderScene = ({ route }) => {
@@ -96,7 +96,7 @@ export const YourRides = ({ navigation }) => {
             marginLeft: 10,
           }}
         >
-          Your Scheduled Rides
+          Scheduled Rides
         </Text>
       </ImageBackground>
       <View
