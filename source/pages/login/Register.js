@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext,useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import {
@@ -11,11 +11,15 @@ import {
 } from "components";
 import { theme } from "core";
 import { emailValidator, passwordValidator, nameValidator } from "utils";
+import { AuthenticationContext } from "routes/authentication-context";
 
 export const Register = ({ navigation }) => {
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  const { register } = useContext(AuthenticationContext);
+
 
   const onSignUpPressed = () => {
     const nameError = nameValidator(name.value);
@@ -27,10 +31,12 @@ export const Register = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
+    async () => {
+          // Login logic will get us the ID and name of the user
+          register("123", 1, "User", "Generic");
+          navigation.navigate("Home");
+        }
+
   };
 
   return (
