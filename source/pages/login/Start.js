@@ -13,7 +13,7 @@ export const Start = ({ navigation }) => {
         Login
       </Button>
       <Button mode="outlined" onPress={() => navigation.navigate("Register")}>
-        Sign Up
+        Register
       </Button>
     </Background>
   );

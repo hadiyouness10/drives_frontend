@@ -13,6 +13,7 @@ import { theme } from "core";
 import { emailValidator, passwordValidator } from "utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthenticationContext } from "routes/authentication-context";
+import client from "api/client";
 
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
@@ -20,7 +21,7 @@ export const Login = ({ navigation }) => {
 
   const { signIn } = useContext(AuthenticationContext);
 
-  const onLoginPressed = () => {
+  const Auth = async () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     if (emailError || passwordError) {
@@ -28,11 +29,23 @@ export const Login = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
-  };
+    console.log("***")
+    try {
+        await client.post('/authentication/login', {
+            email: email,
+            password: password
+        }
+        ).then((res) => {
+          console.log(res.data)
+          // Login logic will get us the ID and name of the user
+          signIn("123", 1, "User", "Generic");
+          navigation.navigate("Home");
+        });
+      
+    } catch (error) {
+        
+    }
+}
 
   return (
     <Background>
@@ -68,18 +81,14 @@ export const Login = ({ navigation }) => {
       {/* <Button mode="contained" onPress={onLoginPressed}> */}
       <Button
         mode="contained"
-        onPress={async () => {
-          // Login logic will get us the ID and name of the user
-          signIn("123", 1, "User", "Generic");
-          navigation.navigate("Home");
-        }}
+        onPress={Auth}
       >
         Login
       </Button>
       <View style={styles.row}>
         <Text>Don’t have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace("Register")}>
-          <Text style={styles.link}>Sign up</Text>
+          <Text style={styles.link}>Register</Text>
         </TouchableOpacity>
       </View>
     </Background>

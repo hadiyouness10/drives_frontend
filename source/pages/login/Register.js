@@ -12,6 +12,7 @@ import {
 import { theme } from "core";
 import { emailValidator, passwordValidator, nameValidator } from "utils";
 import { AuthenticationContext } from "routes/authentication-context";
+import client from "api/client";
 
 export const Register = ({ navigation }) => {
   const [name, setName] = useState({ value: "", error: "" });
@@ -21,7 +22,7 @@ export const Register = ({ navigation }) => {
   const { register } = useContext(AuthenticationContext);
 
 
-  const onSignUpPressed = () => {
+  const Register = async () => {
     const nameError = nameValidator(name.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
@@ -31,13 +32,25 @@ export const Register = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    async () => {
+    try {
+        await client.post('/register', {
+            name: name,
+            email: email,
+            password: password,
+        }).then(res =>{
+          console.log(res.data)
           // Login logic will get us the ID and name of the user
           register("123", 1, "User", "Generic");
           navigation.navigate("Home");
+        });
+        
+    } catch (error) {
+        if (error.response) {
+            setMsg(error.response.data.msg);
         }
+    }
+}
 
-  };
 
   return (
     <Background>
@@ -75,10 +88,10 @@ export const Register = ({ navigation }) => {
       />
       <Button
         mode="contained"
-        onPress={onSignUpPressed}
+        onPress={Register}
         style={{ marginTop: 24 }}
       >
-        Sign Up
+        Register
       </Button>
       <View style={styles.row}>
         <Text>Already have an account? </Text>
