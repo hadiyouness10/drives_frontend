@@ -15,39 +15,41 @@ import { AuthenticationContext } from "routes/authentication-context";
 import client from "api/client";
 
 export const Register = ({ navigation }) => {
-  const [name, setName] = useState({ value: "", error: "" });
+  const [firstName, setFirstName] = useState({ value: "", error: "" });
+  const [lastName, setLastName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
-  const { register } = useContext(AuthenticationContext);
+  const { signIn } = useContext(AuthenticationContext);
 
 
   const Register = async () => {
-    const nameError = nameValidator(name.value);
+    const firstnameError = nameValidator(firstName.value);
+    const lastnameError = nameValidator(lastName.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
-    if (emailError || passwordError || nameError) {
-      setName({ ...name, error: nameError });
+    if (emailError || passwordError || firstnameError || lastnameError) {
+      setFirstName({ ...firstName, error: firstnameError });
+      setLastName({ ...lastName, error: lastnameError });
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       return;
     }
     try {
-        await client.post('/register', {
-            name: name,
-            email: email,
-            password: password,
+        await client.post('/authentication/register', {
+            firstname: firstName.value,
+            lastname:lastName.value,
+            email: email.value,
+            password: password.value,
         }).then(res =>{
           console.log(res.data)
           // Login logic will get us the ID and name of the user
-          register("123", 1, "User", "Generic");
+          signIn("123", 1, "User", "Generic");
           navigation.navigate("Home");
         });
         
     } catch (error) {
-        if (error.response) {
-            setMsg(error.response.data.msg);
-        }
+      
     }
 }
 
@@ -58,12 +60,20 @@ export const Register = ({ navigation }) => {
       <Logo />
       <Header>Create Account</Header>
       <TextInput
-        label="Name"
+        label="First Name"
         returnKeyType="next"
-        value={name.value}
-        onChangeText={(text) => setName({ value: text, error: "" })}
-        error={!!name.error}
-        errorText={name.error}
+        value={firstName.value}
+        onChangeText={(text) => setFirstName({ value: text, error: "" })}
+        error={!!firstName.error}
+        errorText={firstName.error}
+      />
+      <TextInput
+        label="Last Name"
+        returnKeyType="next"
+        value={lastName.value}
+        onChangeText={(text) => setLastName({ value: text, error: "" })}
+        error={!!lastName.error}
+        errorText={lastName.error}
       />
       <TextInput
         label="Email"

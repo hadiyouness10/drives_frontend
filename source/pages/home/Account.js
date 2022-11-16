@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Image,
   Pressable,
+  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -70,7 +71,7 @@ export const Account = ({ navigation }) => {
           </Pressable>
         </View>
       </ImageBackground>
-      <View style={styles.mainDiv}>
+      <ScrollView style={styles.mainDiv}>
         <View>
           <View style={styles.drawLine} />
           <View style={styles.optionsObject}>
@@ -117,7 +118,7 @@ export const Account = ({ navigation }) => {
             />
           </View>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 };

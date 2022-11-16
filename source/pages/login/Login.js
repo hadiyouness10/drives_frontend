@@ -32,8 +32,8 @@ export const Login = ({ navigation }) => {
     console.log("***")
     try {
         await client.post('/authentication/login', {
-            email: email,
-            password: password
+            email: email.value,
+            password: password.value
         }
         ).then((res) => {
           console.log(res.data)
