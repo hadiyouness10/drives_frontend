@@ -30,10 +30,10 @@ const Joined = ({ userID, navigation }) => {
 };
 
 const Started = ({ userID, navigation }) => {
-  const { data } = useRidesQuery(userID);
+  const { data } = useRidesQuery({ driverID: userID });
   const startedRidesCards = data?.map((ride) => (
     <RideView
-      key={ride.id}
+      key={ride.ID}
       pageIndex={1}
       displayDriver={false}
       navigation={navigation}
@@ -44,7 +44,6 @@ const Started = ({ userID, navigation }) => {
 };
 
 export const YourRides = ({ navigation }) => {
-  const layout = useWindowDimensions();
   const { userID } = useContext(AuthenticationContext);
   const [index, setIndex] = useState(0);
   const [routes] = useState([

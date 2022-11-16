@@ -1,13 +1,17 @@
 import { useQuery } from "react-query";
 import client from "api/client";
 
-const getRides = (driverID) => async () => {
-  let driverIDParam = driverID ? `driverID=${driverID}` : "";
+const getRides = (queryParams) => async () => {
+  // Can be driverID, destinationLocation, pickupCoordinates
+  const params = queryParams
+    ? Object.keys(queryParams).map((param) => `${param}=${queryParams[param]}`)
+    : [];
+
   return await client
-    .get(`/rides?${driverIDParam}`)
+    .get(`/rides?${params.join("&")}`)
     .then((res) => res.data)
     .catch((error) => {});
 };
 
-export const useRidesQuery = (driverID) =>
-  useQuery(["rides", driverID], getRides(driverID));
+export const useRidesQuery = (queryParams) =>
+  useQuery(["rides", queryParams], getRides(queryParams));

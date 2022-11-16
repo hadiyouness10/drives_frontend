@@ -19,18 +19,28 @@ export const Riders = ({ navigation }) => {
           Available Rides
         </Text>
         <ScrollView>
-          {data.map((ride) => (
-            <RideView
-              key={ride.id}
-              id={ride.id}
-              driverID={ride.driverID}
-              dateOfDeparture={ride.dateOfDeparture}
-              departureCoordinates={ride.departureCoordinates}
-              pricePerRider={ride.pricePerRider}
-              numberOfRiders={ride.numberOfRiders}
-              navigation={navigation}
-            />
-          ))}
+          {data.map((ride) => {
+            const {
+              ID,
+              studentId,
+              dateOfDeparture,
+              departureCoordinates,
+              pricePerRider,
+              numberOfRiders,
+            } = ride;
+            return (
+              <RideView
+                key={ID}
+                id={ID}
+                driverID={studentId}
+                dateOfDeparture={dateOfDeparture}
+                departureCoordinates={departureCoordinates}
+                pricePerRider={pricePerRider}
+                numberOfRiders={numberOfRiders}
+                navigation={navigation}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     );

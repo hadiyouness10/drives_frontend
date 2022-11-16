@@ -116,12 +116,28 @@ export const RideDetails = ({ route, navigation }) => {
         </View>
         <MapComponent
           mapRef={mapRef}
-          initialRegion={departureCoordinates}
+          initialRegion={{
+            longitude:
+              (departureCoordinates.longitude +
+                destinationCoordinates.longitude) /
+              2,
+            latitude:
+              (departureCoordinates.latitude +
+                destinationCoordinates.latitude) /
+              2,
+          }}
           startLocationMarker={departureCoordinates}
           destinationMarker={destinationCoordinates}
           initialDelta={{
-            latitudeDelta: 0.922,
-            longitudeDelta: 0.0421,
+            latitudeDelta:
+              Math.abs(
+                departureCoordinates.latitude - destinationCoordinates.latitude
+              ) * 1.75,
+            longitudeDelta:
+              Math.abs(
+                departureCoordinates.longitude -
+                  destinationCoordinates.longitude
+              ) * 1.75,
           }}
         />
       </View>
