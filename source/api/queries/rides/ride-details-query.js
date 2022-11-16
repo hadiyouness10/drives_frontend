@@ -3,10 +3,7 @@ import client from "api/client";
 
 const getRideDetails = (rideID) => async () => {
   if (!rideID) return undefined;
-  return await client
-    .get(`/rides/${rideID}`)
-    .then((res) => res.data)
-    .catch((error) => {});
+  return await client.get(`/rides/${rideID}`).then((res) => res.data);
 };
 
 export const useRideDetailsQuery = (rideID) =>

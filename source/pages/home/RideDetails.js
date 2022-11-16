@@ -7,6 +7,7 @@ import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
 import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
+import { decode } from "@mapbox/polyline";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -37,6 +38,7 @@ export const RideDetails = ({ route, navigation }) => {
     departureCoordinates,
     destinationCoordinates,
     dateOfDeparture,
+    route: routePolyline,
   } = rideDetails ?? {};
 
   const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
@@ -139,6 +141,10 @@ export const RideDetails = ({ route, navigation }) => {
                   destinationCoordinates.longitude
               ) * 1.75,
           }}
+          route={decode(routePolyline).map((point) => ({
+            latitude: point[0],
+            longitude: point[1],
+          }))}
         />
       </View>
     );

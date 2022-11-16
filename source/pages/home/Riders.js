@@ -3,8 +3,22 @@ import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { RideView } from "components";
 import { useRidesQuery } from "api/queries";
 
-export const Riders = ({ navigation }) => {
-  const { data } = useRidesQuery();
+export const Riders = ({ route, navigation }) => {
+  const { departureCoordinates, destinationCoordinates } = route?.params ?? {};
+  const { data } = useRidesQuery(
+    departureCoordinates
+      ? {
+          pickupCoordinates: JSON.stringify({
+            latitude: departureCoordinates.lat,
+            longitude: departureCoordinates.lng,
+          }),
+          destinationCoordinates: JSON.stringify({
+            latitude: destinationCoordinates.lat,
+            longitude: destinationCoordinates.lng,
+          }),
+        }
+      : {}
+  );
   if (data)
     return (
       <View style={styles.mainView}>

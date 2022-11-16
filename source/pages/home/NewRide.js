@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Text,
   View,
@@ -6,27 +6,74 @@ import {
   TouchableOpacity,
   ImageBackground,
   useWindowDimensions,
+  ScrollView,
 } from "react-native";
 import { InputDetails } from "components";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
-import { useUserDetailsQuery } from "api/queries";
+import { useLocationCoordinatesQuery } from "api/queries";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
+  const [isPressed, setIsPressed] = useState(false);
+  const {
+    data: departureCoordinates,
+    refetch: fetchStart,
+    isError: startError,
+  } = useLocationCoordinatesQuery(inputDetailsProps.startLocation, false);
+
+  const {
+    data: destinationCoordinates,
+    refetch: fetchDestination,
+    isError: destinationError,
+  } = useLocationCoordinatesQuery(inputDetailsProps.destinationLocation, false);
+
+  useEffect(() => {
+    if (
+      !inputDetailsProps.startLocation &&
+      !inputDetailsProps.destinationLocation
+    ) {
+      navigation.push("Riders");
+    }
+    if (isPressed && departureCoordinates && destinationCoordinates) {
+      navigation.push("Riders", {
+        departureCoordinates,
+        destinationCoordinates,
+      });
+      setIsPressed(false);
+    } else if (startError || destinationError) {
+      setIsPressed(false);
+    }
+  }, [
+    isPressed,
+    JSON.stringify(departureCoordinates),
+    JSON.stringify(destinationCoordinates),
+  ]);
+
+  const validateLocations = () => {
+    fetchStart();
+    fetchDestination();
+    setIsPressed(true);
+  };
+
   return (
-    <View>
+    <ScrollView>
       <InputDetails type="joinRide" {...inputDetailsProps} />
       <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
         <TouchableOpacity
           style={styles.ridersListButton}
-          onPress={() => navigation.push("Riders")}
+          onPress={() => validateLocations()}
         >
           <Text style={{ color: "#595959", fontSize: 20 }}>
             Search For Drivers
           </Text>
         </TouchableOpacity>
+        {(startError || destinationError) && (
+          <Text>
+            {startError ? "Invalid starting location" : "Invalid destination"}
+          </Text>
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -44,17 +91,17 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
 };
 
 export const NewRide = ({ navigation }) => {
-  const [startLocationId, setStartLocationId] = useState("");
-  const [destinationLocationId, setDestinationLocationId] = useState("");
+  const [startLocation, setStartLocation] = useState("");
+  const [destinationLocation, setDestinationLocation] = useState("");
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
 
   const inputDetailsProps = {
     navigation,
-    startLocationId,
-    setStartLocationId,
-    destinationLocationId,
-    setDestinationLocationId,
+    startLocation,
+    setStartLocation,
+    destinationLocation,
+    setDestinationLocation,
     date,
     setDate,
     numberOfSeats,

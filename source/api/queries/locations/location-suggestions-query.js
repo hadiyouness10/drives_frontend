@@ -5,8 +5,7 @@ const getLocationSuggestions = (searchText) => async () => {
   if (!searchText) return [];
   return await client
     .get(`/locations/suggestions/${searchText}`)
-    .then((res) => res.data)
-    .catch((error) => {});
+    .then((res) => res.data);
 };
 
 export const useLocationSuggestionsQuery = (type, position, searchText) =>

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import {
   useLocationSuggestionsQuery,
-  useLocationDetailsQuery,
+  useLocationCoordinatesQuery,
 } from "api/queries";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Icon from "react-native-vector-icons/Entypo";
@@ -19,37 +19,38 @@ export const InputLocation = ({
   position,
   navigation,
   locationMarkers,
-  locationId,
-  setLocationId,
+  location,
+  setLocation,
 }) => {
-  const [searchText, setSearchText] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
   const { data: locationSuggestions } = useLocationSuggestionsQuery(
     type,
     position,
-    searchText
+    location
   );
 
-  const { data: locationDetails } = useLocationDetailsQuery(locationId);
+  const { data: locationCoordinates } =
+    useLocationCoordinatesQuery(selectedLocation);
 
   const inputRef = useRef(null);
 
   useEffect(() => {
     const { setStartLocationMarker, setDestinationMarker } = locationMarkers;
-    if (locationDetails) {
+    if (locationCoordinates) {
       if (position === "start")
         setStartLocationMarker({
-          latitude: locationDetails?.lat,
-          longitude: locationDetails?.lng,
+          latitude: locationCoordinates?.lat,
+          longitude: locationCoordinates?.lng,
         });
       else
         setDestinationMarker({
-          latitude: locationDetails?.lat,
-          longitude: locationDetails?.lng,
+          latitude: locationCoordinates?.lat,
+          longitude: locationCoordinates?.lng,
         });
     }
-  }, [JSON.stringify(locationDetails)]);
+  }, [JSON.stringify(locationCoordinates)]);
 
   const locations = useMemo(
     () =>
@@ -60,8 +61,8 @@ export const InputLocation = ({
             key={location.place_id}
             onPress={() => {
               inputRef.current.blur();
-              setSearchText(description);
-              setLocationId(place_id);
+              setLocation(description);
+              setSelectedLocation(description);
             }}
           >
             <Text style={styles.location}>{location.description}</Text>
@@ -83,8 +84,8 @@ export const InputLocation = ({
             position === "start" ? "Starting Location" : "Destination"
           }
           placeholderTextColor="grey"
-          value={searchText}
-          onChangeText={(text) => setSearchText(text)}
+          value={location}
+          onChangeText={(text) => setLocation(text)}
           onFocus={() => setIsTyping(true)}
           onBlur={() => setIsTyping(null)}
         />
@@ -93,7 +94,7 @@ export const InputLocation = ({
           style={{ margin: 10 }}
           onPress={() => {
             setIsTyping(false);
-            setSearchText("");
+            setLocation("");
             inputRef.current.blur();
           }}
         >
