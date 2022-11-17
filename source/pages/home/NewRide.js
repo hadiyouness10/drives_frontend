@@ -58,7 +58,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
 
   return (
     <View>
-      <ScrollView>
+      <View>
         <InputDetails type="joinRide" {...inputDetailsProps} />
         <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
           <TouchableOpacity
@@ -73,7 +73,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
             <HowItWorks type="joinRide"></HowItWorks>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -101,6 +101,18 @@ export const NewRide = ({ navigation }) => {
   const [destinationLocation, setDestinationLocation] = useState("");
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
+  const [universityField, setUniversityField] = useState("destination");
+
+  useEffect(
+    (oldUniversityField) => {
+      if (oldUniversityField !== universityField) {
+        const temp = startLocation;
+        setStartLocation(destinationLocation);
+        setDestinationLocation(temp);
+      }
+    },
+    [universityField]
+  );
 
   const inputDetailsProps = {
     navigation,
@@ -112,6 +124,8 @@ export const NewRide = ({ navigation }) => {
     setDate,
     numberOfSeats,
     setNumberOfSeats,
+    universityField,
+    setUniversityField,
   };
 
   const { firstName } = useContext(AuthenticationContext);

@@ -17,6 +17,7 @@ import Icon from "react-native-vector-icons/Entypo";
 export const InputLocation = ({
   type,
   position,
+  universityField,
   navigation,
   locationMarkers,
   location,
@@ -28,7 +29,8 @@ export const InputLocation = ({
   const { data: locationSuggestions } = useLocationSuggestionsQuery(
     type,
     position,
-    location
+    location,
+    universityField === position
   );
 
   const { data: locationCoordinates } =
@@ -54,18 +56,18 @@ export const InputLocation = ({
 
   const locations = useMemo(
     () =>
-      locationSuggestions?.map((location) => {
-        const { description, place_id } = location;
+      locationSuggestions?.map((location, index) => {
+        const { description } = location;
         return (
           <TouchableOpacity
-            key={location.place_id}
+            key={index}
             onPress={() => {
               inputRef.current.blur();
               setLocation(description);
               setSelectedLocation(description);
             }}
           >
-            <Text style={styles.location}>{location.description}</Text>
+            <Text style={styles.location}>{description}</Text>
           </TouchableOpacity>
         );
       }) ?? [],
@@ -80,9 +82,9 @@ export const InputLocation = ({
         <TextInput
           ref={inputRef}
           style={{ flex: 1, fontSize: 18 }}
-          placeholder={
+          placeholder={`${
             position === "start" ? "Starting Location" : "Destination"
-          }
+          }${universityField === position ? " (University)" : ""}`}
           placeholderTextColor="grey"
           value={location}
           onChangeText={(text) => setLocation(text)}
@@ -113,6 +115,7 @@ export const InputLocation = ({
           <Icon name="location-pin" size={30} color="#404040" />
         </TouchableOpacity>
       </View>
+
       <ScrollView
         style={{
           display: showSuggestions ? "flex" : "none",
