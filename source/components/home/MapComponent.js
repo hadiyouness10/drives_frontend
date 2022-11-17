@@ -21,6 +21,7 @@ export const MapComponent = ({
   },
   route,
   position = null,
+  setUpdateLocationNames,
 }) => {
   const [region, setRegion] = useState({
     ...initialRegion,
@@ -61,6 +62,7 @@ export const MapComponent = ({
             setTempDestinationMarker(e.nativeEvent.coordinate);
             setDestinationMarker(e.nativeEvent.coordinate);
           }
+          setUpdateLocationNames(true);
         }}
       >
         {tempStartLocationMarker && (

@@ -7,7 +7,11 @@ const getPossibleRoutes = (start_id, destination_id) => async () => {
     .get(
       `/locations/possibleRoutes?start_id=${start_id}&destination_id=${destination_id}`
     )
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error("possible-routes-query", e);
+      throw new Error(e);
+    });
 };
 
 export const usePossibleRoutesQuery = (start_id, destination_id) =>

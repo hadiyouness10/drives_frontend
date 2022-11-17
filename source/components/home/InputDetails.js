@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
-  ImageBackground,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { dateTimeFormatter } from "utils";
@@ -13,29 +12,6 @@ import { InputLocation } from "./InputLocation";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/Entypo";
 
-const WrapperView = ({ children, icon, label }) => {
-  return (
-    <View style={styles.wrapperViewDiv}>
-      <View style={styles.wrapperViewTitle}>
-        <Icon
-          name={icon}
-          size={30}
-          color="#404040"
-          style={{ marginBottom: 10 }}
-        />
-        <Text
-          style={{
-            fontSize: 18,
-            color: "grey",
-          }}
-        >
-          {label}
-        </Text>
-      </View>
-      {children}
-    </View>
-  );
-};
 export const InputDetails = ({
   type,
   navigation,
@@ -43,24 +19,29 @@ export const InputDetails = ({
   setStartLocation,
   destinationLocation,
   setDestinationLocation,
+  startCoordinates,
+  setStartCoordinates,
+  destinationCoordinates,
+  setDestinationCoordinates,
   date,
   setDate,
   numberOfSeats,
   setNumberOfSeats,
+  universityField,
+  setUniversityField,
 }) => {
   const [dateTimePickerShown, setDateTimePickerShown] = useState(null);
-  const [startLocationMarker, setStartLocationMarker] = useState(null);
-  const [destinationMarker, setDestinationMarker] = useState();
   const numberOfSeatsRef = useRef(null);
 
   const inputLocationProps = {
     type,
+    universityField,
     navigation,
     locationMarkers: {
-      startLocationMarker,
-      destinationMarker,
-      setStartLocationMarker,
-      setDestinationMarker,
+      startCoordinates,
+      destinationCoordinates,
+      setStartCoordinates,
+      setDestinationCoordinates,
     },
   };
 
@@ -81,14 +62,14 @@ export const InputDetails = ({
           <View>
             <InputLocation
               position="start"
-              setLocationMarker={setStartLocationMarker}
+              setLocationMarker={setStartCoordinates}
               location={startLocation}
               setLocation={setStartLocation}
               {...inputLocationProps}
             />
             <InputLocation
               position="destination"
-              setLocationMarker={setDestinationMarker}
+              setLocationMarker={setDestinationCoordinates}
               location={destinationLocation}
               setLocation={setDestinationLocation}
               {...inputLocationProps}
@@ -106,7 +87,13 @@ export const InputDetails = ({
                 borderColor: "white",
               }}
             >
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setUniversityField((field) =>
+                    field === "destination" ? "start" : "destination"
+                  );
+                }}
+              >
                 <Icon size={40} name={"retweet"} color={"black"} />
               </TouchableOpacity>
             </View>

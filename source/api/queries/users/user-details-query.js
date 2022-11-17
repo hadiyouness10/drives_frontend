@@ -6,7 +6,10 @@ const getUserDetails = (userID) => async () => {
   return await client
     .get(`/users/${userID}`)
     .then((res) => res.data)
-    .catch((error) => {});
+    .catch((e) => {
+      console.error("user-detials-query", e);
+      throw new Error(e);
+    });
 };
 
 export const useUserDetailsQuery = (userID) =>

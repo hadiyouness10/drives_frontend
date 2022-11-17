@@ -6,15 +6,15 @@ import { useRidesQuery } from "api/queries";
 export const Riders = ({ route, navigation }) => {
   const { departureCoordinates, destinationCoordinates } = route?.params ?? {};
   const { data } = useRidesQuery(
-    departureCoordinates
+    departureCoordinates && destinationCoordinates
       ? {
           pickupCoordinates: JSON.stringify({
-            latitude: departureCoordinates.lat,
-            longitude: departureCoordinates.lng,
+            latitude: departureCoordinates.latitude,
+            longitude: departureCoordinates.longitude,
           }),
           destinationCoordinates: JSON.stringify({
-            latitude: destinationCoordinates.lat,
-            longitude: destinationCoordinates.lng,
+            latitude: destinationCoordinates.latitude,
+            longitude: destinationCoordinates.longitude,
           }),
         }
       : {}

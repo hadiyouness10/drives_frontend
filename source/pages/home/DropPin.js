@@ -6,12 +6,13 @@ import { useRef, useState } from "react";
 export const DropPin = ({ route, navigation }) => {
   const {
     locationMarkers: {
-      startLocationMarker,
-      destinationMarker,
-      setStartLocationMarker,
-      setDestinationMarker,
+      startCoordinates,
+      destinationCoordinates,
+      setStartCoordinates,
+      setDestinationCoordinates,
     },
     position,
+    setUpdateLocationNames,
   } = route.params;
 
   const mapRef = useRef(null);
@@ -27,10 +28,11 @@ export const DropPin = ({ route, navigation }) => {
       <MapComponent
         mapRef={mapRef}
         position={position}
-        startLocationMarker={startLocationMarker}
-        setStartLocationMarker={setStartLocationMarker}
-        destinationMarker={destinationMarker}
-        setDestinationMarker={setDestinationMarker}
+        startLocationMarker={startCoordinates}
+        setStartLocationMarker={setStartCoordinates}
+        destinationMarker={destinationCoordinates}
+        setDestinationMarker={setDestinationCoordinates}
+        setUpdateLocationNames={setUpdateLocationNames}
       />
 
       <View style={styles.dropDoneButtonView}>
@@ -41,24 +43,6 @@ export const DropPin = ({ route, navigation }) => {
           <Text style={{ color: "white", fontSize: 18 }}>Done</Text>
         </TouchableOpacity>
       </View>
-      {/* <TouchableOpacity
-        onPress={async () => {
-          startingInputRef.current.blur();
-          let location = await Location.getCurrentPositionAsync({});
-          setStartLocationMarker({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          });
-          mapRef.current.animateToRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          });
-        }}
-      >
-        <MaterialIcons name="my-location" size={30} color="#404040" />
-      </TouchableOpacity> */}
     </View>
   );
 };

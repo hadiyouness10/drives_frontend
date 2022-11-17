@@ -30,20 +30,18 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
 
   useEffect(() => {
     if (
-      !inputDetailsProps.startLocation &&
-      !inputDetailsProps.destinationLocation
+      isPressed &&
+      (inputDetailsProps.startCoordinates || departureCoordinates) &&
+      (inputDetailsProps.destinationCoordinates || destinationCoordinates)
     ) {
-      navigation.push("Riders");
-    }
-    if (isPressed && departureCoordinates && destinationCoordinates) {
       navigation.push("Riders", {
-        departureCoordinates,
-        destinationCoordinates,
+        departureCoordinates:
+          inputDetailsProps.startCoordinates || departureCoordinates,
+        destinationCoordinates:
+          inputDetailsProps.destinationCoordinates || destinationCoordinates,
       });
       setIsPressed(false);
-    } else if (startError || destinationError) {
-      setIsPressed(false);
-    }
+    } else if (startError || destinationError) setIsPressed(false);
   }, [
     isPressed,
     JSON.stringify(departureCoordinates),
@@ -51,19 +49,21 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
   ]);
 
   const validateLocations = () => {
-    fetchStart();
-    fetchDestination();
+    if (!inputDetailsProps.startCoordinates && !departureCoordinates)
+      fetchStart();
+    if (!inputDetailsProps.destinationCoordinates && !departureCoordinates)
+      fetchDestination();
     setIsPressed(true);
   };
 
   return (
     <View>
-      <ScrollView>
+      <View>
         <InputDetails type="joinRide" {...inputDetailsProps} />
         <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
           <TouchableOpacity
             style={styles.ridersListButton}
-            onPress={() => navigation.push("Riders")}
+            onPress={() => validateLocations()}
           >
             <Text style={{ color: "#ffffff", fontSize: 20 }}>
               Search For Drivers
@@ -73,7 +73,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
             <HowItWorks type="joinRide"></HowItWorks>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -99,8 +99,25 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
 export const NewRide = ({ navigation }) => {
   const [startLocation, setStartLocation] = useState("");
   const [destinationLocation, setDestinationLocation] = useState("");
+  const [startCoordinates, setStartCoordinates] = useState(null);
+  const [destinationCoordinates, setDestinationCoordinates] = useState(null);
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
+  const [universityField, setUniversityField] = useState("destination");
+
+  useEffect(
+    (oldUniversityField) => {
+      if (oldUniversityField !== universityField) {
+        const temp = startLocation;
+        setStartLocation(destinationLocation);
+        setDestinationLocation(temp);
+        const temp2 = startCoordinates;
+        setStartCoordinates(destinationCoordinates);
+        setDestinationCoordinates(temp2);
+      }
+    },
+    [universityField]
+  );
 
   const inputDetailsProps = {
     navigation,
@@ -108,10 +125,16 @@ export const NewRide = ({ navigation }) => {
     setStartLocation,
     destinationLocation,
     setDestinationLocation,
+    startCoordinates,
+    setStartCoordinates,
+    destinationCoordinates,
+    setDestinationCoordinates,
     date,
     setDate,
     numberOfSeats,
     setNumberOfSeats,
+    universityField,
+    setUniversityField,
   };
 
   const { firstName } = useContext(AuthenticationContext);
