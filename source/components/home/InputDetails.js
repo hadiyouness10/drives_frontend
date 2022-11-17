@@ -11,6 +11,7 @@ import { dateTimeFormatter } from "utils";
 import { InputLocation } from "./InputLocation";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/Entypo";
+import { TextInput } from "react-native-gesture-handler";
 
 export const InputDetails = ({
   type,
@@ -89,9 +90,15 @@ export const InputDetails = ({
             >
               <TouchableOpacity
                 onPress={() => {
-                  setUniversityField((field) =>
-                    field === "destination" ? "start" : "destination"
-                  );
+                  setUniversityField((field) => {
+                    const temp = startLocation;
+                    setStartLocation(destinationLocation);
+                    setDestinationLocation(temp);
+                    const temp2 = startCoordinates;
+                    setStartCoordinates(destinationCoordinates);
+                    setDestinationCoordinates(temp2);
+                    return field === "destination" ? "start" : "destination";
+                  });
                 }}
               >
                 <Icon size={40} name={"retweet"} color={"black"} />
@@ -202,6 +209,14 @@ export const InputDetails = ({
               </TouchableOpacity>
             </View>
           </View>
+          <View>
+            <View style={styles.input}>
+              <TextInput
+                style={{ flex: 1, fontSize: 18 }}
+                placeholder="Price per rider"
+              />
+            </View>
+          </View>
         </View>
       </View>
     </View>
@@ -215,26 +230,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   infoSection: {
-    // marginHorizontal: 15,
     paddingTop: 20,
     backgroundColor: "white",
-  },
-  wrapperViewDiv: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingTop: 50,
-    marginTop: 60,
-    borderColor: "grey",
-    backgroundColor: "white",
-  },
-  wrapperViewTitle: {
-    position: "absolute",
-    top: -37,
-    left: 0,
-    right: 0,
-    justifyContent: "center",
-    alignItems: "center",
   },
   buttonDiv: {
     flex: 1,
@@ -253,5 +250,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
+  },
+  input: {
+    height: 60,
+    padding: 10,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "rgba(10, 10, 10, 0.07)",
   },
 });

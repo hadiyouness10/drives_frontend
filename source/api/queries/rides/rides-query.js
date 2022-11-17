@@ -6,7 +6,6 @@ const getRides = (queryParams) => async () => {
   const params = queryParams
     ? Object.keys(queryParams).map((param) => `${param}=${queryParams[param]}`)
     : [];
-
   return await client
     .get(`/rides?${params.join("&")}`)
     .then((res) => res.data)

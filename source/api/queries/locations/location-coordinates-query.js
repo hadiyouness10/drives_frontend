@@ -16,4 +16,12 @@ export const useLocationCoordinatesQuery = (address, autofetch = true) =>
   useQuery(["locationCoordinates", address], getLocationCoordinates(address), {
     enabled: autofetch,
     retry: false,
+    cacheTime: 0,
+    select: (coords) =>
+      coords
+        ? {
+            latitude: coords.lat,
+            longitude: coords.lng,
+          }
+        : undefined,
   });

@@ -11,56 +11,52 @@ import {
 import { InputDetails } from "components";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
-import { useLocationCoordinatesQuery } from "api/queries";
 import { HowItWorks } from "components/home/HowItWorks";
+import { useLocationCoordinatesQuery } from "api/queries";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
-  const [isPressed, setIsPressed] = useState(false);
-  const {
-    data: departureCoordinates,
-    refetch: fetchStart,
-    isError: startError,
-  } = useLocationCoordinatesQuery(inputDetailsProps.startLocation, false);
-
-  const {
-    data: destinationCoordinates,
-    refetch: fetchDestination,
-    isError: destinationError,
-  } = useLocationCoordinatesQuery(inputDetailsProps.destinationLocation, false);
-
-  useEffect(() => {
-    if (
-      isPressed &&
-      (inputDetailsProps.startCoordinates || departureCoordinates) &&
-      (inputDetailsProps.destinationCoordinates || destinationCoordinates)
-    ) {
-      navigation.push("Riders", {
-        departureCoordinates:
-          inputDetailsProps.startCoordinates || departureCoordinates,
-        destinationCoordinates:
-          inputDetailsProps.destinationCoordinates || destinationCoordinates,
-      });
-      setIsPressed(false);
-    } else if (startError || destinationError) setIsPressed(false);
-  }, [
-    isPressed,
-    JSON.stringify(departureCoordinates),
-    JSON.stringify(destinationCoordinates),
-  ]);
+  const { data: backUpCoordinates, refetch: fetchCoordinates } =
+    useLocationCoordinatesQuery(
+      inputDetailsProps.universityField === "start"
+        ? inputDetailsProps.destinationLocation
+        : inputDetailsProps.startLocation,
+      false
+    );
 
   const validateLocations = () => {
-    if (!inputDetailsProps.startCoordinates && !departureCoordinates)
-      fetchStart();
-    if (!inputDetailsProps.destinationCoordinates && !departureCoordinates)
-      fetchDestination();
-    setIsPressed(true);
+    if (
+      inputDetailsProps.startCoordinates &&
+      inputDetailsProps.destinationCoordinates
+    ) {
+      navigation.push("Riders", {
+        departureCoordinates: inputDetailsProps.startCoordinates,
+        destinationCoordinates: inputDetailsProps.destinationCoordinates,
+      });
+    } else fetchCoordinates();
   };
+
+  useEffect(() => {
+    if (backUpCoordinates)
+      if (inputDetailsProps.universityField === "start") {
+        inputDetailsProps.setDestinationCoordinates(backUpCoordinates);
+        navigation.push("Riders", {
+          departureCoordinates: inputDetailsProps.startCoordinates,
+          destinationCoordinates: backUpCoordinates,
+        });
+      } else {
+        inputDetailsProps.setStartCoordinates(backUpCoordinates);
+        navigation.push("Riders", {
+          departureCoordinates: backUpCoordinates,
+          destinationCoordinates: inputDetailsProps.destinationCoordinates,
+        });
+      }
+  }, [JSON.stringify(backUpCoordinates)]);
 
   return (
     <View>
       <View>
         <InputDetails type="joinRide" {...inputDetailsProps} />
-        <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
+        <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
           <TouchableOpacity
             style={styles.ridersListButton}
             onPress={() => validateLocations()}
@@ -79,13 +75,36 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
 };
 
 const StartRide = ({ inputDetailsProps, navigation }) => {
+  const newRide = {
+    dateOfDeparture: inputDetailsProps.date
+      .toLocaleDateString()
+      .replace("/", "-")
+      .replace("/", "-"),
+    timeOfDeparture: inputDetailsProps.date
+      .toLocaleTimeString()
+      .split(" ")
+      .pop(),
+    rideStatus: "PENDING",
+    departureCoordinates: JSON.stringify(inputDetailsProps.startCoordinates),
+    destinationCoordinates: JSON.stringify(
+      inputDetailsProps.destinationCoordinates
+    ),
+    departureLocation: inputDetailsProps.startLocation,
+    destinationLocation: inputDetailsProps.destinationLocation,
+    numberOfRiders: inputDetailsProps.numberOfSeats,
+    pricePerRider: "??",
+  };
+
   return (
     <View>
       <ScrollView>
         <InputDetails type="startRide" {...inputDetailsProps} />
-        <View style={[styles.confirmButtonView]} pointerEvents="auto">
-          <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
-            <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
+        <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
+          <TouchableOpacity
+            style={styles.ridersListButton}
+            onPress={() => validateLocations()}
+          >
+            <Text style={{ color: "#ffffff", fontSize: 20 }}>Create Ride</Text>
           </TouchableOpacity>
           <View style={{ marginTop: 30 }}>
             <HowItWorks type="startRide"></HowItWorks>
@@ -104,20 +123,6 @@ export const NewRide = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
   const [universityField, setUniversityField] = useState("destination");
-
-  useEffect(
-    (oldUniversityField) => {
-      if (oldUniversityField !== universityField) {
-        const temp = startLocation;
-        setStartLocation(destinationLocation);
-        setDestinationLocation(temp);
-        const temp2 = startCoordinates;
-        setStartCoordinates(destinationCoordinates);
-        setDestinationCoordinates(temp2);
-      }
-    },
-    [universityField]
-  );
 
   const inputDetailsProps = {
     navigation,
@@ -235,9 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#ccf2ff",
-    // borderTopRightRadius: 100,
-    // borderBottomRightRadius: 100,
+    backgroundColor: "rgb(0, 125, 200)",
     borderColor: "grey",
     flexDirection: "row",
     borderRadius: 10,

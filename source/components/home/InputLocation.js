@@ -50,11 +50,10 @@ export const InputLocation = ({
   }, [nameFromCoords]);
 
   useEffect(() => {
-    if (updateLocationNames)
-      if (position === "start") fetchLocationName();
-      else fetchLocationName();
-
-    setUpdateLocationNames(false);
+    if (updateLocationNames) {
+      fetchLocationName();
+      setUpdateLocationNames(false);
+    }
   }, [
     updateLocationNames,
     JSON.stringify(locationMarkers.startCoordinates),
@@ -66,16 +65,8 @@ export const InputLocation = ({
   useEffect(() => {
     const { setStartCoordinates, setDestinationCoordinates } = locationMarkers;
     if (locationCoordinates) {
-      if (position === "start")
-        setStartCoordinates({
-          latitude: locationCoordinates?.lat,
-          longitude: locationCoordinates?.lng,
-        });
-      else
-        setDestinationCoordinates({
-          latitude: locationCoordinates?.lat,
-          longitude: locationCoordinates?.lng,
-        });
+      if (position === "start") setStartCoordinates(locationCoordinates);
+      else setDestinationCoordinates(locationCoordinates);
     }
   }, [JSON.stringify(locationCoordinates)]);
 
