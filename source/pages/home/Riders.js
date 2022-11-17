@@ -3,8 +3,22 @@ import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { RideView } from "components";
 import { useRidesQuery } from "api/queries";
 
-export const Riders = ({ navigation }) => {
-  const { data } = useRidesQuery();
+export const Riders = ({ route, navigation }) => {
+  const { departureCoordinates, destinationCoordinates } = route?.params ?? {};
+  const { data } = useRidesQuery(
+    departureCoordinates
+      ? {
+          pickupCoordinates: JSON.stringify({
+            latitude: departureCoordinates.lat,
+            longitude: departureCoordinates.lng,
+          }),
+          destinationCoordinates: JSON.stringify({
+            latitude: destinationCoordinates.lat,
+            longitude: destinationCoordinates.lng,
+          }),
+        }
+      : {}
+  );
   if (data)
     return (
       <View style={styles.mainView}>
@@ -19,22 +33,32 @@ export const Riders = ({ navigation }) => {
           Available Rides
         </Text>
         <ScrollView>
-          {data.map((ride) => (
-            <RideView
-              key={ride.id}
-              id={ride.id}
-              driverID={ride.driverID}
-              dateOfDeparture={ride.dateOfDeparture}
-              departureCoordinates={ride.departureCoordinates}
-              pricePerRider={ride.pricePerRider}
-              numberOfRiders={ride.numberOfRiders}
-              navigation={navigation}
-            />
-          ))}
+          {data.map((ride) => {
+            const {
+              ID,
+              studentId,
+              dateOfDeparture,
+              departureCoordinates,
+              pricePerRider,
+              numberOfRiders,
+            } = ride;
+            return (
+              <RideView
+                key={ID}
+                ID={ID}
+                studentId={studentId}
+                dateOfDeparture={dateOfDeparture}
+                departureCoordinates={departureCoordinates}
+                pricePerRider={pricePerRider}
+                numberOfRiders={numberOfRiders}
+                navigation={navigation}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     );
-  else return <View />;
+  else return <Text>Loading</Text>;
 };
 
 const styles = StyleSheet.create({

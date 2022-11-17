@@ -7,6 +7,7 @@ import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
 import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
+import { decode } from "@mapbox/polyline";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -37,6 +38,7 @@ export const RideDetails = ({ route, navigation }) => {
     departureCoordinates,
     destinationCoordinates,
     dateOfDeparture,
+    route: routePolyline,
   } = rideDetails ?? {};
 
   const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
@@ -116,17 +118,37 @@ export const RideDetails = ({ route, navigation }) => {
         </View>
         <MapComponent
           mapRef={mapRef}
-          initialRegion={departureCoordinates}
+          initialRegion={{
+            longitude:
+              (departureCoordinates.longitude +
+                destinationCoordinates.longitude) /
+              2,
+            latitude:
+              (departureCoordinates.latitude +
+                destinationCoordinates.latitude) /
+              2,
+          }}
           startLocationMarker={departureCoordinates}
           destinationMarker={destinationCoordinates}
           initialDelta={{
-            latitudeDelta: 0.922,
-            longitudeDelta: 0.0421,
+            latitudeDelta:
+              Math.abs(
+                departureCoordinates.latitude - destinationCoordinates.latitude
+              ) * 1.75,
+            longitudeDelta:
+              Math.abs(
+                departureCoordinates.longitude -
+                  destinationCoordinates.longitude
+              ) * 1.75,
           }}
+          route={decode(routePolyline).map((point) => ({
+            latitude: point[0],
+            longitude: point[1],
+          }))}
         />
       </View>
     );
-  else return <View />;
+  else return <Text>Loading</Text>;
 };
 
 const styles = StyleSheet.create({

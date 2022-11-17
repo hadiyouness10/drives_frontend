@@ -16,8 +16,8 @@ const Detail = ({ title, icon, value }) => (
   </View>
 );
 export const RideView = ({
-  id,
-  driverID,
+  ID: id,
+  studentId: driverID,
   dateOfDeparture,
   pricePerRider,
   numberOfRiders,

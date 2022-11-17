@@ -39,10 +39,10 @@ const WrapperView = ({ children, icon, label }) => {
 export const InputDetails = ({
   type,
   navigation,
-  startLocationId,
-  setStartLocationId,
-  destinationLocationId,
-  setDestinationLocationId,
+  startLocation,
+  setStartLocation,
+  destinationLocation,
+  setDestinationLocation,
   date,
   setDate,
   numberOfSeats,
@@ -52,8 +52,6 @@ export const InputDetails = ({
   const [startLocationMarker, setStartLocationMarker] = useState(null);
   const [destinationMarker, setDestinationMarker] = useState();
   const numberOfSeatsRef = useRef(null);
-
-  // const { data: possibleRoutes } = usePossibleRoutesQuery(startId, destinationId)
 
   const inputLocationProps = {
     type,
@@ -84,15 +82,15 @@ export const InputDetails = ({
             <InputLocation
               position="start"
               setLocationMarker={setStartLocationMarker}
-              locationId={startLocationId}
-              setLocationId={setStartLocationId}
+              location={startLocation}
+              setLocation={setStartLocation}
               {...inputLocationProps}
             />
             <InputLocation
               position="destination"
               setLocationMarker={setDestinationMarker}
-              locationId={destinationLocationId}
-              setLocationId={setDestinationLocationId}
+              location={destinationLocation}
+              setLocation={setDestinationLocation}
               {...inputLocationProps}
             />
             <View
