@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { LoginNavigator } from "routes";
+import { LoginNavigator } from "./source/routes";
 import { LogBox } from "react-native"
 
 LogBox.ignoreAllLogs(true)

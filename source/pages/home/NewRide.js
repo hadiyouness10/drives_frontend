@@ -11,21 +11,28 @@ import { InputDetails } from "components";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
 import { useUserDetailsQuery } from "api/queries";
+import { HowItWorks } from "components/home/HowItWorks";
+import { ScrollView } from "react-native-gesture-handler";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
   return (
     <View>
-      <InputDetails type="joinRide" {...inputDetailsProps} />
-      <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
-        <TouchableOpacity
-          style={styles.ridersListButton}
-          onPress={() => navigation.push("Riders")}
-        >
-          <Text style={{ color: "#595959", fontSize: 20 }}>
-            Search For Drivers
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView>
+        <InputDetails type="joinRide" {...inputDetailsProps} />
+        <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
+          <TouchableOpacity
+            style={styles.ridersListButton}
+            onPress={() => navigation.push("Riders")}
+          >
+            <Text style={{ color: "#ffffff", fontSize: 20 }}>
+              Search For Drivers
+            </Text>
+          </TouchableOpacity>
+          <View style={{ marginTop: 30 }}>
+            <HowItWorks type="joinRide"></HowItWorks>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -33,12 +40,17 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
 const StartRide = ({ inputDetailsProps, navigation }) => {
   return (
     <View>
-      <InputDetails type="startRide" {...inputDetailsProps} />
-      <View style={[styles.confirmButtonView]} pointerEvents="auto">
-        <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
-          <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView>
+        <InputDetails type="startRide" {...inputDetailsProps} />
+        <View style={[styles.confirmButtonView]} pointerEvents="auto">
+          <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
+            <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
+          </TouchableOpacity>
+          <View style={{ marginTop: 30 }}>
+            <HowItWorks type="startRide"></HowItWorks>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
