@@ -18,7 +18,7 @@ import { AuthenticationContext } from "routes/authentication-context";
 const JoinedRideCard = ({ ride, navigation }) => {
   const { data } = useRideDetailsQuery(ride.rideID);
   if (data) return <RideView {...data} pageIndex={1} navigation={navigation} />;
-  else return <View />;
+  else return <Text>Loading</Text>;
 };
 
 const Joined = ({ userID, navigation }) => {

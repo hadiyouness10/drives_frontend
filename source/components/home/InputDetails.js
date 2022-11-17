@@ -78,21 +78,39 @@ export const InputDetails = ({
               }}
             />
           )}
-          <InputLocation
-            position="start"
-            setLocationMarker={setStartLocationMarker}
-            location={startLocation}
-            setLocation={setStartLocation}
-            {...inputLocationProps}
-          />
-
-          <InputLocation
-            position="destination"
-            setLocationMarker={setDestinationMarker}
-            location={destinationLocation}
-            setLocation={setDestinationLocation}
-            {...inputLocationProps}
-          />
+          <View>
+            <InputLocation
+              position="start"
+              setLocationMarker={setStartLocationMarker}
+              location={startLocation}
+              setLocation={setStartLocation}
+              {...inputLocationProps}
+            />
+            <InputLocation
+              position="destination"
+              setLocationMarker={setDestinationMarker}
+              location={destinationLocation}
+              setLocation={setDestinationLocation}
+              {...inputLocationProps}
+            />
+            <View
+              style={{
+                backgroundColor: "white",
+                marginTop: -105,
+                marginLeft: 10,
+                marginBottom: 60,
+                borderWidth: 1,
+                height: 44,
+                width: 44,
+                borderRadius: 22,
+                borderColor: "white",
+              }}
+            >
+              <TouchableOpacity>
+                <Icon size={40} name={"retweet"} color={"black"} />
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {Platform.OS === "ios" ? (
             <View style={[{ flexDirection: "row", alignItems: "center" }]}>

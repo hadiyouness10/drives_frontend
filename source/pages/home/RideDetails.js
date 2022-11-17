@@ -148,7 +148,7 @@ export const RideDetails = ({ route, navigation }) => {
         />
       </View>
     );
-  else return <View />;
+  else return <Text>Loading</Text>;
 };
 
 const styles = StyleSheet.create({

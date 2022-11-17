@@ -13,9 +13,28 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
 import { useContext } from "react";
+import client from "api/client";
 
 export const Account = ({ navigation }) => {
   const { signOut } = useContext(AuthenticationContext);
+
+  const Logout = async () => {
+    
+    try {
+        await client.delete('/logout');
+    } catch (error) {
+        console.log(error);
+    }
+      await AsyncStorage.removeItem("authentication");
+      signOut();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Start" }],
+        })
+      );
+    
+}
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -85,16 +104,7 @@ export const Account = ({ navigation }) => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={async () => {
-            await AsyncStorage.removeItem("authentication");
-            signOut();
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: "Start" }],
-              })
-            );
-          }}
+          onPress={Logout}
         >
           <View style={styles.drawLine} />
           <View style={styles.optionsObject}>

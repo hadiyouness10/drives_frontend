@@ -45,8 +45,8 @@ export const Riders = ({ route, navigation }) => {
             return (
               <RideView
                 key={ID}
-                id={ID}
-                driverID={studentId}
+                ID={ID}
+                studentId={studentId}
                 dateOfDeparture={dateOfDeparture}
                 departureCoordinates={departureCoordinates}
                 pricePerRider={pricePerRider}
@@ -58,7 +58,7 @@ export const Riders = ({ route, navigation }) => {
         </ScrollView>
       </View>
     );
-  else return <View />;
+  else return <Text>Loading</Text>;
 };
 
 const styles = StyleSheet.create({
