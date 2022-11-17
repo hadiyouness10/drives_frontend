@@ -14,7 +14,7 @@ import Icon from "react-native-vector-icons/Entypo";
 import { TextInput } from "react-native-gesture-handler";
 
 export const InputDetails = ({
-  type,
+  type, // joinRide | startRide
   navigation,
   startLocation,
   setStartLocation,
@@ -28,6 +28,8 @@ export const InputDetails = ({
   setDate,
   numberOfSeats,
   setNumberOfSeats,
+  pricePerRider,
+  setPricePerRider,
   universityField,
   setUniversityField,
 }) => {
@@ -209,14 +211,20 @@ export const InputDetails = ({
               </TouchableOpacity>
             </View>
           </View>
-          <View>
-            <View style={styles.input}>
-              <TextInput
-                style={{ flex: 1, fontSize: 18 }}
-                placeholder="Price per rider"
-              />
+          {type === "startRide" && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={styles.input}>
+                <Text style={{ fontSize: 24, marginRight: 10 }}>$</Text>
+                <TextInput
+                  style={{ flex: 1, fontSize: 18 }}
+                  placeholder="Price per rider"
+                  value={pricePerRider}
+                  keyboardType={"decimal-pad"}
+                  onChangeText={(text) => setPricePerRider(parseFloat(text))}
+                />
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </View>
     </View>
@@ -253,6 +261,8 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 60,
+    flex: 1,
+    marginBottom: 10,
     padding: 10,
     display: "flex",
     flexDirection: "row",

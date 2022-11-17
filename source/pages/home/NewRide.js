@@ -13,6 +13,7 @@ import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
 import { HowItWorks } from "components/home/HowItWorks";
 import { useLocationCoordinatesQuery } from "api/queries";
+import { useCreateRideMutation } from "api/mutations";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
   const { data: backUpCoordinates, refetch: fetchCoordinates } =
@@ -75,15 +76,13 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
 };
 
 const StartRide = ({ inputDetailsProps, navigation }) => {
+  const { mutate: createRide } = useCreateRideMutation();
+  const { userID } = useContext(AuthenticationContext);
+
   const newRide = {
-    dateOfDeparture: inputDetailsProps.date
-      .toLocaleDateString()
-      .replace("/", "-")
-      .replace("/", "-"),
-    timeOfDeparture: inputDetailsProps.date
-      .toLocaleTimeString()
-      .split(" ")
-      .pop(),
+    studentId: userID,
+    dateOfDeparture: inputDetailsProps.date.toISOString().slice(0, 10),
+    timeOfDeparture: inputDetailsProps.date.toLocaleTimeString().split(" ")[0],
     rideStatus: "PENDING",
     departureCoordinates: JSON.stringify(inputDetailsProps.startCoordinates),
     destinationCoordinates: JSON.stringify(
@@ -92,17 +91,17 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
     departureLocation: inputDetailsProps.startLocation,
     destinationLocation: inputDetailsProps.destinationLocation,
     numberOfRiders: inputDetailsProps.numberOfSeats,
-    pricePerRider: "??",
+    pricePerRider: inputDetailsProps.pricePerRider ?? 0,
   };
 
   return (
     <View>
-      <ScrollView>
+      <View>
         <InputDetails type="startRide" {...inputDetailsProps} />
         <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
           <TouchableOpacity
             style={styles.ridersListButton}
-            onPress={() => validateLocations()}
+            onPress={() => createRide(newRide)}
           >
             <Text style={{ color: "#ffffff", fontSize: 20 }}>Create Ride</Text>
           </TouchableOpacity>
@@ -110,7 +109,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
             <HowItWorks type="startRide"></HowItWorks>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -122,6 +121,7 @@ export const NewRide = ({ navigation }) => {
   const [destinationCoordinates, setDestinationCoordinates] = useState(null);
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
+  const [pricePerRider, setPricePerRider] = useState(1);
   const [universityField, setUniversityField] = useState("destination");
 
   const inputDetailsProps = {
@@ -138,6 +138,8 @@ export const NewRide = ({ navigation }) => {
     setDate,
     numberOfSeats,
     setNumberOfSeats,
+    pricePerRider,
+    setPricePerRider,
     universityField,
     setUniversityField,
   };
