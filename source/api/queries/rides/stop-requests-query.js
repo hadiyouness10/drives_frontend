@@ -8,7 +8,11 @@ const getStopRequests = (queryParams) => async () => {
   );
   return await client
     .get(`/rides/stopRequests?${params.join("&")}`)
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error("stop-requests-query", e);
+      throw new Error(e);
+    });
 };
 
 export const useStopRequestsQuery = (queryParams = {}) =>

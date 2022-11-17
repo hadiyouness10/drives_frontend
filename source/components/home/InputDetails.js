@@ -19,6 +19,10 @@ export const InputDetails = ({
   setStartLocation,
   destinationLocation,
   setDestinationLocation,
+  startCoordinates,
+  setStartCoordinates,
+  destinationCoordinates,
+  setDestinationCoordinates,
   date,
   setDate,
   numberOfSeats,
@@ -27,8 +31,6 @@ export const InputDetails = ({
   setUniversityField,
 }) => {
   const [dateTimePickerShown, setDateTimePickerShown] = useState(null);
-  const [startLocationMarker, setStartLocationMarker] = useState(null);
-  const [destinationMarker, setDestinationMarker] = useState();
   const numberOfSeatsRef = useRef(null);
 
   const inputLocationProps = {
@@ -36,10 +38,10 @@ export const InputDetails = ({
     universityField,
     navigation,
     locationMarkers: {
-      startLocationMarker,
-      destinationMarker,
-      setStartLocationMarker,
-      setDestinationMarker,
+      startCoordinates,
+      destinationCoordinates,
+      setStartCoordinates,
+      setDestinationCoordinates,
     },
   };
 
@@ -60,14 +62,14 @@ export const InputDetails = ({
           <View>
             <InputLocation
               position="start"
-              setLocationMarker={setStartLocationMarker}
+              setLocationMarker={setStartCoordinates}
               location={startLocation}
               setLocation={setStartLocation}
               {...inputLocationProps}
             />
             <InputLocation
               position="destination"
-              setLocationMarker={setDestinationMarker}
+              setLocationMarker={setDestinationCoordinates}
               location={destinationLocation}
               setLocation={setDestinationLocation}
               {...inputLocationProps}

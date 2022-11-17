@@ -10,6 +10,7 @@ import {
 import {
   useLocationSuggestionsQuery,
   useLocationCoordinatesQuery,
+  useLocationNameQuery,
 } from "api/queries";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Icon from "react-native-vector-icons/Entypo";
@@ -23,6 +24,7 @@ export const InputLocation = ({
   location,
   setLocation,
 }) => {
+  const [updateLocationNames, setUpdateLocationNames] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
@@ -36,43 +38,66 @@ export const InputLocation = ({
   const { data: locationCoordinates } =
     useLocationCoordinatesQuery(selectedLocation);
 
+  const { data: nameFromCoords, refetch: fetchLocationName } =
+    useLocationNameQuery(
+      position === "start"
+        ? locationMarkers.startCoordinates
+        : locationMarkers.destinationCoordinates
+    );
+
+  useEffect(() => {
+    if (nameFromCoords) setLocation(nameFromCoords);
+  }, [nameFromCoords]);
+
+  useEffect(() => {
+    if (updateLocationNames)
+      if (position === "start") fetchLocationName();
+      else fetchLocationName();
+
+    setUpdateLocationNames(false);
+  }, [
+    updateLocationNames,
+    JSON.stringify(locationMarkers.startCoordinates),
+    JSON.stringify(locationMarkers.destinationCoordinates),
+  ]);
+
   const inputRef = useRef(null);
 
   useEffect(() => {
-    const { setStartLocationMarker, setDestinationMarker } = locationMarkers;
+    const { setStartCoordinates, setDestinationCoordinates } = locationMarkers;
     if (locationCoordinates) {
       if (position === "start")
-        setStartLocationMarker({
+        setStartCoordinates({
           latitude: locationCoordinates?.lat,
           longitude: locationCoordinates?.lng,
         });
       else
-        setDestinationMarker({
+        setDestinationCoordinates({
           latitude: locationCoordinates?.lat,
           longitude: locationCoordinates?.lng,
         });
     }
   }, [JSON.stringify(locationCoordinates)]);
 
-  const locations = useMemo(
-    () =>
-      locationSuggestions?.map((location, index) => {
-        const { description } = location;
-        return (
-          <TouchableOpacity
-            key={index}
-            onPress={() => {
-              inputRef.current.blur();
-              setLocation(description);
-              setSelectedLocation(description);
-            }}
-          >
-            <Text style={styles.location}>{description}</Text>
-          </TouchableOpacity>
-        );
-      }) ?? [],
-    [JSON.stringify(locationSuggestions)]
-  );
+  const locations = useMemo(() => {
+    return locationSuggestions
+      ? locationSuggestions.map((location, index) => {
+          const { description } = location;
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                inputRef.current.blur();
+                setLocation(description);
+                setSelectedLocation(description);
+              }}
+            >
+              <Text style={styles.location}>{description}</Text>
+            </TouchableOpacity>
+          );
+        })
+      : [];
+  }, [JSON.stringify(locationSuggestions)]);
 
   const showSuggestions = isTyping && locationSuggestions?.length > 0;
 
@@ -92,6 +117,20 @@ export const InputLocation = ({
           onBlur={() => setIsTyping(null)}
         />
 
+        {universityField !== position && (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push(`Drop Pin`, {
+                locationMarkers,
+                position,
+                setUpdateLocationNames,
+              });
+            }}
+            style={styles.dropPinIcon}
+          >
+            <Icon name="location-pin" size={30} color="#404040" />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           style={{ margin: 10 }}
           onPress={() => {
@@ -101,18 +140,6 @@ export const InputLocation = ({
           }}
         >
           <MaterialIcons name="clear" size={20} color="#808080" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => {
-            navigation.push(`Drop Pin`, {
-              locationMarkers,
-              position,
-            });
-          }}
-          style={styles.dropPinIcon}
-        >
-          <Icon name="location-pin" size={30} color="#404040" />
         </TouchableOpacity>
       </View>
 

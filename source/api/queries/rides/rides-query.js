@@ -7,7 +7,13 @@ const getRides = (queryParams) => async () => {
     ? Object.keys(queryParams).map((param) => `${param}=${queryParams[param]}`)
     : [];
 
-  return await client.get(`/rides?${params.join("&")}`).then((res) => res.data);
+  return await client
+    .get(`/rides?${params.join("&")}`)
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error("rides-query", e);
+      throw new Error(e);
+    });
 };
 
 export const useRidesQuery = (queryParams) =>

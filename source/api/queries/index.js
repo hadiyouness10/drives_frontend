@@ -1,4 +1,5 @@
 export * from "./locations/location-coordinates-query";
+export * from "./locations/location-name-query";
 export * from "./locations/location-suggestions-query";
 export * from "./locations/possible-routes-query";
 

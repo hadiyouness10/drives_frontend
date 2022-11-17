@@ -7,7 +7,11 @@ const getLocationSuggestions =
     if (!searchText) return [];
     return await client
       .get(`/locations/suggestions/${searchText}?isUniversity=${isUniversity}`)
-      .then((res) => res.data);
+      .then((res) => res.data)
+      .catch((e) => {
+        console.error("location-suggestions-query", e);
+        throw new Error(e);
+      });
   };
 
 export const useLocationSuggestionsQuery = (
