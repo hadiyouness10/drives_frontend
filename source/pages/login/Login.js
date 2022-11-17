@@ -29,23 +29,22 @@ export const Login = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    console.log("***")
+    console.log("***");
+    navigation.navigate("Home");
+
     try {
-        await client.post('/authentication/login', {
-            email: email,
-            password: password
-        }
-        ).then((res) => {
-          console.log(res.data)
+      await client
+        .post("/authentication/login", {
+          email: email,
+          password: password,
+        })
+        .then((res) => {
+          console.log(res.data);
           // Login logic will get us the ID and name of the user
           signIn("123", 1, "User", "Generic");
-          navigation.navigate("Home");
         });
-      
-    } catch (error) {
-        
-    }
-}
+    } catch (error) {}
+  };
 
   return (
     <Background>
@@ -79,10 +78,7 @@ export const Login = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       {/* <Button mode="contained" onPress={onLoginPressed}> */}
-      <Button
-        mode="contained"
-        onPress={Auth}
-      >
+      <Button mode="contained" onPress={Auth}>
         Login
       </Button>
       <View style={styles.row}>
