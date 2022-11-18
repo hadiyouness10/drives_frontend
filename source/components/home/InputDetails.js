@@ -218,7 +218,7 @@ export const InputDetails = ({
                 <TextInput
                   style={{ flex: 1, fontSize: 18 }}
                   placeholder="Price per rider"
-                  value={pricePerRider}
+                  value={String(pricePerRider)}
                   keyboardType={"decimal-pad"}
                   onChangeText={(text) => setPricePerRider(parseFloat(text))}
                 />

@@ -7,6 +7,7 @@ import * as Location from "expo-location";
 
 export const MapComponent = ({
   mapRef,
+  showMyLocation = true,
   startLocationMarker = null,
   setStartLocationMarker = () => {},
   destinationMarker = null,
@@ -78,23 +79,25 @@ export const MapComponent = ({
         )}
         {route && <Polyline coordinates={route} />}
       </MapView>
-      <TouchableOpacity
-        style={[
-          styles.myLocationButton,
-          { bottom: position === null ? 20 : 70 },
-        ]}
-        onPress={async () => {
-          let location = await Location.getCurrentPositionAsync({});
-          mapRef.current.animateToRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-          });
-        }}
-      >
-        <MaterialIcons name="my-location" size={25} />
-      </TouchableOpacity>
+      {showMyLocation && (
+        <TouchableOpacity
+          style={[
+            styles.myLocationButton,
+            { bottom: position === null ? 20 : 70 },
+          ]}
+          onPress={async () => {
+            let location = await Location.getCurrentPositionAsync({});
+            mapRef.current.animateToRegion({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+          }}
+        >
+          <MaterialIcons name="my-location" size={25} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

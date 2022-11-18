@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import { InputDetails } from "components";
+import { InputDetails, RouteSelector } from "components";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
 import { HowItWorks } from "components/home/HowItWorks";
@@ -76,8 +76,25 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
 };
 
 const StartRide = ({ inputDetailsProps, navigation }) => {
-  const { mutate: createRide } = useCreateRideMutation();
+  const { mutate: createRide, data } = useCreateRideMutation();
   const { userID } = useContext(AuthenticationContext);
+  const [routeSelectorEnabled, setRouteSelectorEnabled] = useState(false);
+  console.log("data", data);
+
+  const [selectedRoute, setSelectedRoute] = useState(0);
+
+  useEffect(() => {
+    if (data)
+      if (data.status === "SUCCESS") {
+        const now = new Date();
+        navigation.navigate("Your Rides", {
+          screen: "/",
+          params: { defaultIndex: 1, date: now },
+        });
+      } else if (data.status === "REQUIRE_ROUTE_SELECTION") {
+        setRouteSelectorEnabled(true);
+      }
+  }, [JSON.stringify(data)]);
 
   const newRide = {
     studentId: userID,
@@ -109,6 +126,18 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
             <HowItWorks type="startRide"></HowItWorks>
           </View>
         </View>
+        <RouteSelector
+          startCoordinates={inputDetailsProps.startCoordinates}
+          destinationCoordinates={inputDetailsProps.destinationCoordinates}
+          enabled={routeSelectorEnabled}
+          setEnabled={setRouteSelectorEnabled}
+          displayedRoute={selectedRoute}
+          setDisplayedRoute={setSelectedRoute}
+          routes={data?.content}
+          createRide={() =>
+            createRide({ ...newRide, route: data.content[selectedRoute] })
+          }
+        />
       </View>
     </View>
   );

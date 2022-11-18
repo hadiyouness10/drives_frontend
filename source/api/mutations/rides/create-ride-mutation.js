@@ -1,10 +1,19 @@
 import client from "api/client";
-import { useMutation } from "react-query";
+import { useContext } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { AuthenticationContext } from "routes/authentication-context";
 
 const createRide = async (data) => {
   return await client.post("/rides", data).then((res) => res.data);
 };
 
 export const useCreateRideMutation = () => {
-  return useMutation({ mutationFn: createRide });
+  const queryClient = useQueryClient();
+  const { userID } = useContext(AuthenticationContext);
+  return useMutation({
+    mutationFn: createRide,
+    onSuccess: (data) => {
+      queryClient.refetchQueries(["rides", { driverID: userID }]);
+    },
+  });
 };

@@ -41,8 +41,9 @@ export const RideDetails = ({ route, navigation }) => {
     route: routePolyline,
   } = rideDetails ?? {};
 
+  console.log("ride dets", rideDetails);
   const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
-
+  console.log("driver", driverDetails);
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);

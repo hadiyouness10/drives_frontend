@@ -4,12 +4,13 @@ import {
   useStopRequestsQuery,
 } from "api/queries";
 import { RideView } from "components";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Text,
   useWindowDimensions,
   View,
   StyleSheet,
+  ScrollView,
   ImageBackground,
 } from "react-native";
 import { TabView, TabBar } from "react-native-tab-view";
@@ -26,7 +27,11 @@ const Joined = ({ userID, navigation }) => {
   const joinedRidesCards = data?.map((ride) => (
     <JoinedRideCard key={ride.id} ride={ride} navigation={navigation} />
   ));
-  return <View style={{ flex: 1, marginTop: 5 }}>{joinedRidesCards}</View>;
+  return (
+    <ScrollView style={{ flex: 1, marginTop: 5 }}>
+      {joinedRidesCards}
+    </ScrollView>
+  );
 };
 
 const Started = ({ userID, navigation }) => {
@@ -40,16 +45,27 @@ const Started = ({ userID, navigation }) => {
       {...ride}
     />
   ));
-  return <View style={{ flex: 1, marginTop: 5 }}>{startedRidesCards}</View>;
+  return (
+    <ScrollView style={{ flex: 1, marginTop: 5 }}>
+      {startedRidesCards}
+    </ScrollView>
+  );
 };
 
-export const YourRides = ({ navigation }) => {
+export const YourRides = ({ route, navigation }) => {
+  const { defaultIndex, date: dateOfRoute } = route?.params || {};
   const { userID } = useContext(AuthenticationContext);
+  console.log("index", defaultIndex, dateOfRoute);
   const [index, setIndex] = useState(0);
+  console.log("kj", index);
   const [routes] = useState([
     { key: "joined", title: "Rides You Joined" },
     { key: "started", title: "Rides You Started" },
   ]);
+
+  useEffect(() => {
+    if (defaultIndex) setIndex(defaultIndex);
+  }, [defaultIndex, dateOfRoute]);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -100,7 +116,7 @@ export const YourRides = ({ navigation }) => {
       </ImageBackground>
       <View
         style={{
-          height: "100%",
+          flex: 1,
           marginTop: -10,
         }}
       >
@@ -131,7 +147,6 @@ const styles = StyleSheet.create({
     height: 200,
     width: "100%",
     flexDirection: "column",
-    flexGrow: 1,
     justifyContent: "flex-end",
   },
 });
