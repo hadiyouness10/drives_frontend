@@ -14,6 +14,7 @@ import { emailValidator, passwordValidator } from "utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthenticationContext } from "routes/authentication-context";
 import client from "api/client";
+import * as Notifications from 'expo-notifications';
 
 
 export const Login = ({ navigation }) => {
@@ -38,7 +39,7 @@ export const Login = ({ navigation }) => {
         }
         ).then((res) => {
           console.log("data", res.data)
-          signIn(res.data.accessToken, res.data.userId, res.data.firstName, res.data.lastName);
+          signIn(res.data.userId, res.data.firstName, res.data.lastName);
           navigation.navigate("Home");
         });
     } catch (error) {}
