@@ -15,9 +15,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthenticationContext } from "routes/authentication-context";
 import client from "api/client";
 
+
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
 
   const { signIn } = useContext(AuthenticationContext);
 
@@ -29,19 +31,15 @@ export const Login = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    console.log("***");
-    navigation.navigate("Home");
-
     try {
-      await client
-        .post("/authentication/login", {
-          email: email,
-          password: password,
-        })
-        .then((res) => {
-          console.log(res.data);
-          // Login logic will get us the ID and name of the user
-          signIn("123", 1, "User", "Generic");
+        await client.post('/authentication/login', {
+            email: email.value,
+            password: password.value
+        }
+        ).then((res) => {
+          console.log("data", res.data)
+          signIn(res.data.accessToken, res.data.userId, res.data.firstName, res.data.lastName);
+          navigation.navigate("Home");
         });
     } catch (error) {}
   };
