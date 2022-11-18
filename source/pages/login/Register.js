@@ -1,6 +1,14 @@
-import React, { useEffect, useContext,useState } from "react";
+import React, { useEffect,useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
+import { theme } from "core";
+import { emailValidator, passwordValidator, nameValidator } from "utils";
+import client from "api/client";
+import PhoneInput from 'react-native-phone-number-input'
+import { ScrollView } from "react-native-gesture-handler";
+import DatePicker from "react-native-datepicker";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Dropdown } from 'react-native-element-dropdown';
 import {
   Background,
   Logo,
@@ -9,15 +17,7 @@ import {
   TextInput,
   BackButton,
 } from "components";
-import { theme } from "core";
-import { emailValidator, passwordValidator, nameValidator } from "utils";
-import { AuthenticationContext } from "routes/authentication-context";
-import client from "api/client";
-import PhoneInput from 'react-native-phone-number-input'
-import { ScrollView } from "react-native-gesture-handler";
-import DatePicker from "react-native-datepicker";
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Dropdown } from 'react-native-element-dropdown';
+import {useUniversitiesQuery} from "api/queries";
 
 export const Register = ({ navigation }) => {
 
@@ -34,25 +34,21 @@ export const Register = ({ navigation }) => {
   const [Focus, setFocus] = useState(false);
   const [CampusFocus, setCampusFocus] = useState(false);
 
+  const { data } = useUniversitiesQuery();
   useEffect(() => {
-    const getUniversities = async () => {
-      try {
-        await client.get('/authentication/universities').then(res =>{
-          let dropDownData = [];
-          for (var i = 0; i < res.data.length; i++) {
-            dropDownData.push({ value: res.data[i].ID, label: res.data[i].name }); // Create your array of data
-        }
-          setUniversities(dropDownData)
-          console.log(universities)
-        });
-        
-    } catch (error) {}};
-    getUniversities();
+      let dropDownData = [];
+      for (var i = 0; i < data.length; i++) {
+        dropDownData.push({ value: data[i].ID, label: data[i].name }); // Create your array of data
+    }
+      setUniversities(dropDownData)
+      console.log(universities)
+
   }, []);
 
   const getUniversityCampuses = async (id) => {
+    console.log(`** ${id}`)
     try {
-      await client.get(`/authentication/${id}/campuses`).then(res =>{
+      await client.get(`/authentication/campuses/${id}`).then(res =>{
         console.log(res.data)
         let dropDownData = [];
           for (var i = 0; i < res.data.length; i++) {
