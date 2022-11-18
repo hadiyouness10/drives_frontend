@@ -4,7 +4,7 @@ import { RideView } from "components";
 import { useRidesQuery } from "api/queries";
 
 export const Riders = ({ route, navigation }) => {
-  const { departureCoordinates, destinationCoordinates } = route?.params ?? {};
+  const { departureCoordinates, destinationCoordinates, minPrice, maxPrice } = route?.params ?? {};
   const { data } = useRidesQuery(
     departureCoordinates && destinationCoordinates
       ? {
@@ -16,6 +16,8 @@ export const Riders = ({ route, navigation }) => {
             latitude: destinationCoordinates.latitude,
             longitude: destinationCoordinates.longitude,
           }),
+          minPrice,
+          maxPrice,
         }
       : {}
   );
