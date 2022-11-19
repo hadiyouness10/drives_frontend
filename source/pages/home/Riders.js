@@ -1,16 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { RideView } from "components";
 import { useRidesQuery } from "api/queries";
 import { AuthenticationContext } from "routes/authentication-context";
 
 export const Riders = ({ route, navigation }) => {
+  const [orderBy,setOrderBy] = useState("priceperRider")
+  const [descending,setDescending] = useState(false)
+  const [minPrice,setMinPrice] = useState(null)
+  const [maxPrice,setMaxPrice] = useState(null)
+
   const {
     departureLocation,
     departureCoordinates,
     destinationCoordinates,
-    minPrice,
-    maxPrice,
     numberOfSeats,
     dateOfDeparture,
     minPricePerRider,
@@ -30,6 +33,8 @@ export const Riders = ({ route, navigation }) => {
           }),
           minPrice,
           maxPrice,
+          orderBy,
+          descending,
           numberOfSeats,
           dateOfDeparture: dateOfDeparture.toISOString(),
           searcherId: userId,
