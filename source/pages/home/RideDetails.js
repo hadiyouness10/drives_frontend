@@ -51,7 +51,7 @@ export const RideDetails = ({ route, navigation }) => {
       <View style={{ flex: 1 }}>
         <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
           <TouchableOpacity
-            style={{ flexDirection: "row", marginBottom: 20 }}
+            style={{ flexDirection: "row", marginBottom: 5 }}
             onPress={() =>
               navigation.push(
                 pageIndex == 0
@@ -91,6 +91,8 @@ export const RideDetails = ({ route, navigation }) => {
               style={{ marginLeft: "auto", alignSelf: "center" }}
             />
           </TouchableOpacity>
+          <View style={styles.drawLine}></View>
+
           <DetailView
             label="Date of Departure"
             value={
@@ -114,8 +116,21 @@ export const RideDetails = ({ route, navigation }) => {
             icon="location"
           />
 
-          <Button title="Request Pickup" />
+          <View
+            style={{
+              borderWidth: 1,
+              width: "50%",
+              alignItems: "center",
+              alignSelf: "center",
+              borderRadius: "10",
+              borderColor: "#5AC2F9",
+              backgroundColor: "#5AC2F9",
+            }}
+          >
+            <Button color={"black"} title="Request Pickup" />
+          </View>
         </View>
+
         <MapComponent
           mapRef={mapRef}
           initialRegion={{
@@ -155,5 +170,14 @@ const styles = StyleSheet.create({
   driverDetails: {
     marginLeft: 20,
     justifyContent: "center",
+  },
+  drawLine: {
+    borderBottomColor: "black",
+    marginTop: 10,
+    borderBottomWidth: 0.4,
+    width: "95%",
+    marginLeft: "2%",
+    marginRight: "2%",
+    marginBottom: 10,
   },
 });

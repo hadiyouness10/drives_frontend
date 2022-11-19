@@ -15,6 +15,8 @@ import {
   Account,
   Riders,
   YourRides,
+  Chat,
+  Chats,
 } from "pages";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -63,6 +65,8 @@ const AccountNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={Account} />
+      <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Chats" component={Chats} />
     </Stack.Navigator>
   );
 };

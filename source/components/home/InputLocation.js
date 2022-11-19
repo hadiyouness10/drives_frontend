@@ -104,19 +104,6 @@ export const InputLocation = ({
   return (
     <View style={{ marginBottom: showSuggestions ? 0 : 15 }}>
       <View style={styles.input}>
-        <TextInput
-          ref={inputRef}
-          style={{ flex: 1, fontSize: 18 }}
-          placeholder={`${
-            position === "start" ? "Starting Location" : "Destination"
-          }${universityField === position ? " (University)" : ""}`}
-          placeholderTextColor="grey"
-          value={location}
-          onChangeText={(text) => setLocation(text)}
-          onFocus={() => setIsTyping(true)}
-          onBlur={() => setIsTyping(null)}
-        />
-
         {universityField !== position && (
           <TouchableOpacity
             onPress={() => {
@@ -131,6 +118,19 @@ export const InputLocation = ({
             <Icon name="location-pin" size={30} color="#404040" />
           </TouchableOpacity>
         )}
+        <TextInput
+          ref={inputRef}
+          style={{ flex: 1, fontSize: 18 }}
+          placeholder={`${
+            position === "start" ? "Starting Location" : "Destination"
+          }${universityField === position ? " (University)" : ""}`}
+          placeholderTextColor="grey"
+          value={location}
+          onChangeText={(text) => setLocation(text)}
+          onFocus={() => setIsTyping(true)}
+          onBlur={() => setIsTyping(null)}
+        />
+
         <TouchableOpacity
           style={{ margin: 10 }}
           onPress={() => {

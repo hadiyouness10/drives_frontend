@@ -85,6 +85,8 @@ export const InputDetails = ({
                 width: 44,
                 borderRadius: 22,
                 borderColor: "white",
+                alignSelf: "flex-end",
+                marginRight: 20,
               }}
             >
               <TouchableOpacity

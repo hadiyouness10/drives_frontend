@@ -17,24 +17,24 @@ import client from "api/client";
 
 export const Account = ({ navigation }) => {
   const { signOut } = useContext(AuthenticationContext);
-
+  function navigateToInbox() {
+    navigation.push("Chats");
+  }
   const Logout = async () => {
-    
     try {
-        await client.delete('/logout');
+      await client.delete("/logout");
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-      await AsyncStorage.removeItem("authentication");
-      signOut();
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Start" }],
-        })
-      );
-    
-}
+    await AsyncStorage.removeItem("authentication");
+    signOut();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Start" }],
+      })
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -94,18 +94,18 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
-          <View style={styles.optionsObject}>
-            <Text style={styles.options}>Inbox</Text>
-            <MaterialCommunityIcons
-              style={styles.icons}
-              name="inbox"
-              size={24}
-            />
-          </View>
+          <TouchableOpacity onPress={() => navigateToInbox()}>
+            <View style={styles.optionsObject}>
+              <Text style={styles.options}>Inbox</Text>
+              <MaterialCommunityIcons
+                style={styles.icons}
+                name="inbox"
+                size={24}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={Logout}
-        >
+        <TouchableOpacity onPress={Logout}>
           <View style={styles.drawLine} />
           <View style={styles.optionsObject}>
             <Text style={styles.options}>Log Out</Text>
