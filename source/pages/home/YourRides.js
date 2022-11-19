@@ -16,40 +16,75 @@ import {
 import { TabView, TabBar } from "react-native-tab-view";
 import { AuthenticationContext } from "routes/authentication-context";
 
-const JoinedRideCard = ({ ride, navigation }) => {
-  const { data } = useRideDetailsQuery(ride.rideId);
-  if (data) return <RideView {...data} pageIndex={1} navigation={navigation} />;
+const JoinedRideCard = ({ stopRequest, navigation }) => {
+  const { data } = useRideDetailsQuery(stopRequest.rideId);
+  if (data)
+    return (
+      <RideView
+        {...data}
+        stopRequest={stopRequest}
+        pageIndex={1}
+        navigation={navigation}
+      />
+    );
   else return <Text>Loading</Text>;
 };
 
 const Joined = ({ userId, navigation, dateOfPageRoute }) => {
-  const { data } = useStopRequestsQuery({ studentId: userId });
+  const { data, isLoading } = useStopRequestsQuery({ studentId: userId });
   const scrollRef = useRef(null);
   useEffect(() => {
-    if (dateOfPageRoute)
-      setTimeout(() => {
-        scrollRef.current.scrollToEnd({ animated: true });
-      }, 500);
+    // if (dateOfPageRoute)
+    //   setTimeout(() => {
+    //     scrollRef.current.scrollToEnd({ animated: true });
+    //   }, 500);
   }, [dateOfPageRoute]);
 
-  const joinedRidesCards = data?.map((ride) => (
-    <JoinedRideCard key={ride.id} ride={ride} navigation={navigation} />
+  const joinedRidesCards = data?.map((stopRequest) => (
+    <JoinedRideCard
+      key={stopRequest.ID}
+      stopRequest={stopRequest}
+      navigation={navigation}
+    />
   ));
-  return (
-    <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 5 }}>
-      {joinedRidesCards}
-    </ScrollView>
-  );
+  if (isLoading)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontSize: 18, color: "grey" }}>Loading...</Text>
+      </View>
+    );
+  else if (!data || data.length === 0)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "grey",
+            width: "70%",
+            textAlign: "center",
+          }}
+        >
+          You have not joined any rides.
+        </Text>
+      </View>
+    );
+  else
+    return (
+      <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 5 }}>
+        {joinedRidesCards}
+      </ScrollView>
+    );
 };
 
 const Started = ({ userId, navigation, dateOfPageRoute }) => {
-  const { data } = useRidesQuery({ driverId: userId });
+  const { data, isLoading } = useRidesQuery({ driverId: userId });
   const scrollRef = useRef(null);
 
   useEffect(() => {
     if (dateOfPageRoute)
       setTimeout(() => {
-        scrollRef.current.scrollToEnd({ animated: true });
+        // if (scrollRef.current)
+        // scrollRef.current.scrollToEnd({ animated: true });
       }, 500);
   }, [dateOfPageRoute]);
 
@@ -62,11 +97,33 @@ const Started = ({ userId, navigation, dateOfPageRoute }) => {
       {...ride}
     />
   ));
-  return (
-    <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 5 }}>
-      {startedRidesCards}
-    </ScrollView>
-  );
+  if (isLoading)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontSize: 18, color: "grey" }}>Loading...</Text>
+      </View>
+    );
+  else if (!data || data.length === 0)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "grey",
+            width: "70%",
+            textAlign: "center",
+          }}
+        >
+          You have not started any rides.
+        </Text>
+      </View>
+    );
+  else
+    return (
+      <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 5 }}>
+        {startedRidesCards}
+      </ScrollView>
+    );
 };
 
 export const YourRides = ({ route, navigation }) => {
@@ -79,7 +136,10 @@ export const YourRides = ({ route, navigation }) => {
   ]);
 
   useEffect(() => {
-    if (defaultIndex) setIndex(defaultIndex);
+    if (defaultIndex && defaultIndex !== index)
+      setTimeout(() => {
+        setIndex(defaultIndex);
+      }, 200);
   }, [defaultIndex, dateOfPageRoute]);
 
   const renderScene = ({ route }) => {

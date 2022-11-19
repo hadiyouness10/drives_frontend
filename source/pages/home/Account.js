@@ -15,9 +15,11 @@ import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
 import { useContext } from "react";
 import client from "api/client";
+import { useStopRequestsQuery } from "api/queries";
 
 export const Account = ({ navigation }) => {
-  const { signOut } = useContext(AuthenticationContext);
+  const { userId, signOut } = useContext(AuthenticationContext);
+  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
   function navigateToInbox() {
     navigation.push("Chats");
   }
@@ -88,6 +90,24 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
+          <TouchableOpacity
+            style={styles.optionsObject}
+            onPress={() => navigation.push("Stop Requests")}
+          >
+            <Text style={styles.options}>Stop Requests </Text>
+            {data && data.length > 0 && (
+              <Icon
+                name="alert-circle"
+                size={24}
+                color={"red"}
+                style={{ marginLeft: 10, marginRight: "auto", marginTop: 10 }}
+              />
+            )}
+            <Icon style={styles.icons} name="list" size={24} />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <View style={styles.drawLine} />
           <View style={styles.optionsObject}>
             <Text style={styles.options}>Ride History</Text>
             <Icon style={styles.icons} name="list" size={24} />
@@ -108,7 +128,7 @@ export const Account = ({ navigation }) => {
         </View>
         <TouchableOpacity onPress={Logout}>
           <View style={styles.drawLine} />
-          <View style={styles.optionsObject}>
+          <View style={[styles.optionsObject, { marginBottom: 20 }]}>
             <Text style={styles.options}>Log Out</Text>
             <MaterialCommunityIcons
               style={styles.icons}
@@ -165,5 +185,6 @@ const styles = StyleSheet.create({
   optionsObject: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
 });
