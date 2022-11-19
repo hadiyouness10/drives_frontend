@@ -11,9 +11,10 @@ import { dateTimeFormatter } from "utils";
 import { InputLocation } from "./InputLocation";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/Entypo";
+import { TextInput } from "react-native-gesture-handler";
 
 export const InputDetails = ({
-  type,
+  type, // joinRide | startRide
   navigation,
   startLocation,
   setStartLocation,
@@ -27,22 +28,26 @@ export const InputDetails = ({
   setDate,
   numberOfSeats,
   setNumberOfSeats,
+  pricePerRider,
+  setPricePerRider,
   universityField,
   setUniversityField,
+  updateLocationCoords,
+  setUpdateLocationCoords,
 }) => {
   const [dateTimePickerShown, setDateTimePickerShown] = useState(null);
   const numberOfSeatsRef = useRef(null);
 
   const inputLocationProps = {
-    type,
+    type, // joinRide, startRide
     universityField,
     navigation,
-    locationMarkers: {
-      startCoordinates,
-      destinationCoordinates,
-      setStartCoordinates,
-      setDestinationCoordinates,
-    },
+    startCoordinates,
+    destinationCoordinates,
+    setStartCoordinates,
+    setDestinationCoordinates,
+    updateLocationCoords,
+    setUpdateLocationCoords,
   };
 
   return (
@@ -91,9 +96,16 @@ export const InputDetails = ({
             >
               <TouchableOpacity
                 onPress={() => {
-                  setUniversityField((field) =>
-                    field === "destination" ? "start" : "destination"
-                  );
+                  setUniversityField((field) => {
+                    setUpdateLocationCoords(false);
+                    const temp = startLocation;
+                    setStartLocation(destinationLocation);
+                    setDestinationLocation(temp);
+                    const temp2 = startCoordinates;
+                    setStartCoordinates(destinationCoordinates);
+                    setDestinationCoordinates(temp2);
+                    return field === "destination" ? "start" : "destination";
+                  });
                 }}
               >
                 <Icon size={40} name={"retweet"} color={"black"} />
@@ -177,7 +189,7 @@ export const InputDetails = ({
           <View style={[{ flexDirection: "row", alignItems: "center" }]}>
             <View style={[{ flex: 1, flexDirection: "row" }]}>
               <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                Number Of Seats
+                Number Of {type === "joinRide" ? "Riders" : "Seats"}
               </Text>
             </View>
             <View
@@ -204,6 +216,20 @@ export const InputDetails = ({
               </TouchableOpacity>
             </View>
           </View>
+          {type === "startRide" && (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View style={styles.input}>
+                <Text style={{ fontSize: 24, marginRight: 10 }}>$</Text>
+                <TextInput
+                  style={{ flex: 1, fontSize: 18 }}
+                  placeholder="Price per rider"
+                  value={pricePerRider}
+                  keyboardType={"decimal-pad"}
+                  onChangeText={(text) => setPricePerRider(text)}
+                />
+              </View>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -217,26 +243,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   infoSection: {
-    // marginHorizontal: 15,
     paddingTop: 20,
     backgroundColor: "white",
-  },
-  wrapperViewDiv: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingTop: 50,
-    marginTop: 60,
-    borderColor: "grey",
-    backgroundColor: "white",
-  },
-  wrapperViewTitle: {
-    position: "absolute",
-    top: -37,
-    left: 0,
-    right: 0,
-    justifyContent: "center",
-    alignItems: "center",
   },
   buttonDiv: {
     flex: 1,
@@ -255,5 +263,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
+  },
+  input: {
+    height: 60,
+    flex: 1,
+    marginBottom: 10,
+    padding: 10,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    backgroundColor: "rgba(10, 10, 10, 0.07)",
   },
 });

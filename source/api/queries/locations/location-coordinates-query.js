@@ -12,8 +12,24 @@ const getLocationCoordinates = (address) => async () => {
     });
 };
 
-export const useLocationCoordinatesQuery = (address, autofetch = true) =>
-  useQuery(["locationCoordinates", address], getLocationCoordinates(address), {
-    enabled: autofetch,
-    retry: false,
-  });
+export const useLocationCoordinatesQuery = (
+  address,
+  autofetch = true,
+  locationType
+) =>
+  useQuery(
+    ["locationCoordinates", address, autofetch, locationType],
+    getLocationCoordinates(address),
+    {
+      enabled: autofetch,
+      retry: false,
+      cacheTime: 0,
+      select: (coords) =>
+        coords
+          ? {
+              latitude: coords.lat,
+              longitude: coords.lng,
+            }
+          : undefined,
+    }
+  );

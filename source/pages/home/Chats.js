@@ -9,20 +9,16 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { GiftedChat } from "react-native-gifted-chat";
-import "react-native-gesture-handler";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatQuery } from "api/queries";
-import { useSendMessageMutation } from "api/mutations";
 import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
 
 export const Chats = ({ navigation }) => {
   const [chats, setChats] = useState([]);
   const { id, firstName } = useContext(AuthenticationContext);
   const { data: chatsList } = useChatsQuery(1);
-  function navigateToChat() {
+  function navigateToChat(chatId, firstName, lastName) {
     console.log("navigating");
-    navigation.push("Chat");
+    navigation.push("Chat", { chatId, firstName, lastName });
   }
 
   useEffect(() => {
@@ -51,7 +47,11 @@ export const Chats = ({ navigation }) => {
         {chats.map((chat) => {
           return (
             <View key={chat.ID}>
-              <TouchableOpacity onPress={() => navigateToChat()}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigateToChat(chat.chatID, chat.firstName, chat.lastName)
+                }
+              >
                 <View
                   style={{
                     height: 70,

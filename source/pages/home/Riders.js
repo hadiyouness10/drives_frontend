@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { RideView } from "components";
 import { useRidesQuery } from "api/queries";
+import { AuthenticationContext } from "routes/authentication-context";
 
 export const Riders = ({ route, navigation }) => {
-  const { departureCoordinates, destinationCoordinates } = route?.params ?? {};
+  const {
+    departureCoordinates,
+    destinationCoordinates,
+    minPrice,
+    maxPrice,
+    numberOfSeats,
+    dateOfDeparture,
+  } = route?.params ?? {};
+  const { userId } = useContext(AuthenticationContext);
   const { data } = useRidesQuery(
     departureCoordinates && destinationCoordinates
       ? {
@@ -16,6 +25,11 @@ export const Riders = ({ route, navigation }) => {
             latitude: destinationCoordinates.latitude,
             longitude: destinationCoordinates.longitude,
           }),
+          minPrice,
+          maxPrice,
+          numberOfSeats,
+          dateOfDeparture: dateOfDeparture.toISOString(),
+          searcherId: userId,
         }
       : {}
   );
@@ -40,7 +54,7 @@ export const Riders = ({ route, navigation }) => {
               dateOfDeparture,
               departureCoordinates,
               pricePerRider,
-              numberOfRiders,
+              numberOfSeats,
             } = ride;
             return (
               <RideView
@@ -50,7 +64,7 @@ export const Riders = ({ route, navigation }) => {
                 dateOfDeparture={dateOfDeparture}
                 departureCoordinates={departureCoordinates}
                 pricePerRider={pricePerRider}
-                numberOfRiders={numberOfRiders}
+                numberOfSeats={numberOfSeats}
                 navigation={navigation}
               />
             );

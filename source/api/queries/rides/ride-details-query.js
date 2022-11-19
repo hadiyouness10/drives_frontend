@@ -1,10 +1,10 @@
 import { useQuery } from "react-query";
 import client from "api/client";
 
-const getRideDetails = (rideID) => async () => {
-  if (!rideID) return undefined;
+const getRideDetails = (rideId) => async () => {
+  if (!rideId) return undefined;
   return await client
-    .get(`/rides/${rideID}`)
+    .get(`/rides/${rideId}`)
     .then((res) => res.data)
     .catch((e) => {
       console.error("ride-details-query", e);
@@ -12,5 +12,5 @@ const getRideDetails = (rideID) => async () => {
     });
 };
 
-export const useRideDetailsQuery = (rideID) =>
-  useQuery(["rideDetails", rideID], getRideDetails(rideID));
+export const useRideDetailsQuery = (rideId) =>
+  useQuery(["rideDetails", rideId], getRideDetails(rideId));

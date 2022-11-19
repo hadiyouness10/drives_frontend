@@ -91,21 +91,21 @@ export const LoginNavigator = () => {
       <AuthenticationContext.Provider
         value={{
           token: authentication?.token,
-          userID: authentication?.userID,
+          userId: authentication?.userId,
           firstName: authentication?.firstName,
           lastName: authentication?.lastName,
 
-          signIn: async (token, userID, firstName, lastName) => {
+          signIn: async (token, userId, firstName, lastName) => {
             await AsyncStorage.setItem(
               "authentication",
               JSON.stringify({
-                token: "123",
-                userID: 1,
-                firstName: "User",
-                lastName: "Generic",
+                token: token,
+                userId: userId,
+                firstName: firstName,
+                lastName: lastName,
               })
             );
-            setAuthentication({ token, userID, firstName, lastName });
+            setAuthentication({ token, userId, firstName, lastName });
           },
           signOut: () => setAuthentication(null),
         }}
@@ -119,7 +119,7 @@ export const LoginNavigator = () => {
           <Stack.Screen name="Start" component={Start} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="ResetPasswordScreen" component={ResetPassword} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} />
           <Stack.Screen name="Home" component={AppRouter} />
         </Stack.Navigator>
       </AuthenticationContext.Provider>

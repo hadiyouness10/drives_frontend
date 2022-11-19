@@ -1,10 +1,10 @@
 import { useQuery } from "react-query";
 import client from "api/client";
 
-const getUserDetails = (userID) => async () => {
-  if (!userID) return undefined;
+const getUserDetails = (userId) => async () => {
+  if (!userId) return undefined;
   return await client
-    .get(`/users/${userID}`)
+    .get(`/users/${userId}`)
     .then((res) => res.data)
     .catch((e) => {
       console.error("user-detials-query", e);
@@ -12,5 +12,5 @@ const getUserDetails = (userID) => async () => {
     });
 };
 
-export const useUserDetailsQuery = (userID) =>
-  useQuery(["userDetails", userID], getUserDetails(userID));
+export const useUserDetailsQuery = (userId) =>
+  useQuery(["userDetails", userId], getUserDetails(userId));

@@ -8,32 +8,32 @@ import {
 import React, { Component, useContext, useEffect, useState } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { SafeAreaView } from "react-native-safe-area-context";
-import "react-native-gesture-handler";
 import { AuthenticationContext } from "routes/authentication-context";
 import { sendMessageQuery, useChatQuery } from "api/queries";
 import { useSendMessageMutation } from "api/mutations";
 
-export const Chat = ({ navigation }) => {
+export const Chat = ({ route, navigation }) => {
+  const chatId = route.params?.chatId;
+  const chatterName = route.params?.firstName + " " + route.params?.lastName;
   const [messages, setMessages] = useState([]);
   const { id, firstName } = useContext(AuthenticationContext);
-  const { data: messagesList } = useChatQuery(1);
+  const { data: messagesList } = useChatQuery(chatId);
   const { mutate } = useSendMessageMutation();
   const sendMessage = (message) => {
     const data = {
-      studentId: 1,
-      chatID: 1,
+      studentId: id ? id : 1,
+      chatID: chatId,
       message: message[0]["text"],
     };
     mutate(data);
   };
   const getUser = () => {
     return {
-      _id: 1,
+      _id: id ? id : 1,
       name: firstName,
       avatar: "",
     };
   };
-  const chatterName = "Khaled Jalloul";
 
   useEffect(() => {
     console.log("updated message list");

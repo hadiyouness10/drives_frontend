@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TouchableOpacity, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import {
@@ -11,15 +11,29 @@ import {
 } from "components";
 import { theme } from "core";
 import { emailValidator, passwordValidator } from "utils";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthenticationContext } from "routes/authentication-context";
-import client from "api/client";
+import { useLoginUserMutation } from "api/mutations/authentication/login-user-mutation";
 
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
+  const { mutate: LoginUser, data: loggedin } = useLoginUserMutation();
+
   const { signIn } = useContext(AuthenticationContext);
+
+  useEffect(() => {
+    navigation.navigate("Home");
+
+    if (loggedin) {
+      signIn(
+        loggedin.accessToken,
+        loggedin.userId,
+        loggedin.firstName,
+        loggedin.lastName
+      );
+    }
+  }, [loggedin]);
 
   const Auth = async () => {
     const emailError = emailValidator(email.value);
@@ -29,21 +43,11 @@ export const Login = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    console.log("***");
-    navigation.navigate("Home");
-
-    try {
-      await client
-        .post("/authentication/login", {
-          email: email,
-          password: password,
-        })
-        .then((res) => {
-          console.log(res.data);
-          // Login logic will get us the ID and name of the user
-          signIn("123", 1, "User", "Generic");
-        });
-    } catch (error) {}
+    const user = {
+      universityEmail: email.value,
+      password: password.value,
+    };
+    LoginUser(user);
   };
 
   return (

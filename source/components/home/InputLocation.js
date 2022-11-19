@@ -20,11 +20,16 @@ export const InputLocation = ({
   position,
   universityField,
   navigation,
-  locationMarkers,
+  startCoordinates,
+  destinationCoordinates,
+  setStartCoordinates,
+  setDestinationCoordinates,
   location,
   setLocation,
+  updateLocationCoords,
+  setUpdateLocationCoords,
 }) => {
-  const [updateLocationNames, setUpdateLocationNames] = useState(false);
+  const [updateLocationName, setUpdateLocationName] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
@@ -35,49 +40,50 @@ export const InputLocation = ({
     universityField === position
   );
 
-  const { data: locationCoordinates } =
+  const { data: fetchedLocationCoordinates } =
     useLocationCoordinatesQuery(selectedLocation);
 
   const { data: nameFromCoords, refetch: fetchLocationName } =
     useLocationNameQuery(
-      position === "start"
-        ? locationMarkers.startCoordinates
-        : locationMarkers.destinationCoordinates
+      position === "start" ? startCoordinates : destinationCoordinates
     );
 
   useEffect(() => {
-    if (nameFromCoords) setLocation(nameFromCoords);
+    if (nameFromCoords) {
+      setUpdateLocationCoords(false);
+      setLocation(nameFromCoords);
+    }
   }, [nameFromCoords]);
 
   useEffect(() => {
-    if (updateLocationNames)
-      if (position === "start") fetchLocationName();
-      else fetchLocationName();
-
-    setUpdateLocationNames(false);
+    if (updateLocationName) {
+      // set this to true so that the name is not fetched when coords
+      // are already being generated from the name.
+      fetchLocationName();
+      setUpdateLocationName(false);
+    }
   }, [
-    updateLocationNames,
-    JSON.stringify(locationMarkers.startCoordinates),
-    JSON.stringify(locationMarkers.destinationCoordinates),
+    updateLocationName,
+    JSON.stringify(startCoordinates),
+    JSON.stringify(destinationCoordinates),
   ]);
 
   const inputRef = useRef(null);
 
   useEffect(() => {
-    const { setStartCoordinates, setDestinationCoordinates } = locationMarkers;
-    if (locationCoordinates) {
-      if (position === "start")
-        setStartCoordinates({
-          latitude: locationCoordinates?.lat,
-          longitude: locationCoordinates?.lng,
-        });
-      else
-        setDestinationCoordinates({
-          latitude: locationCoordinates?.lat,
-          longitude: locationCoordinates?.lng,
-        });
+    if (fetchedLocationCoordinates) {
+      if (position === "start") setStartCoordinates(fetchedLocationCoordinates);
+      else setDestinationCoordinates(fetchedLocationCoordinates);
     }
-  }, [JSON.stringify(locationCoordinates)]);
+  }, [JSON.stringify(fetchedLocationCoordinates)]);
+
+  useEffect(() => {
+    if (updateLocationCoords) {
+      if (position === "start") setStartCoordinates(null);
+      else setDestinationCoordinates(null);
+    }
+    setUpdateLocationCoords(true);
+  }, [location]);
 
   const locations = useMemo(() => {
     return locationSuggestions
@@ -108,9 +114,12 @@ export const InputLocation = ({
           <TouchableOpacity
             onPress={() => {
               navigation.push(`Drop Pin`, {
-                locationMarkers,
+                startCoordinates,
+                destinationCoordinates,
+                setStartCoordinates,
+                setDestinationCoordinates,
                 position,
-                setUpdateLocationNames,
+                setUpdateLocationName,
               });
             }}
             style={styles.dropPinIcon}
