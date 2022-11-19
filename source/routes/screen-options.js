@@ -37,7 +37,12 @@ export const createTabScreenOptions = (stopRequestCount) => {
       headerShown: false,
       tabBarStyle: { height: 65 },
       tabBarItemStyle: { height: 50 },
-      tabBarBadge: route.name == "Account" ? stopRequestCount : undefined,
+      tabBarBadge:
+        route.name == "Account"
+          ? stopRequestCount === 0
+            ? undefined
+            : stopRequestCount
+          : undefined,
     };
   };
   return tabScreenOptions;

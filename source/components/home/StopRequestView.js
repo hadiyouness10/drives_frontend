@@ -6,6 +6,7 @@ import Icon from "react-native-vector-icons/Entypo";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { dateTimeFormatter } from "utils";
 import { useUserDetailsQuery } from "api/queries";
+import { useUpdateStopRequestMutation } from "api/mutations";
 
 const Detail = ({ title, icon, value }) => (
   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -29,25 +30,11 @@ export const StopRequestView = ({
 }) => {
   const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
     useUserDetailsQuery(studentId);
+  const { mutate } = useUpdateStopRequestMutation();
   if (!firstName) return <View />;
   else
     return (
-      <View
-        style={styles.stopRequestView}
-        // onPress={() =>
-        //   navigation.push(
-        //     pageIndex === 0 ? "Ride Details" : "Ride Details (Your Rides)",
-        //     {
-        //       rideId: id,
-        //       driverId,
-        //       pageIndex,
-        //       pickupLocation,
-        //       pickupCoordinates,
-        //       request,
-        //     }
-        //   )
-        // }
-      >
+      <View style={styles.stopRequestView}>
         <View style={{ flexDirection: "row" }}>
           <View style={styles.mapContainer}>
             <MapView
@@ -132,11 +119,17 @@ export const StopRequestView = ({
           <View style={{ flexDirection: "row", width: "100%", flex: 1 }}>
             <TouchableOpacity
               style={[styles.buttonDiv, { backgroundColor: "green" }]}
+              onPress={() =>
+                mutate({ id: ID, content: { newStatus: "ACCEPTED", rideId } })
+              }
             >
               <IonIcon name="checkmark" color="white" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.buttonDiv, { backgroundColor: "darkred" }]}
+              onPress={() =>
+                mutate({ id: ID, content: { newStatus: "REJECTED", rideId } })
+              }
             >
               <IonIcon name="ios-close-outline" color="white" />
             </TouchableOpacity>

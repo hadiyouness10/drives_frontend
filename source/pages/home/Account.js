@@ -15,9 +15,11 @@ import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
 import { useContext } from "react";
 import client from "api/client";
+import { useStopRequestsQuery } from "api/queries";
 
 export const Account = ({ navigation }) => {
-  const { signOut } = useContext(AuthenticationContext);
+  const { userId, signOut } = useContext(AuthenticationContext);
+  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
 
   const Logout = async () => {
     try {
@@ -91,12 +93,14 @@ export const Account = ({ navigation }) => {
             onPress={() => navigation.push("Stop Requests")}
           >
             <Text style={styles.options}>Stop Requests </Text>
-            <Icon
-              name="alert-circle"
-              size={24}
-              color={"red"}
-              style={{ marginLeft: 10, marginRight: "auto", marginTop: 10 }}
-            />
+            {data && data.length > 0 && (
+              <Icon
+                name="alert-circle"
+                size={24}
+                color={"red"}
+                style={{ marginLeft: 10, marginRight: "auto", marginTop: 10 }}
+              />
+            )}
             <Icon style={styles.icons} name="list" size={24} />
           </TouchableOpacity>
         </View>
