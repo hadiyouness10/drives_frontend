@@ -12,6 +12,8 @@ export const Riders = ({ route, navigation }) => {
     maxPrice,
     numberOfSeats,
     dateOfDeparture,
+    minPricePerRider,
+    maxPricePerRider,
   } = route?.params ?? {};
   const { userId } = useContext(AuthenticationContext);
   const { data } = useRidesQuery(
@@ -30,6 +32,8 @@ export const Riders = ({ route, navigation }) => {
           numberOfSeats,
           dateOfDeparture: dateOfDeparture.toISOString(),
           searcherId: userId,
+          minPricePerRider: parseFloat(minPricePerRider) || 0,
+          maxPricePerRider: parseFloat(maxPricePerRider) || 100,
         }
       : {}
   );
@@ -55,6 +59,7 @@ export const Riders = ({ route, navigation }) => {
               departureCoordinates,
               pricePerRider,
               numberOfSeats,
+              numberOfAvailableSeats,
             } = ride;
             return (
               <RideView
@@ -65,6 +70,7 @@ export const Riders = ({ route, navigation }) => {
                 departureCoordinates={departureCoordinates}
                 pricePerRider={pricePerRider}
                 numberOfSeats={numberOfSeats}
+                numberOfAvailableSeats={numberOfAvailableSeats}
                 navigation={navigation}
               />
             );

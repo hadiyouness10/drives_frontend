@@ -35,6 +35,8 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
         destinationCoordinates: inputDetailsProps.destinationCoordinates,
         dateOfDeparture: inputDetailsProps.date,
         numberOfSeats: inputDetailsProps.numberOfSeats,
+        minPricePerRider: inputDetailsProps.minPricePerRider,
+        maxPricePerRider: inputDetailsProps.maxPricePerRider,
       });
     } else fetchCoordinates();
   };
@@ -48,6 +50,8 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
           destinationCoordinates: backUpCoordinates,
           dateOfDeparture: inputDetailsProps.date,
           numberOfSeats: inputDetailsProps.numberOfSeats,
+          minPricePerRider: inputDetailsProps.minPricePerRider,
+          maxPricePerRider: inputDetailsProps.maxPricePerRider,
         });
       } else {
         inputDetailsProps.setStartCoordinates(backUpCoordinates);
@@ -56,6 +60,8 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
           destinationCoordinates: inputDetailsProps.destinationCoordinates,
           dateOfDeparture: inputDetailsProps.date,
           numberOfSeats: inputDetailsProps.numberOfSeats,
+          minPricePerRider: inputDetailsProps.minPricePerRider,
+          maxPricePerRider: inputDetailsProps.maxPricePerRider,
         });
       }
   }, [JSON.stringify(backUpCoordinates)]);
@@ -108,7 +114,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
     destinationLocation: inputDetailsProps.destinationLocation,
     numberOfSeats: inputDetailsProps.numberOfSeats,
     numberOfAvailableSeats: inputDetailsProps.numberOfSeats,
-    pricePerRider: parseFloat(inputDetailsProps.pricePerRider) ?? 0,
+    pricePerRider: parseFloat(inputDetailsProps.pricePerRider) || 0,
   };
 
   const validateLocations = () => {
@@ -187,7 +193,9 @@ export const NewRide = ({ navigation }) => {
   const [destinationCoordinates, setDestinationCoordinates] = useState(null);
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
-  const [pricePerRider, setPricePerRider] = useState("0");
+  const [pricePerRider, setPricePerRider] = useState("");
+  const [minPricePerRider, setMinPricePerRider] = useState("");
+  const [maxPricePerRider, setMaxPricePerRider] = useState("");
   const [universityField, setUniversityField] = useState("destination");
   const [updateLocationCoords, setUpdateLocationCoords] = useState(true);
 
@@ -207,6 +215,10 @@ export const NewRide = ({ navigation }) => {
     setNumberOfSeats,
     pricePerRider,
     setPricePerRider,
+    minPricePerRider,
+    setMinPricePerRider,
+    maxPricePerRider,
+    setMaxPricePerRider,
     universityField,
     setUniversityField,
     updateLocationCoords,
