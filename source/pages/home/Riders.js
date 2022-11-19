@@ -11,13 +11,16 @@ export const Riders = ({ route, navigation }) => {
   const [maxPrice,setMaxPrice] = useState(null)
 
   const {
+    departureLocation,
     departureCoordinates,
     destinationCoordinates,
     numberOfSeats,
     dateOfDeparture,
+    minPricePerRider,
+    maxPricePerRider,
   } = route?.params ?? {};
   const { userId } = useContext(AuthenticationContext);
-  const { data } = useRidesQuery(
+  const { data, isLoading } = useRidesQuery(
     departureCoordinates && destinationCoordinates
       ? {
           pickupCoordinates: JSON.stringify({
@@ -35,10 +38,33 @@ export const Riders = ({ route, navigation }) => {
           numberOfSeats,
           dateOfDeparture: dateOfDeparture.toISOString(),
           searcherId: userId,
+          minPricePerRider: parseFloat(minPricePerRider) || 0,
+          maxPricePerRider: parseFloat(maxPricePerRider) || 100,
         }
       : {}
   );
-  if (data)
+  if (isLoading)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontSize: 18, color: "grey" }}>Loading...</Text>
+      </View>
+    );
+  else if (data.length === 0)
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "grey",
+            width: "70%",
+            textAlign: "center",
+          }}
+        >
+          There are no rides that match the given criteria.
+        </Text>
+      </View>
+    );
+  else
     return (
       <View style={styles.mainView}>
         <Text
@@ -57,9 +83,9 @@ export const Riders = ({ route, navigation }) => {
               ID,
               studentId,
               dateOfDeparture,
-              departureCoordinates,
               pricePerRider,
               numberOfSeats,
+              numberOfAvailableSeats,
             } = ride;
             return (
               <RideView
@@ -67,17 +93,20 @@ export const Riders = ({ route, navigation }) => {
                 ID={ID}
                 studentId={studentId}
                 dateOfDeparture={dateOfDeparture}
-                departureCoordinates={departureCoordinates}
+                pickupLocation={departureLocation}
+                pickupCoordinates={departureCoordinates}
+                departureCoordinates={ride.departureCoordinates}
                 pricePerRider={pricePerRider}
                 numberOfSeats={numberOfSeats}
+                numberOfAvailableSeats={numberOfAvailableSeats}
                 navigation={navigation}
+                request={true}
               />
             );
           })}
         </ScrollView>
       </View>
     );
-  else return <Text>Loading</Text>;
 };
 
 const styles = StyleSheet.create({

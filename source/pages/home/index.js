@@ -5,3 +5,4 @@ export * from "./RideDetails";
 export * from "./DriverDetails";
 export * from "./Account";
 export * from "./YourRides";
+export * from "./StopRequests";

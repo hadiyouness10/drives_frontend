@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
 import Icon from "react-native-vector-icons/Entypo";
+import IonIcon from "react-native-vector-icons/Ionicons";
 import { dateTimeFormatter } from "utils";
 import { useUserDetailsQuery } from "api/queries";
 
@@ -18,14 +19,18 @@ const Detail = ({ title, icon, value }) => (
 export const RideView = ({
   ID: id,
   studentId: driverId,
+  stopRequest,
   dateOfDeparture,
   pricePerRider,
   numberOfSeats,
   numberOfAvailableSeats,
   departureCoordinates,
+  pickupLocation,
+  pickupCoordinates,
   navigation,
   pageIndex = 0,
   displayDriver = true,
+  request = false,
 }) => {
   const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
     useUserDetailsQuery(driverId);
@@ -37,7 +42,14 @@ export const RideView = ({
         onPress={() =>
           navigation.push(
             pageIndex === 0 ? "Ride Details" : "Ride Details (Your Rides)",
-            { rideId: id, driverId, pageIndex }
+            {
+              rideId: id,
+              driverId,
+              pageIndex,
+              pickupLocation,
+              pickupCoordinates,
+              request,
+            }
           )
         }
       >
@@ -71,6 +83,19 @@ export const RideView = ({
           }}
         >
           {displayDriver && <RiderCard name={`${firstName} ${lastName}`} />}
+          {stopRequest && stopRequest.requestStatus === "PENDING" && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: -7,
+                marginBottom: 3,
+              }}
+            >
+              <IonIcon name="alert-circle" size={14} color={"orange"} />
+              <Text style={{ marginLeft: 3 }}>Pending Request</Text>
+            </View>
+          )}
           <View
             style={{
               flexDirection: "row",

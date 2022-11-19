@@ -31,10 +31,13 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       inputDetailsProps.destinationCoordinates
     ) {
       navigation.push("Riders", {
+        departureLocation: inputDetailsProps.startLocation,
         departureCoordinates: inputDetailsProps.startCoordinates,
         destinationCoordinates: inputDetailsProps.destinationCoordinates,
         dateOfDeparture: inputDetailsProps.date,
         numberOfSeats: inputDetailsProps.numberOfSeats,
+        minPricePerRider: inputDetailsProps.minPricePerRider,
+        maxPricePerRider: inputDetailsProps.maxPricePerRider,
       });
     } else fetchCoordinates();
   };
@@ -44,24 +47,30 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       if (inputDetailsProps.universityField === "start") {
         inputDetailsProps.setDestinationCoordinates(backUpCoordinates);
         navigation.push("Riders", {
+          departureLocation: inputDetailsProps.startLocation,
           departureCoordinates: inputDetailsProps.startCoordinates,
           destinationCoordinates: backUpCoordinates,
           dateOfDeparture: inputDetailsProps.date,
           numberOfSeats: inputDetailsProps.numberOfSeats,
+          minPricePerRider: inputDetailsProps.minPricePerRider,
+          maxPricePerRider: inputDetailsProps.maxPricePerRider,
         });
       } else {
         inputDetailsProps.setStartCoordinates(backUpCoordinates);
         navigation.push("Riders", {
+          departureLocation: inputDetailsProps.startLocation,
           departureCoordinates: backUpCoordinates,
           destinationCoordinates: inputDetailsProps.destinationCoordinates,
           dateOfDeparture: inputDetailsProps.date,
           numberOfSeats: inputDetailsProps.numberOfSeats,
+          minPricePerRider: inputDetailsProps.minPricePerRider,
+          maxPricePerRider: inputDetailsProps.maxPricePerRider,
         });
       }
   }, [JSON.stringify(backUpCoordinates)]);
 
   return (
-    <ScrollView keyboardShouldPersistTaps={true}>
+    <ScrollView keyboardShouldPersistTaps={"always"}>
       <InputDetails type="joinRide" {...inputDetailsProps} />
       <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
         <TouchableOpacity
@@ -108,7 +117,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
     destinationLocation: inputDetailsProps.destinationLocation,
     numberOfSeats: inputDetailsProps.numberOfSeats,
     numberOfAvailableSeats: inputDetailsProps.numberOfSeats,
-    pricePerRider: parseFloat(inputDetailsProps.pricePerRider) ?? 0,
+    pricePerRider: parseFloat(inputDetailsProps.pricePerRider) || 0,
   };
 
   const validateLocations = () => {
@@ -151,7 +160,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
   }, [JSON.stringify(data)]);
 
   return (
-    <ScrollView keyboardShouldPersistTaps={true}>
+    <ScrollView keyboardShouldPersistTaps={"always"}>
       <InputDetails type="startRide" {...inputDetailsProps} />
       <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
         <TouchableOpacity
@@ -187,7 +196,9 @@ export const NewRide = ({ navigation }) => {
   const [destinationCoordinates, setDestinationCoordinates] = useState(null);
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
-  const [pricePerRider, setPricePerRider] = useState("0");
+  const [pricePerRider, setPricePerRider] = useState("");
+  const [minPricePerRider, setMinPricePerRider] = useState("");
+  const [maxPricePerRider, setMaxPricePerRider] = useState("");
   const [universityField, setUniversityField] = useState("destination");
   const [updateLocationCoords, setUpdateLocationCoords] = useState(true);
 
@@ -207,6 +218,10 @@ export const NewRide = ({ navigation }) => {
     setNumberOfSeats,
     pricePerRider,
     setPricePerRider,
+    minPricePerRider,
+    setMinPricePerRider,
+    maxPricePerRider,
+    setMaxPricePerRider,
     universityField,
     setUniversityField,
     updateLocationCoords,

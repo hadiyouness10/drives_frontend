@@ -30,6 +30,10 @@ export const InputDetails = ({
   setNumberOfSeats,
   pricePerRider,
   setPricePerRider,
+  minPricePerRider,
+  setMinPricePerRider,
+  maxPricePerRider,
+  setMaxPricePerRider,
   universityField,
   setUniversityField,
   updateLocationCoords,
@@ -214,7 +218,7 @@ export const InputDetails = ({
               </TouchableOpacity>
             </View>
           </View>
-          {type === "startRide" && (
+          {type === "startRide" ? (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={styles.input}>
                 <Text style={{ fontSize: 24, marginRight: 10 }}>$</Text>
@@ -225,6 +229,42 @@ export const InputDetails = ({
                   keyboardType={"decimal-pad"}
                   onChangeText={(text) => setPricePerRider(text)}
                 />
+              </View>
+            </View>
+          ) : (
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+              >
+                <View style={styles.input}>
+                  <Text style={{ fontSize: 24, marginRight: 10 }}>$</Text>
+                  <TextInput
+                    style={{ flex: 1, fontSize: 18 }}
+                    placeholder="Min price"
+                    value={minPricePerRider}
+                    keyboardType={"decimal-pad"}
+                    onChangeText={(text) => setMinPricePerRider(text)}
+                  />
+                </View>
+              </View>
+              <Text
+                style={{ fontSize: 30, marginHorizontal: 10, marginBottom: 20 }}
+              >
+                -
+              </Text>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+              >
+                <View style={styles.input}>
+                  <Text style={{ fontSize: 24, marginRight: 10 }}>$</Text>
+                  <TextInput
+                    style={{ flex: 1, fontSize: 18 }}
+                    placeholder="Max price"
+                    value={maxPricePerRider}
+                    keyboardType={"decimal-pad"}
+                    onChangeText={(text) => setMaxPricePerRider(text)}
+                  />
+                </View>
               </View>
             </View>
           )}
