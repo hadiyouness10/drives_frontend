@@ -1,9 +1,8 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect,useContext, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { theme } from "core";
 import { emailValidator, passwordValidator, nameValidator } from "utils";
-import client from "api/client";
 import PhoneInput from 'react-native-phone-number-input'
 import { ScrollView } from "react-native-gesture-handler";
 import DatePicker from "react-native-datepicker";
@@ -17,7 +16,9 @@ import {
   TextInput,
   BackButton,
 } from "components";
-import {useUniversitiesQuery} from "api/queries";
+import {useCampusesQuery, useUniversitiesQuery} from "api/queries";
+import { useCreateUserMutation } from "api/mutations/authentication/create-user-mutation";
+import { AuthenticationContext } from "routes/authentication-context";
 
 export const Register = ({ navigation }) => {
 
@@ -27,37 +28,46 @@ export const Register = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState({value:""})
   const [birthDate, setBirthDate] = useState('2000-01-01');
   const [password, setPassword] = useState({ value: "", error: "" });
-  const [university, setUniversity] = useState(null);
-  const [campus, setCampus] = useState(null);
+  const [university, setUniversity] = useState({value:"",label:""});
+  const [campus, setCampus] = useState({value:"",label:""});
   const [universities, setUniversities] = useState([]);
   const [campuses, setCampuses] = useState([]);
   const [Focus, setFocus] = useState(false);
   const [CampusFocus, setCampusFocus] = useState(false);
 
-  const { data } = useUniversitiesQuery();
+  const { data: uniQ } = useUniversitiesQuery();
+  const { 
+    data: campusQ,     
+    refetch: fetchStart,
+  } = useCampusesQuery(university.value);
+  const { mutate: createUser, data:registered } = useCreateUserMutation();
+
+  const { signIn } = useContext(AuthenticationContext);
+
   useEffect(() => {
-      let dropDownData = [];
-      for (var i = 0; i < data.length; i++) {
-        dropDownData.push({ value: data[i].ID, label: data[i].name }); // Create your array of data
-    }
-      setUniversities(dropDownData)
-      console.log(universities)
-
-  }, []);
-
-  const getUniversityCampuses = async (id) => {
-    console.log(`** ${id}`)
-    try {
-      await client.get(`/authentication/campuses/${id}`).then(res =>{
-        console.log(res.data)
+      if(uniQ){
         let dropDownData = [];
-          for (var i = 0; i < res.data.length; i++) {
-            dropDownData.push({ value: res.data[i].ID, label: res.data[i].name }); // Create your array of data
+        for (var i = 0; i < uniQ.length; i++) {
+          dropDownData.push({ value: uniQ[i].ID, label: uniQ[i].name }); // Create your array of data
         }
-          setCampuses(dropDownData)
-          console.log(campuses)
-      });
-  } catch (error) {}
+        setUniversities(dropDownData)
+      }
+      
+      if(registered){
+        signIn(registered.accessToken, registered.userId, firstName.value, lastName.value);
+        navigation.navigate("Home")
+      }
+
+  }, [registered]);
+
+  const updateCampuses = async () => {   
+    if(campusQ){
+      let dropDownData2 = [];
+      for (var i = 0; i < campusQ.length; i++) {
+        dropDownData2.push({ value: campusQ[i].ID, label: campusQ[i].name }); // Create your array of data
+      }
+      setCampuses(dropDownData2)
+    }
   };
 
   const RegisterClicked = async () => {
@@ -74,24 +84,16 @@ export const Register = ({ navigation }) => {
       return;
     }
 
-    try {
-        await client.post('/authentication/register', {
-            firstname: firstName.value,
-            lastname:lastName.value,
-            email: email.value,
-            phonenumber:phoneNumber.value,
-            birthdate:birthDate,
-            campusid:campus,
-            password: password.value,
-        }).then(res =>{
-          console.log(res.data)
-          // Login logic will get us the ID and name of the user
-          navigation.navigate("Login");
-        });
-        
-    } catch (error) {
-      
-    }
+    const newUser = {
+      firstname: firstName.value,
+      lastname:lastName.value,
+      universityEmail: email.value,
+      phonenumber:phoneNumber.value,
+      dateOfBirth:birthDate,
+      campusid:campus.value,
+      password: password.value,
+    };
+    createUser(newUser);
 }
   return (
     <Background>
@@ -177,12 +179,13 @@ export const Register = ({ navigation }) => {
           valueField="value"
           placeholder={!Focus ? 'Select University' : '...'}
           searchPlaceholder="Search..."
-          value={university}
+          value={university.label}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           onChange={item => {
-            setUniversity(item.label);
-            getUniversityCampuses(item.value);
+            setUniversity(item);
+            fetchStart()
+            updateCampuses();
             setFocus(false);
           }}
           renderLeftIcon={() => (
@@ -207,11 +210,11 @@ export const Register = ({ navigation }) => {
           valueField="value"
           placeholder={!CampusFocus ? 'Select Campus' : '...'}
           searchPlaceholder="Search..."
-          value={campus}
+          value={campus.label}
           onFocus={() => setCampusFocus(true)}
           onBlur={() => setCampusFocus(false)}
           onChange={item => {
-            setCampus(item.value);
+            setCampus(item);
             setCampusFocus(false);
           }}
           renderLeftIcon={() => (

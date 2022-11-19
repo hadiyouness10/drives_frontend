@@ -92,8 +92,6 @@ export const LoginNavigator = () => {
           lastName: authentication?.lastName,
 
           signIn: async (token, userID, firstName, lastName) => {
-            console.log("approuter")
-            console.log(firstName,lastName)
             await AsyncStorage.setItem(
               "authentication",
               JSON.stringify({
