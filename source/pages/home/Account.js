@@ -20,22 +20,20 @@ export const Account = ({ navigation }) => {
   const { signOut } = useContext(AuthenticationContext);
 
   const Logout = async () => {
-    
     try {
-        await client.delete('/logout');
+      await client.delete("/logout");
     } catch (error) {
-        console.log(error);
+      console.error(error);
     }
-      await AsyncStorage.removeItem("authentication");
-      signOut();
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: "Start" }],
-        })
-      );
-    
-}
+    await AsyncStorage.removeItem("authentication");
+    signOut();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Start" }],
+      })
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -104,9 +102,7 @@ export const Account = ({ navigation }) => {
             />
           </View>
         </View>
-        <TouchableOpacity
-          onPress={Logout}
-        >
+        <TouchableOpacity onPress={Logout}>
           <View style={styles.drawLine} />
           <View style={styles.optionsObject}>
             <Text style={styles.options}>Log Out</Text>

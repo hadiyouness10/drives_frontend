@@ -9,11 +9,11 @@ const createRide = async (data) => {
 
 export const useCreateRideMutation = () => {
   const queryClient = useQueryClient();
-  const { userID } = useContext(AuthenticationContext);
+  const { userId } = useContext(AuthenticationContext);
   return useMutation({
     mutationFn: createRide,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["rides", { driverID: userID }]);
+      queryClient.refetchQueries(["rides", { driverId: userId }]);
     },
   });
 };

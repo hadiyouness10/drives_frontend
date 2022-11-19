@@ -13,7 +13,6 @@ export const RouteSelector = ({
   setDisplayedRoute,
   createRide,
 }) => {
-  console.log(startCoordinates);
   if (!enabled) return <View />;
   else
     return (
@@ -73,6 +72,23 @@ export const RouteSelector = ({
           <TouchableOpacity
             onPress={() => {
               setEnabled(false);
+              setDisplayedRoute(0);
+            }}
+            style={[
+              styles.buttonDiv,
+              {
+                height: 50,
+                width: 140,
+                backgroundColor: "red",
+                marginTop: 20,
+              },
+            ]}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setEnabled(false);
               createRide();
               setDisplayedRoute(0);
             }}
@@ -87,23 +103,6 @@ export const RouteSelector = ({
             ]}
           >
             <Text style={styles.buttonText}>Confirm</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setEnabled(false);
-              setDisplayedRoute(0);
-            }}
-            style={[
-              styles.buttonDiv,
-              {
-                height: 50,
-                width: 140,
-                backgroundColor: "red",
-                marginTop: 20,
-              },
-            ]}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </View>

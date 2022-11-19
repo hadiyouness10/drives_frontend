@@ -12,9 +12,13 @@ const getLocationCoordinates = (address) => async () => {
     });
 };
 
-export const useLocationCoordinatesQuery = (address, autofetch = true) =>
+export const useLocationCoordinatesQuery = (
+  address,
+  autofetch = true,
+  locationType
+) =>
   useQuery(
-    ["locationCoordinates", address, autofetch],
+    ["locationCoordinates", address, autofetch, locationType],
     getLocationCoordinates(address),
     {
       enabled: autofetch,

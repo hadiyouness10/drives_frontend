@@ -4,7 +4,7 @@ import {
   useStopRequestsQuery,
 } from "api/queries";
 import { RideView } from "components";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   Text,
   useWindowDimensions,
@@ -17,25 +17,42 @@ import { TabView, TabBar } from "react-native-tab-view";
 import { AuthenticationContext } from "routes/authentication-context";
 
 const JoinedRideCard = ({ ride, navigation }) => {
-  const { data } = useRideDetailsQuery(ride.rideID);
+  const { data } = useRideDetailsQuery(ride.rideId);
   if (data) return <RideView {...data} pageIndex={1} navigation={navigation} />;
   else return <Text>Loading</Text>;
 };
 
-const Joined = ({ userID, navigation }) => {
-  const { data } = useStopRequestsQuery({ studentID: userID });
+const Joined = ({ userId, navigation, dateOfPageRoute }) => {
+  const { data } = useStopRequestsQuery({ studentId: userId });
+  const scrollRef = useRef(null);
+  useEffect(() => {
+    if (dateOfPageRoute)
+      setTimeout(() => {
+        scrollRef.current.scrollToEnd({ animated: true });
+      }, 500);
+  }, [dateOfPageRoute]);
+
   const joinedRidesCards = data?.map((ride) => (
     <JoinedRideCard key={ride.id} ride={ride} navigation={navigation} />
   ));
   return (
-    <ScrollView style={{ flex: 1, marginTop: 5 }}>
+    <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 5 }}>
       {joinedRidesCards}
     </ScrollView>
   );
 };
 
-const Started = ({ userID, navigation }) => {
-  const { data } = useRidesQuery({ driverID: userID });
+const Started = ({ userId, navigation, dateOfPageRoute }) => {
+  const { data } = useRidesQuery({ driverId: userId });
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (dateOfPageRoute)
+      setTimeout(() => {
+        scrollRef.current.scrollToEnd({ animated: true });
+      }, 500);
+  }, [dateOfPageRoute]);
+
   const startedRidesCards = data?.map((ride) => (
     <RideView
       key={ride.ID}
@@ -46,18 +63,16 @@ const Started = ({ userID, navigation }) => {
     />
   ));
   return (
-    <ScrollView style={{ flex: 1, marginTop: 5 }}>
+    <ScrollView ref={scrollRef} style={{ flex: 1, marginTop: 5 }}>
       {startedRidesCards}
     </ScrollView>
   );
 };
 
 export const YourRides = ({ route, navigation }) => {
-  const { defaultIndex, date: dateOfRoute } = route?.params || {};
-  const { userID } = useContext(AuthenticationContext);
-  console.log("index", defaultIndex, dateOfRoute);
+  const { defaultIndex, date: dateOfPageRoute } = route?.params || {};
+  const { userId } = useContext(AuthenticationContext);
   const [index, setIndex] = useState(0);
-  console.log("kj", index);
   const [routes] = useState([
     { key: "joined", title: "Rides You Joined" },
     { key: "started", title: "Rides You Started" },
@@ -65,14 +80,26 @@ export const YourRides = ({ route, navigation }) => {
 
   useEffect(() => {
     if (defaultIndex) setIndex(defaultIndex);
-  }, [defaultIndex, dateOfRoute]);
+  }, [defaultIndex, dateOfPageRoute]);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
       case "joined":
-        return <Joined userID={userID} navigation={navigation} />;
+        return (
+          <Joined
+            userId={userId}
+            navigation={navigation}
+            dateOfPageRoute={dateOfPageRoute}
+          />
+        );
       case "started":
-        return <Started userID={userID} navigation={navigation} />;
+        return (
+          <Started
+            userId={userId}
+            navigation={navigation}
+            dateOfPageRoute={dateOfPageRoute}
+          />
+        );
       default:
         return null;
     }

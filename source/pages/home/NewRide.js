@@ -21,7 +21,8 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       inputDetailsProps.universityField === "start"
         ? inputDetailsProps.destinationLocation
         : inputDetailsProps.startLocation,
-      false
+      false,
+      "joinRide"
     );
 
   const validateLocations = () => {
@@ -32,6 +33,8 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       navigation.push("Riders", {
         departureCoordinates: inputDetailsProps.startCoordinates,
         destinationCoordinates: inputDetailsProps.destinationCoordinates,
+        dateOfDeparture: inputDetailsProps.date,
+        numberOfSeats: inputDetailsProps.numberOfSeats,
       });
     } else fetchCoordinates();
   };
@@ -43,50 +46,101 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
         navigation.push("Riders", {
           departureCoordinates: inputDetailsProps.startCoordinates,
           destinationCoordinates: backUpCoordinates,
+          dateOfDeparture: inputDetailsProps.date,
+          numberOfSeats: inputDetailsProps.numberOfSeats,
         });
       } else {
         inputDetailsProps.setStartCoordinates(backUpCoordinates);
         navigation.push("Riders", {
           departureCoordinates: backUpCoordinates,
           destinationCoordinates: inputDetailsProps.destinationCoordinates,
+          dateOfDeparture: inputDetailsProps.date,
+          numberOfSeats: inputDetailsProps.numberOfSeats,
         });
       }
   }, [JSON.stringify(backUpCoordinates)]);
 
   return (
-    <View>
-      <View>
-        <InputDetails type="joinRide" {...inputDetailsProps} />
-        <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
-          <TouchableOpacity
-            style={styles.ridersListButton}
-            onPress={() => validateLocations()}
-          >
-            <Text style={{ color: "#ffffff", fontSize: 20 }}>
-              Search For Drivers
-            </Text>
-          </TouchableOpacity>
-          <View style={{ marginTop: 30 }}>
-            <HowItWorks type="joinRide"></HowItWorks>
-          </View>
+    <ScrollView keyboardShouldPersistTaps={true}>
+      <InputDetails type="joinRide" {...inputDetailsProps} />
+      <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
+        <TouchableOpacity
+          style={styles.ridersListButton}
+          onPress={() => validateLocations()}
+        >
+          <Text style={{ color: "#ffffff", fontSize: 20 }}>
+            Search For Drivers
+          </Text>
+        </TouchableOpacity>
+        <View style={{ marginTop: 30 }}>
+          <HowItWorks type="joinRide"></HowItWorks>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const StartRide = ({ inputDetailsProps, navigation }) => {
   const { mutate: createRide, data } = useCreateRideMutation();
-  const { userID } = useContext(AuthenticationContext);
+  const { userId } = useContext(AuthenticationContext);
   const [routeSelectorEnabled, setRouteSelectorEnabled] = useState(false);
-  console.log("data", data);
 
   const [selectedRoute, setSelectedRoute] = useState(0);
+
+  const { data: backUpCoordinates, refetch: fetchCoordinates } =
+    useLocationCoordinatesQuery(
+      inputDetailsProps.universityField === "start"
+        ? inputDetailsProps.destinationLocation
+        : inputDetailsProps.startLocation,
+      false,
+      "startRide"
+    );
+
+  const newRide = {
+    studentId: userId,
+    dateOfDeparture: inputDetailsProps.date,
+    rideStatus: "PENDING",
+    departureCoordinates: JSON.stringify(inputDetailsProps.startCoordinates),
+    destinationCoordinates: JSON.stringify(
+      inputDetailsProps.destinationCoordinates
+    ),
+    departureLocation: inputDetailsProps.startLocation,
+    destinationLocation: inputDetailsProps.destinationLocation,
+    numberOfSeats: inputDetailsProps.numberOfSeats,
+    numberOfAvailableSeats: inputDetailsProps.numberOfSeats,
+    pricePerRider: parseFloat(inputDetailsProps.pricePerRider) ?? 0,
+  };
+
+  const validateLocations = () => {
+    if (
+      inputDetailsProps.startCoordinates &&
+      inputDetailsProps.destinationCoordinates
+    ) {
+      createRide(newRide);
+    } else fetchCoordinates();
+  };
+
+  useEffect(() => {
+    if (backUpCoordinates)
+      if (inputDetailsProps.universityField === "start") {
+        inputDetailsProps.setDestinationCoordinates(backUpCoordinates);
+        createRide({
+          ...newRide,
+          destinationCoordinates: JSON.stringify(backUpCoordinates),
+        });
+      } else {
+        inputDetailsProps.setStartCoordinates(backUpCoordinates);
+        createRide({
+          ...newRide,
+          departureCoordinates: JSON.stringify(backUpCoordinates),
+        });
+      }
+  }, [JSON.stringify(backUpCoordinates)]);
 
   useEffect(() => {
     if (data)
       if (data.status === "SUCCESS") {
-        const now = new Date();
+        const now = new Date().toISOString();
         navigation.navigate("Your Rides", {
           screen: "/",
           params: { defaultIndex: 1, date: now },
@@ -96,50 +150,33 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
       }
   }, [JSON.stringify(data)]);
 
-  const newRide = {
-    studentId: userID,
-    dateOfDeparture: inputDetailsProps.date.toISOString().slice(0, 10),
-    timeOfDeparture: inputDetailsProps.date.toLocaleTimeString().split(" ")[0],
-    rideStatus: "PENDING",
-    departureCoordinates: JSON.stringify(inputDetailsProps.startCoordinates),
-    destinationCoordinates: JSON.stringify(
-      inputDetailsProps.destinationCoordinates
-    ),
-    departureLocation: inputDetailsProps.startLocation,
-    destinationLocation: inputDetailsProps.destinationLocation,
-    numberOfRiders: inputDetailsProps.numberOfSeats,
-    pricePerRider: inputDetailsProps.pricePerRider ?? 0,
-  };
-
   return (
-    <View>
-      <View>
-        <InputDetails type="startRide" {...inputDetailsProps} />
-        <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
-          <TouchableOpacity
-            style={styles.ridersListButton}
-            onPress={() => createRide(newRide)}
-          >
-            <Text style={{ color: "#ffffff", fontSize: 20 }}>Create Ride</Text>
-          </TouchableOpacity>
-          <View style={{ marginTop: 30 }}>
-            <HowItWorks type="startRide"></HowItWorks>
-          </View>
+    <ScrollView keyboardShouldPersistTaps={true}>
+      <InputDetails type="startRide" {...inputDetailsProps} />
+      <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
+        <TouchableOpacity
+          style={styles.ridersListButton}
+          onPress={() => validateLocations()}
+        >
+          <Text style={{ color: "#ffffff", fontSize: 20 }}>Create Ride</Text>
+        </TouchableOpacity>
+        <View style={{ marginTop: 30 }}>
+          <HowItWorks type="startRide"></HowItWorks>
         </View>
-        <RouteSelector
-          startCoordinates={inputDetailsProps.startCoordinates}
-          destinationCoordinates={inputDetailsProps.destinationCoordinates}
-          enabled={routeSelectorEnabled}
-          setEnabled={setRouteSelectorEnabled}
-          displayedRoute={selectedRoute}
-          setDisplayedRoute={setSelectedRoute}
-          routes={data?.content}
-          createRide={() =>
-            createRide({ ...newRide, route: data.content[selectedRoute] })
-          }
-        />
       </View>
-    </View>
+      <RouteSelector
+        startCoordinates={inputDetailsProps.startCoordinates}
+        destinationCoordinates={inputDetailsProps.destinationCoordinates}
+        enabled={routeSelectorEnabled}
+        setEnabled={setRouteSelectorEnabled}
+        displayedRoute={selectedRoute}
+        setDisplayedRoute={setSelectedRoute}
+        routes={data?.content}
+        createRide={() =>
+          createRide({ ...newRide, route: data.content[selectedRoute] })
+        }
+      />
+    </ScrollView>
   );
 };
 
@@ -150,8 +187,9 @@ export const NewRide = ({ navigation }) => {
   const [destinationCoordinates, setDestinationCoordinates] = useState(null);
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
-  const [pricePerRider, setPricePerRider] = useState(1);
+  const [pricePerRider, setPricePerRider] = useState("0");
   const [universityField, setUniversityField] = useState("destination");
+  const [updateLocationCoords, setUpdateLocationCoords] = useState(true);
 
   const inputDetailsProps = {
     navigation,
@@ -171,6 +209,8 @@ export const NewRide = ({ navigation }) => {
     setPricePerRider,
     universityField,
     setUniversityField,
+    updateLocationCoords,
+    setUpdateLocationCoords,
   };
 
   const { firstName } = useContext(AuthenticationContext);

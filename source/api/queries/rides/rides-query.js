@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import client from "api/client";
 
 const getRides = (queryParams) => async () => {
-  // Can be driverID, destinationCoordinates, pickupCoordinates
+  // Can be driverId, destinationCoordinates, pickupCoordinates
   const params = queryParams
     ? Object.keys(queryParams).map((param) => `${param}=${queryParams[param]}`)
     : [];

@@ -17,17 +17,18 @@ const Detail = ({ title, icon, value }) => (
 );
 export const RideView = ({
   ID: id,
-  studentId: driverID,
+  studentId: driverId,
   dateOfDeparture,
   pricePerRider,
-  numberOfRiders,
+  numberOfSeats,
+  numberOfAvailableSeats,
   departureCoordinates,
   navigation,
   pageIndex = 0,
   displayDriver = true,
 }) => {
   const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
-    useUserDetailsQuery(driverID);
+    useUserDetailsQuery(driverId);
   if (displayDriver && !firstName) return <View />;
   else
     return (
@@ -36,7 +37,7 @@ export const RideView = ({
         onPress={() =>
           navigation.push(
             pageIndex === 0 ? "Ride Details" : "Ride Details (Your Rides)",
-            { rideID: id, driverID, pageIndex }
+            { rideId: id, driverId, pageIndex }
           )
         }
       >
@@ -110,7 +111,11 @@ export const RideView = ({
                 icon="credit"
                 value={`${pricePerRider} $`}
               />
-              <Detail title="Riders" icon="user" value={numberOfRiders} />
+              <Detail
+                title="Riders"
+                icon="user"
+                value={numberOfSeats - numberOfAvailableSeats}
+              />
             </View>
           </View>
         </View>

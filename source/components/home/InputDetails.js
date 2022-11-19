@@ -32,20 +32,22 @@ export const InputDetails = ({
   setPricePerRider,
   universityField,
   setUniversityField,
+  updateLocationCoords,
+  setUpdateLocationCoords,
 }) => {
   const [dateTimePickerShown, setDateTimePickerShown] = useState(null);
   const numberOfSeatsRef = useRef(null);
 
   const inputLocationProps = {
-    type,
+    type, // joinRide, startRide
     universityField,
     navigation,
-    locationMarkers: {
-      startCoordinates,
-      destinationCoordinates,
-      setStartCoordinates,
-      setDestinationCoordinates,
-    },
+    startCoordinates,
+    destinationCoordinates,
+    setStartCoordinates,
+    setDestinationCoordinates,
+    updateLocationCoords,
+    setUpdateLocationCoords,
   };
 
   return (
@@ -93,6 +95,7 @@ export const InputDetails = ({
               <TouchableOpacity
                 onPress={() => {
                   setUniversityField((field) => {
+                    setUpdateLocationCoords(false);
                     const temp = startLocation;
                     setStartLocation(destinationLocation);
                     setDestinationLocation(temp);
@@ -184,7 +187,7 @@ export const InputDetails = ({
           <View style={[{ flexDirection: "row", alignItems: "center" }]}>
             <View style={[{ flex: 1, flexDirection: "row" }]}>
               <Text style={{ fontSize: 20, fontWeight: "400" }}>
-                Number Of Seats
+                Number Of {type === "joinRide" ? "Riders" : "Seats"}
               </Text>
             </View>
             <View
@@ -218,9 +221,9 @@ export const InputDetails = ({
                 <TextInput
                   style={{ flex: 1, fontSize: 18 }}
                   placeholder="Price per rider"
-                  value={String(pricePerRider)}
+                  value={pricePerRider}
                   keyboardType={"decimal-pad"}
-                  onChangeText={(text) => setPricePerRider(parseFloat(text))}
+                  onChangeText={(text) => setPricePerRider(text)}
                 />
               </View>
             </View>
