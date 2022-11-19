@@ -87,21 +87,21 @@ export const LoginNavigator = () => {
       <AuthenticationContext.Provider
         value={{
           token: authentication?.token,
-          userID: authentication?.userID,
+          userId: authentication?.userId,
           firstName: authentication?.firstName,
           lastName: authentication?.lastName,
 
-          signIn: async (token, userID, firstName, lastName) => {
+          signIn: async (token, userId, firstName, lastName) => {
             await AsyncStorage.setItem(
               "authentication",
               JSON.stringify({
                 token: token,
-                userID: userID,
+                userId: userId,
                 firstName: firstName,
                 lastName: lastName,
               })
             );
-            setAuthentication({ token, userID, firstName, lastName });
+            setAuthentication({ token, userId, firstName, lastName });
           },
           signOut: () => setAuthentication(null),
         }}

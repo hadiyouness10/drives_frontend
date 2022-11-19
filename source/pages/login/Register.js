@@ -1,13 +1,13 @@
-import React, { useEffect,useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { theme } from "core";
 import { emailValidator, passwordValidator, nameValidator } from "utils";
-import PhoneInput from 'react-native-phone-number-input'
+import PhoneInput from "react-native-phone-number-input";
 import { ScrollView } from "react-native-gesture-handler";
 import DatePicker from "react-native-datepicker";
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Dropdown } from 'react-native-element-dropdown';
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { Dropdown } from "react-native-element-dropdown";
 import {
   Background,
   Logo,
@@ -16,57 +16,59 @@ import {
   TextInput,
   BackButton,
 } from "components";
-import {useCampusesQuery, useUniversitiesQuery} from "api/queries";
+import { useCampusesQuery, useUniversitiesQuery } from "api/queries";
 import { useCreateUserMutation } from "api/mutations/authentication/create-user-mutation";
 import { AuthenticationContext } from "routes/authentication-context";
 
 export const Register = ({ navigation }) => {
-
   const [firstName, setFirstName] = useState({ value: "", error: "" });
   const [lastName, setLastName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
-  const [phoneNumber, setPhoneNumber] = useState({value:""})
-  const [birthDate, setBirthDate] = useState('2000-01-01');
+  const [phoneNumber, setPhoneNumber] = useState({ value: "" });
+  const [birthDate, setBirthDate] = useState("2000-01-01");
   const [password, setPassword] = useState({ value: "", error: "" });
-  const [university, setUniversity] = useState({value:"",label:""});
-  const [campus, setCampus] = useState({value:"",label:""});
+  const [university, setUniversity] = useState({ value: "", label: "" });
+  const [campus, setCampus] = useState({ value: "", label: "" });
   const [universities, setUniversities] = useState([]);
   const [campuses, setCampuses] = useState([]);
   const [Focus, setFocus] = useState(false);
   const [CampusFocus, setCampusFocus] = useState(false);
 
   const { data: uniQ } = useUniversitiesQuery();
-  const { 
-    data: campusQ,     
-    refetch: fetchStart,
-  } = useCampusesQuery(university.value);
-  const { mutate: createUser, data:registered } = useCreateUserMutation();
+  const { data: campusQ, refetch: fetchStart } = useCampusesQuery(
+    university.value
+  );
+  const { mutate: createUser, data: registered } = useCreateUserMutation();
 
   const { signIn } = useContext(AuthenticationContext);
 
   useEffect(() => {
-      if(uniQ){
-        let dropDownData = [];
-        for (var i = 0; i < uniQ.length; i++) {
-          dropDownData.push({ value: uniQ[i].ID, label: uniQ[i].name }); // Create your array of data
-        }
-        setUniversities(dropDownData)
+    if (uniQ) {
+      let dropDownData = [];
+      for (var i = 0; i < uniQ.length; i++) {
+        dropDownData.push({ value: uniQ[i].ID, label: uniQ[i].name }); // Create your array of data
       }
-      
-      if(registered){
-        signIn(registered.accessToken, registered.userId, firstName.value, lastName.value);
-        navigation.navigate("Home")
-      }
+      setUniversities(dropDownData);
+    }
 
+    if (registered) {
+      signIn(
+        registered.accessToken,
+        registered.userId,
+        firstName.value,
+        lastName.value
+      );
+      navigation.navigate("Home");
+    }
   }, [registered]);
 
-  const updateCampuses = async () => {   
-    if(campusQ){
+  const updateCampuses = async () => {
+    if (campusQ) {
       let dropDownData2 = [];
       for (var i = 0; i < campusQ.length; i++) {
         dropDownData2.push({ value: campusQ[i].ID, label: campusQ[i].name }); // Create your array of data
       }
-      setCampuses(dropDownData2)
+      setCampuses(dropDownData2);
     }
   };
 
@@ -86,61 +88,61 @@ export const Register = ({ navigation }) => {
 
     const newUser = {
       firstname: firstName.value,
-      lastname:lastName.value,
+      lastname: lastName.value,
       universityEmail: email.value,
-      phonenumber:phoneNumber.value,
-      dateOfBirth:birthDate,
-      campusid:campus.value,
+      phonenumber: phoneNumber.value,
+      dateOfBirth: birthDate,
+      campusid: campus.value,
       password: password.value,
     };
     createUser(newUser);
-}
+  };
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
       <Logo />
       <Header>Create Account</Header>
       <ScrollView>
-      <TextInput
-        label="First Name"
-        returnKeyType="next"
-        value={firstName.value}
-        onChangeText={(text) => setFirstName({ value: text, error: "" })}
-        error={!!firstName.error}
-        errorText={firstName.error}
-      />
-      <TextInput
-        label="Last Name"
-        returnKeyType="next"
-        value={lastName.value}
-        onChangeText={(text) => setLastName({ value: text, error: "" })}
-        error={!!lastName.error}
-        errorText={lastName.error}
-      />
-      <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: "" })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
-      <PhoneInput
-        // ref={phoneInput}
-        defaultValue={phoneNumber.value}
-        defaultCode="LB"
-        onChangeFormattedText={(text) => {
-          setPhoneNumber({value:text});
-        }}
-        withDarkTheme
-        withShadow
-        disableArrowIcon
-      />
-      <DatePicker
+        <TextInput
+          label="First Name"
+          returnKeyType="next"
+          value={firstName.value}
+          onChangeText={(text) => setFirstName({ value: text, error: "" })}
+          error={!!firstName.error}
+          errorText={firstName.error}
+        />
+        <TextInput
+          label="Last Name"
+          returnKeyType="next"
+          value={lastName.value}
+          onChangeText={(text) => setLastName({ value: text, error: "" })}
+          error={!!lastName.error}
+          errorText={lastName.error}
+        />
+        <TextInput
+          label="Email"
+          returnKeyType="next"
+          value={email.value}
+          onChangeText={(text) => setEmail({ value: text, error: "" })}
+          error={!!email.error}
+          errorText={email.error}
+          autoCapitalize="none"
+          autoCompleteType="email"
+          textContentType="emailAddress"
+          keyboardType="email-address"
+        />
+        <PhoneInput
+          // ref={phoneInput}
+          defaultValue={phoneNumber.value}
+          defaultCode="LB"
+          onChangeFormattedText={(text) => {
+            setPhoneNumber({ value: text });
+          }}
+          withDarkTheme
+          withShadow
+          disableArrowIcon
+        />
+        <DatePicker
           style={styles.datePickerStyle}
           date={birthDate} // Initial date from state
           mode="date" // The enum of date, datetime and time
@@ -153,7 +155,7 @@ export const Register = ({ navigation }) => {
           customStyles={{
             dateIcon: {
               //display: 'none',
-              position: 'absolute',
+              position: "absolute",
               left: 0,
               top: 4,
               marginLeft: 0,
@@ -166,9 +168,9 @@ export const Register = ({ navigation }) => {
             setBirthDate(date);
           }}
         />
-      <Dropdown
+        <Dropdown
           data={universities}
-          style={[styles.dropdown, Focus && { borderColor: 'blue' }]}
+          style={[styles.dropdown, Focus && { borderColor: "blue" }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
@@ -177,29 +179,29 @@ export const Register = ({ navigation }) => {
           maxHeight={300}
           labelField="label"
           valueField="value"
-          placeholder={!Focus ? 'Select University' : '...'}
+          placeholder={!Focus ? "Select University" : "..."}
           searchPlaceholder="Search..."
           value={university.label}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          onChange={item => {
+          onChange={(item) => {
             setUniversity(item);
-            fetchStart()
+            fetchStart();
             updateCampuses();
             setFocus(false);
           }}
           renderLeftIcon={() => (
-              <AntDesign
-                  style={styles.icon}
-                  color={Focus ? 'blue' : 'black'}
-                  name="Safety"
-                  size={20}
-              />
+            <AntDesign
+              style={styles.icon}
+              color={Focus ? "blue" : "black"}
+              name="Safety"
+              size={20}
+            />
           )}
-      />
-          <Dropdown
+        />
+        <Dropdown
           data={campuses}
-          style={[styles.dropdown, CampusFocus && { borderColor: 'blue' }]}
+          style={[styles.dropdown, CampusFocus && { borderColor: "blue" }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
@@ -208,33 +210,33 @@ export const Register = ({ navigation }) => {
           maxHeight={300}
           labelField="label"
           valueField="value"
-          placeholder={!CampusFocus ? 'Select Campus' : '...'}
+          placeholder={!CampusFocus ? "Select Campus" : "..."}
           searchPlaceholder="Search..."
           value={campus.label}
           onFocus={() => setCampusFocus(true)}
           onBlur={() => setCampusFocus(false)}
-          onChange={item => {
+          onChange={(item) => {
             setCampus(item);
             setCampusFocus(false);
           }}
           renderLeftIcon={() => (
-              <AntDesign
-                  style={styles.icon}
-                  color={CampusFocus ? 'blue' : 'black'}
-                  name="Safety"
-                  size={20}
-              />
+            <AntDesign
+              style={styles.icon}
+              color={CampusFocus ? "blue" : "black"}
+              name="Safety"
+              size={20}
+            />
           )}
-      />
-      <TextInput
-        label="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={(text) => setPassword({ value: text, error: "" })}
-        error={!!password.error}
-        errorText={password.error}
-        secureTextEntry
-      />
+        />
+        <TextInput
+          label="Password"
+          returnKeyType="done"
+          value={password.value}
+          onChangeText={(text) => setPassword({ value: text, error: "" })}
+          error={!!password.error}
+          errorText={password.error}
+          secureTextEntry
+        />
       </ScrollView>
       <Button
         mode="contained"
@@ -268,34 +270,33 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     height: 50,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
-    backgroundColor: 'white',
-    marginTop: 20
-
-},
-icon: {
+    backgroundColor: "white",
+    marginTop: 20,
+  },
+  icon: {
     marginRight: 5,
-},
-label: {
-    position: 'absolute',
-    backgroundColor: 'white',
+  },
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
     left: 22,
     top: 20,
     zIndex: 999,
     paddingHorizontal: 8,
     fontSize: 14,
-},
-placeholderStyle: {
+  },
+  placeholderStyle: {
     fontSize: 16,
-},
-selectedTextStyle: {
+  },
+  selectedTextStyle: {
     fontSize: 16,
-},
-iconStyle: {
+  },
+  iconStyle: {
     width: 20,
     height: 20,
-},
+  },
 });

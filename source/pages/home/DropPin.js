@@ -5,14 +5,12 @@ import { useRef, useState } from "react";
 
 export const DropPin = ({ route, navigation }) => {
   const {
-    locationMarkers: {
-      startCoordinates,
-      destinationCoordinates,
-      setStartCoordinates,
-      setDestinationCoordinates,
-    },
+    startCoordinates,
+    destinationCoordinates,
+    setStartCoordinates,
+    setDestinationCoordinates,
     position,
-    setUpdateLocationNames,
+    setUpdateLocationName,
   } = route.params;
 
   const mapRef = useRef(null);
@@ -32,7 +30,24 @@ export const DropPin = ({ route, navigation }) => {
         setStartLocationMarker={setStartCoordinates}
         destinationMarker={destinationCoordinates}
         setDestinationMarker={setDestinationCoordinates}
-        setUpdateLocationNames={setUpdateLocationNames}
+        setUpdateLocationName={setUpdateLocationName}
+        initialRegion={
+          startCoordinates
+            ? {
+                longitude: startCoordinates.longitude,
+                latitude: startCoordinates.latitude,
+              }
+            : destinationCoordinates
+            ? {
+                longitude: destinationCoordinates.longitude,
+                latitude: destinationCoordinates.latitude,
+              }
+            : undefined
+        }
+        initialDelta={{
+          latitudeDelta: 0.4,
+          longitudeDelta: 0.4,
+        }}
       />
 
       <View style={styles.dropDoneButtonView}>

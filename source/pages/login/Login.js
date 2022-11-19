@@ -14,22 +14,25 @@ import { emailValidator, passwordValidator } from "utils";
 import { AuthenticationContext } from "routes/authentication-context";
 import { useLoginUserMutation } from "api/mutations/authentication/login-user-mutation";
 
-
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
-  const { mutate: LoginUser, data:loggedin } = useLoginUserMutation();
+  const { mutate: LoginUser, data: loggedin } = useLoginUserMutation();
 
   const { signIn } = useContext(AuthenticationContext);
 
-  useEffect(()=>{
-    if(loggedin){
-      signIn(loggedin.accessToken, loggedin.userId, loggedin.firstName, loggedin.lastName);
-      navigation.navigate("Home")
+  useEffect(() => {
+    if (loggedin) {
+      signIn(
+        loggedin.accessToken,
+        loggedin.userId,
+        loggedin.firstName,
+        loggedin.lastName
+      );
+      navigation.navigate("Home");
     }
-
-  },[loggedin]);
+  }, [loggedin]);
 
   const Auth = async () => {
     const emailError = emailValidator(email.value);
@@ -39,11 +42,11 @@ export const Login = ({ navigation }) => {
       setPassword({ ...password, error: passwordError });
       return;
     }
-    const user ={
+    const user = {
       universityEmail: email.value,
-      password: password.value
-    }
-    LoginUser(user)
+      password: password.value,
+    };
+    LoginUser(user);
   };
 
   return (

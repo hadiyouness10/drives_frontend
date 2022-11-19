@@ -27,10 +27,9 @@ const DetailView = ({ label, value, icon }) => {
   );
 };
 export const RideDetails = ({ route, navigation }) => {
-  const { rideID, driverID, pageIndex } = route?.params;
-  // const { userID } = useContext(AuthenticationContext);
-  const { data: rideDetails } = useRideDetailsQuery(rideID);
-  const { data: driverDetails } = useUserDetailsQuery(driverID);
+  const { rideId, driverId, pageIndex } = route?.params;
+  const { data: rideDetails } = useRideDetailsQuery(rideId);
+  const { data: driverDetails } = useUserDetailsQuery(driverId);
 
   const {
     departureLocation,
@@ -42,7 +41,6 @@ export const RideDetails = ({ route, navigation }) => {
   } = rideDetails ?? {};
 
   const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
-
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);

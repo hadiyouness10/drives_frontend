@@ -8,91 +8,175 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import { InputDetails } from "components";
+import { InputDetails, RouteSelector } from "components";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
-import { useLocationCoordinatesQuery } from "api/queries";
 import { HowItWorks } from "components/home/HowItWorks";
+import { useLocationCoordinatesQuery } from "api/queries";
+import { useCreateRideMutation } from "api/mutations";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
-  const [isPressed, setIsPressed] = useState(false);
-  const {
-    data: departureCoordinates,
-    refetch: fetchStart,
-    isError: startError,
-  } = useLocationCoordinatesQuery(inputDetailsProps.startLocation, false);
-
-  const {
-    data: destinationCoordinates,
-    refetch: fetchDestination,
-    isError: destinationError,
-  } = useLocationCoordinatesQuery(inputDetailsProps.destinationLocation, false);
-
-  useEffect(() => {
-    if (
-      isPressed &&
-      (inputDetailsProps.startCoordinates || departureCoordinates) &&
-      (inputDetailsProps.destinationCoordinates || destinationCoordinates)
-    ) {
-      navigation.push("Riders", {
-        departureCoordinates:
-          inputDetailsProps.startCoordinates || departureCoordinates,
-        destinationCoordinates:
-          inputDetailsProps.destinationCoordinates || destinationCoordinates,
-      });
-      setIsPressed(false);
-    } else if (startError || destinationError) setIsPressed(false);
-  }, [
-    isPressed,
-    JSON.stringify(departureCoordinates),
-    JSON.stringify(destinationCoordinates),
-  ]);
+  const { data: backUpCoordinates, refetch: fetchCoordinates } =
+    useLocationCoordinatesQuery(
+      inputDetailsProps.universityField === "start"
+        ? inputDetailsProps.destinationLocation
+        : inputDetailsProps.startLocation,
+      false,
+      "joinRide"
+    );
 
   const validateLocations = () => {
-    if (!inputDetailsProps.startCoordinates && !departureCoordinates)
-      fetchStart();
-    if (!inputDetailsProps.destinationCoordinates && !departureCoordinates)
-      fetchDestination();
-    setIsPressed(true);
+    if (
+      inputDetailsProps.startCoordinates &&
+      inputDetailsProps.destinationCoordinates
+    ) {
+      navigation.push("Riders", {
+        departureCoordinates: inputDetailsProps.startCoordinates,
+        destinationCoordinates: inputDetailsProps.destinationCoordinates,
+        dateOfDeparture: inputDetailsProps.date,
+        numberOfSeats: inputDetailsProps.numberOfSeats,
+      });
+    } else fetchCoordinates();
   };
 
+  useEffect(() => {
+    if (backUpCoordinates)
+      if (inputDetailsProps.universityField === "start") {
+        inputDetailsProps.setDestinationCoordinates(backUpCoordinates);
+        navigation.push("Riders", {
+          departureCoordinates: inputDetailsProps.startCoordinates,
+          destinationCoordinates: backUpCoordinates,
+          dateOfDeparture: inputDetailsProps.date,
+          numberOfSeats: inputDetailsProps.numberOfSeats,
+        });
+      } else {
+        inputDetailsProps.setStartCoordinates(backUpCoordinates);
+        navigation.push("Riders", {
+          departureCoordinates: backUpCoordinates,
+          destinationCoordinates: inputDetailsProps.destinationCoordinates,
+          dateOfDeparture: inputDetailsProps.date,
+          numberOfSeats: inputDetailsProps.numberOfSeats,
+        });
+      }
+  }, [JSON.stringify(backUpCoordinates)]);
+
   return (
-    <View>
-      <View>
-        <InputDetails type="joinRide" {...inputDetailsProps} />
-        <View style={{ marginLeft: 10, marginRight: 10 }} pointerEvents="auto">
-          <TouchableOpacity
-            style={styles.ridersListButton}
-            onPress={() => validateLocations()}
-          >
-            <Text style={{ color: "#ffffff", fontSize: 20 }}>
-              Search For Drivers
-            </Text>
-          </TouchableOpacity>
-          <View style={{ marginTop: 30 }}>
-            <HowItWorks type="joinRide"></HowItWorks>
-          </View>
+    <ScrollView keyboardShouldPersistTaps={true}>
+      <InputDetails type="joinRide" {...inputDetailsProps} />
+      <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
+        <TouchableOpacity
+          style={styles.ridersListButton}
+          onPress={() => validateLocations()}
+        >
+          <Text style={{ color: "#ffffff", fontSize: 20 }}>
+            Search For Drivers
+          </Text>
+        </TouchableOpacity>
+        <View style={{ marginTop: 30 }}>
+          <HowItWorks type="joinRide"></HowItWorks>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const StartRide = ({ inputDetailsProps, navigation }) => {
+  const { mutate: createRide, data } = useCreateRideMutation();
+  const { userId } = useContext(AuthenticationContext);
+  const [routeSelectorEnabled, setRouteSelectorEnabled] = useState(false);
+
+  const [selectedRoute, setSelectedRoute] = useState(0);
+
+  const { data: backUpCoordinates, refetch: fetchCoordinates } =
+    useLocationCoordinatesQuery(
+      inputDetailsProps.universityField === "start"
+        ? inputDetailsProps.destinationLocation
+        : inputDetailsProps.startLocation,
+      false,
+      "startRide"
+    );
+
+  const newRide = {
+    studentId: userId,
+    dateOfDeparture: inputDetailsProps.date,
+    rideStatus: "PENDING",
+    departureCoordinates: JSON.stringify(inputDetailsProps.startCoordinates),
+    destinationCoordinates: JSON.stringify(
+      inputDetailsProps.destinationCoordinates
+    ),
+    departureLocation: inputDetailsProps.startLocation,
+    destinationLocation: inputDetailsProps.destinationLocation,
+    numberOfSeats: inputDetailsProps.numberOfSeats,
+    numberOfAvailableSeats: inputDetailsProps.numberOfSeats,
+    pricePerRider: parseFloat(inputDetailsProps.pricePerRider) ?? 0,
+  };
+
+  const validateLocations = () => {
+    if (
+      inputDetailsProps.startCoordinates &&
+      inputDetailsProps.destinationCoordinates
+    ) {
+      createRide(newRide);
+    } else fetchCoordinates();
+  };
+
+  useEffect(() => {
+    if (backUpCoordinates)
+      if (inputDetailsProps.universityField === "start") {
+        inputDetailsProps.setDestinationCoordinates(backUpCoordinates);
+        createRide({
+          ...newRide,
+          destinationCoordinates: JSON.stringify(backUpCoordinates),
+        });
+      } else {
+        inputDetailsProps.setStartCoordinates(backUpCoordinates);
+        createRide({
+          ...newRide,
+          departureCoordinates: JSON.stringify(backUpCoordinates),
+        });
+      }
+  }, [JSON.stringify(backUpCoordinates)]);
+
+  useEffect(() => {
+    if (data)
+      if (data.status === "SUCCESS") {
+        const now = new Date().toISOString();
+        navigation.navigate("Your Rides", {
+          screen: "/",
+          params: { defaultIndex: 1, date: now },
+        });
+      } else if (data.status === "REQUIRE_ROUTE_SELECTION") {
+        setRouteSelectorEnabled(true);
+      }
+  }, [JSON.stringify(data)]);
+
   return (
-    <View>
-      <ScrollView>
-        <InputDetails type="startRide" {...inputDetailsProps} />
-        <View style={[styles.confirmButtonView]} pointerEvents="auto">
-          <TouchableOpacity style={styles.confirmButton} onPress={() => {}}>
-            <Text style={{ color: "white", fontSize: 20 }}>Confirm Ride</Text>
-          </TouchableOpacity>
-          <View style={{ marginTop: 30 }}>
-            <HowItWorks type="startRide"></HowItWorks>
-          </View>
+    <ScrollView keyboardShouldPersistTaps={true}>
+      <InputDetails type="startRide" {...inputDetailsProps} />
+      <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
+        <TouchableOpacity
+          style={styles.ridersListButton}
+          onPress={() => validateLocations()}
+        >
+          <Text style={{ color: "#ffffff", fontSize: 20 }}>Create Ride</Text>
+        </TouchableOpacity>
+        <View style={{ marginTop: 30 }}>
+          <HowItWorks type="startRide"></HowItWorks>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+      <RouteSelector
+        startCoordinates={inputDetailsProps.startCoordinates}
+        destinationCoordinates={inputDetailsProps.destinationCoordinates}
+        enabled={routeSelectorEnabled}
+        setEnabled={setRouteSelectorEnabled}
+        displayedRoute={selectedRoute}
+        setDisplayedRoute={setSelectedRoute}
+        routes={data?.content}
+        createRide={() =>
+          createRide({ ...newRide, route: data.content[selectedRoute] })
+        }
+      />
+    </ScrollView>
   );
 };
 
@@ -103,21 +187,9 @@ export const NewRide = ({ navigation }) => {
   const [destinationCoordinates, setDestinationCoordinates] = useState(null);
   const [date, setDate] = useState(new Date());
   const [numberOfSeats, setNumberOfSeats] = useState(1);
+  const [pricePerRider, setPricePerRider] = useState("0");
   const [universityField, setUniversityField] = useState("destination");
-
-  useEffect(
-    (oldUniversityField) => {
-      if (oldUniversityField !== universityField) {
-        const temp = startLocation;
-        setStartLocation(destinationLocation);
-        setDestinationLocation(temp);
-        const temp2 = startCoordinates;
-        setStartCoordinates(destinationCoordinates);
-        setDestinationCoordinates(temp2);
-      }
-    },
-    [universityField]
-  );
+  const [updateLocationCoords, setUpdateLocationCoords] = useState(true);
 
   const inputDetailsProps = {
     navigation,
@@ -133,8 +205,12 @@ export const NewRide = ({ navigation }) => {
     setDate,
     numberOfSeats,
     setNumberOfSeats,
+    pricePerRider,
+    setPricePerRider,
     universityField,
     setUniversityField,
+    updateLocationCoords,
+    setUpdateLocationCoords,
   };
 
   const { firstName } = useContext(AuthenticationContext);
@@ -235,9 +311,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#ccf2ff",
-    // borderTopRightRadius: 100,
-    // borderBottomRightRadius: 100,
+    backgroundColor: "rgb(0, 125, 200)",
     borderColor: "grey",
     flexDirection: "row",
     borderRadius: 10,
