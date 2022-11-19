@@ -23,8 +23,6 @@ export const Login = ({ navigation }) => {
   const { signIn } = useContext(AuthenticationContext);
 
   useEffect(() => {
-    navigation.navigate("Home");
-
     if (loggedin) {
       signIn(
         loggedin.accessToken,
@@ -32,6 +30,7 @@ export const Login = ({ navigation }) => {
         loggedin.firstName,
         loggedin.lastName
       );
+      navigation.navigate("Home");
     }
   }, [loggedin]);
 
