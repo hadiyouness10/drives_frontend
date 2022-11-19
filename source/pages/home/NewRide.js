@@ -31,6 +31,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       inputDetailsProps.destinationCoordinates
     ) {
       navigation.push("Riders", {
+        departureLocation: inputDetailsProps.startLocation,
         departureCoordinates: inputDetailsProps.startCoordinates,
         destinationCoordinates: inputDetailsProps.destinationCoordinates,
         dateOfDeparture: inputDetailsProps.date,
@@ -46,6 +47,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       if (inputDetailsProps.universityField === "start") {
         inputDetailsProps.setDestinationCoordinates(backUpCoordinates);
         navigation.push("Riders", {
+          departureLocation: inputDetailsProps.startLocation,
           departureCoordinates: inputDetailsProps.startCoordinates,
           destinationCoordinates: backUpCoordinates,
           dateOfDeparture: inputDetailsProps.date,
@@ -56,6 +58,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
       } else {
         inputDetailsProps.setStartCoordinates(backUpCoordinates);
         navigation.push("Riders", {
+          departureLocation: inputDetailsProps.startLocation,
           departureCoordinates: backUpCoordinates,
           destinationCoordinates: inputDetailsProps.destinationCoordinates,
           dateOfDeparture: inputDetailsProps.date,
@@ -67,7 +70,7 @@ const JoinRide = ({ inputDetailsProps, navigation }) => {
   }, [JSON.stringify(backUpCoordinates)]);
 
   return (
-    <ScrollView keyboardShouldPersistTaps={true}>
+    <ScrollView keyboardShouldPersistTaps={"always"}>
       <InputDetails type="joinRide" {...inputDetailsProps} />
       <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
         <TouchableOpacity
@@ -157,7 +160,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
   }, [JSON.stringify(data)]);
 
   return (
-    <ScrollView keyboardShouldPersistTaps={true}>
+    <ScrollView keyboardShouldPersistTaps={"always"}>
       <InputDetails type="startRide" {...inputDetailsProps} />
       <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
         <TouchableOpacity

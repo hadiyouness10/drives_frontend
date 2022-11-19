@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { stackScreenOptions, tabScreenOptions } from "./screen-options";
+import { stackScreenOptions, createTabScreenOptions } from "./screen-options";
 import { Provider } from "react-native-paper";
 import { theme } from "core/theme";
 import {
@@ -15,18 +15,24 @@ import {
   Account,
   Riders,
   YourRides,
+  StopRequests,
 } from "pages";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "./authentication-context";
 import { View } from "react-native";
+import { useStopRequestsQuery } from "api/queries";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export const AppRouter = () => {
+  const { userId } = useContext(AuthenticationContext);
+  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
   return (
-    <Tab.Navigator screenOptions={tabScreenOptions}>
+    <Tab.Navigator
+      screenOptions={createTabScreenOptions(data ? data.length : undefined)}
+    >
       <Tab.Screen name="New Ride" component={NewRideNavigator} />
       <Tab.Screen name="Your Rides" component={YourRidesNavigator} />
       <Tab.Screen name="Account" component={AccountNavigator} />
@@ -63,6 +69,8 @@ const AccountNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={Account} />
+      <Stack.Screen name="Stop Requests" component={StopRequests} />
+      <Stack.Screen name="Ride Details (Account)" component={RideDetails} />
     </Stack.Navigator>
   );
 };

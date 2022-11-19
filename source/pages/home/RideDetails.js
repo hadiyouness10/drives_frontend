@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
@@ -8,6 +8,8 @@ import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
 import { decode } from "@mapbox/polyline";
+import { useStopRequestMutation } from "api/mutations";
+import { AuthenticationContext } from "routes/authentication-context";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -27,9 +29,19 @@ const DetailView = ({ label, value, icon }) => {
   );
 };
 export const RideDetails = ({ route, navigation }) => {
-  const { rideId, driverId, pageIndex } = route?.params;
+  const {
+    rideId,
+    driverId,
+    pageIndex,
+    pickupLocation,
+    pickupCoordinates,
+    request = false,
+  } = route?.params;
   const { data: rideDetails } = useRideDetailsQuery(rideId);
   const { data: driverDetails } = useUserDetailsQuery(driverId);
+  const { userId } = useContext(AuthenticationContext);
+  const { mutate: sendStopRequest, data: stopRequestResult } =
+    useStopRequestMutation();
 
   const {
     departureLocation,
@@ -44,6 +56,17 @@ export const RideDetails = ({ route, navigation }) => {
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (stopRequestResult) {
+      const now = new Date().toISOString();
+      navigation.navigate("Your Rides", {
+        screen: "/",
+        params: { defaultIndex: 0, date: now },
+      });
+    }
+  });
+
   if (rideDetails && driverDetails)
     return (
       <View style={{ flex: 1 }}>
@@ -112,7 +135,19 @@ export const RideDetails = ({ route, navigation }) => {
             icon="location"
           />
 
-          <Button title="Request Pickup" />
+          {request && (
+            <Button
+              onPress={() => {
+                sendStopRequest({
+                  rideId,
+                  studentId: userId,
+                  location: pickupLocation,
+                  coordinates: JSON.stringify(pickupCoordinates),
+                });
+              }}
+              title="Request Pickup"
+            />
+          )}
         </View>
         <MapComponent
           mapRef={mapRef}
@@ -146,7 +181,12 @@ export const RideDetails = ({ route, navigation }) => {
         />
       </View>
     );
-  else return <Text>Loading</Text>;
+  else
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ fontSize: 18, color: "grey" }}>Loading...</Text>
+      </View>
+    );
 };
 
 const styles = StyleSheet.create({

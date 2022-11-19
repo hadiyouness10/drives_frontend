@@ -86,6 +86,22 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
+          <TouchableOpacity
+            style={styles.optionsObject}
+            onPress={() => navigation.push("Stop Requests")}
+          >
+            <Text style={styles.options}>Stop Requests </Text>
+            <Icon
+              name="alert-circle"
+              size={24}
+              color={"red"}
+              style={{ marginLeft: 10, marginRight: "auto", marginTop: 10 }}
+            />
+            <Icon style={styles.icons} name="list" size={24} />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <View style={styles.drawLine} />
           <View style={styles.optionsObject}>
             <Text style={styles.options}>Ride History</Text>
             <Icon style={styles.icons} name="list" size={24} />
@@ -104,7 +120,7 @@ export const Account = ({ navigation }) => {
         </View>
         <TouchableOpacity onPress={Logout}>
           <View style={styles.drawLine} />
-          <View style={styles.optionsObject}>
+          <View style={[styles.optionsObject, { marginBottom: 20 }]}>
             <Text style={styles.options}>Log Out</Text>
             <MaterialCommunityIcons
               style={styles.icons}
@@ -161,5 +177,6 @@ const styles = StyleSheet.create({
   optionsObject: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
 });
