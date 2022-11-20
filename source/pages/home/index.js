@@ -8,3 +8,4 @@ export * from "./YourRides";
 export * from "./Chat";
 export * from "./Chats";
 export * from "./StopRequests";
+export * from "./EditProfile";

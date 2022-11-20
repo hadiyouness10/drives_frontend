@@ -38,7 +38,9 @@ export const Account = ({ navigation }) => {
       })
     );
   };
-
+  const EditProfile = async () => {
+    navigation.push("EditProfile");
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ImageBackground
@@ -66,9 +68,11 @@ export const Account = ({ navigation }) => {
           <Text style={styles.nameTitle}>Hadi Youness</Text>
           <Pressable style={styles.editProfile}>
             <View>
-              <Text style={{ fontSize: 16, color: "#7D7BFF" }}>
-                Edit Profile
-              </Text>
+              <TouchableOpacity onPress={() => EditProfile()}>
+                <Text style={{ fontSize: 16, color: "#7D7BFF" }}>
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
             </View>
           </Pressable>
         </View>

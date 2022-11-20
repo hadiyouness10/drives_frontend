@@ -18,6 +18,7 @@ import {
   Chat,
   Chats,
   StopRequests,
+  EditProfile,
 } from "pages";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext, useEffect, useState } from "react";
@@ -73,6 +74,7 @@ const AccountNavigator = () => {
       <Stack.Screen name="/" component={Account} />
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="Chats" component={Chats} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Stop Requests" component={StopRequests} />
       <Stack.Screen name="Ride Details (Account)" component={RideDetails} />
     </Stack.Navigator>
