@@ -9,11 +9,13 @@ import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
 import { decode } from "@mapbox/polyline";
 import {
+  useCreateChatMutation,
   useDeleteRideMutation,
   useDeleteStopRequestMutation,
   useStopRequestMutation,
 } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
+import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -84,6 +86,7 @@ const ActionButton = ({
               sendStopRequest({
                 rideId,
                 studentId: userId,
+                driverId,
                 location: pickupLocation,
                 coordinates: JSON.stringify(pickupCoordinates),
               });
@@ -121,7 +124,14 @@ export const RideDetails = ({ route, navigation }) => {
   } = route?.params;
   const { data: rideDetails } = useRideDetailsQuery(rideId);
   const { data: driverDetails } = useUserDetailsQuery(driverId);
-  const { userId } = useContext(AuthenticationContext);
+  const { userId, firstName } = useContext(AuthenticationContext);
+  const { mutate: createChat, isSuccess: createChatSuccess } =
+    useCreateChatMutation();
+  const {
+    data: chatsList,
+    refetch: fetchChatsList,
+    isFetching,
+  } = useChatsQuery(userId, false, navigation, createChat, rideId, firstName);
 
   const {
     departureLocation,
@@ -132,10 +142,23 @@ export const RideDetails = ({ route, navigation }) => {
     route: routePolyline,
   } = rideDetails ?? {};
 
-  const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
+  const {
+    firstName: driverFirstName,
+    lastName,
+    rating,
+    completedRides,
+  } = driverDetails ?? {};
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);
+
+  useEffect(() => {
+    if (createChatSuccess)
+      navigation.navigate("Account", {
+        screen: "Chats",
+        initial: false,
+      });
+  }, [createChatSuccess]);
 
   if (rideDetails && driverDetails)
     return (
@@ -166,7 +189,9 @@ export const RideDetails = ({ route, navigation }) => {
               }
             />
             <View style={styles.driverDetails}>
-              <Text style={{ fontSize: 34 }}>{`${firstName} ${lastName}`}</Text>
+              <Text
+                style={{ fontSize: 34 }}
+              >{`${driverFirstName} ${lastName}`}</Text>
               <View style={{ flexDirection: "row" }}>
                 <Text style={{ fontSize: 16 }}>Rating: </Text>
                 <Rating
@@ -222,6 +247,16 @@ export const RideDetails = ({ route, navigation }) => {
             pickupCoordinates={pickupCoordinates}
             stopRequest={stopRequest}
           />
+          {driverId !== userId && (
+            <View style={{ marginBottom: 20 }}>
+              <Button
+                title="Chat"
+                onPress={() => {
+                  fetchChatsList();
+                }}
+              />
+            </View>
+          )}
         </View>
 
         <MapComponent

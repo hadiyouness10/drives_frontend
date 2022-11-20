@@ -120,7 +120,14 @@ export const StopRequestView = ({
             <TouchableOpacity
               style={[styles.buttonDiv, { backgroundColor: "green" }]}
               onPress={() =>
-                mutate({ id: ID, content: { newStatus: "ACCEPTED", rideId } })
+                mutate({
+                  id: ID,
+                  content: {
+                    newStatus: "ACCEPTED",
+                    rideId,
+                    riderId: studentId,
+                  },
+                })
               }
             >
               <IonIcon name="checkmark" color="white" />
@@ -128,7 +135,14 @@ export const StopRequestView = ({
             <TouchableOpacity
               style={[styles.buttonDiv, { backgroundColor: "darkred" }]}
               onPress={() =>
-                mutate({ id: ID, content: { newStatus: "REJECTED", rideId } })
+                mutate({
+                  id: ID,
+                  content: {
+                    newStatus: "REJECTED",
+                    rideId,
+                    riderId: studentId,
+                  },
+                })
               }
             >
               <IonIcon name="ios-close-outline" color="white" />

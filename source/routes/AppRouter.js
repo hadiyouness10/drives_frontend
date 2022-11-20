@@ -25,13 +25,31 @@ import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "./authentication-context";
 import { View } from "react-native";
 import { useStopRequestsQuery } from "api/queries";
+import connectToWebSocket from "api/websocketConfig";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export const AppRouter = () => {
-  const { userId } = useContext(AuthenticationContext);
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+export const AppRouter = ({ route }) => {
+  const { userId = route?.params?.loggedInId } = useContext(
+    AuthenticationContext
+  );
+  const { data, refetch: refetchStopRequestsDriver } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+  });
+  const { refetch: refetchStopRequestsRider } = useStopRequestsQuery({
+    studentId: userId,
+  });
+
+  useEffect(() => {
+    connectToWebSocket(
+      userId,
+      refetchStopRequestsDriver,
+      refetchStopRequestsRider
+    );
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={createTabScreenOptions(data ? data.length : undefined)}
