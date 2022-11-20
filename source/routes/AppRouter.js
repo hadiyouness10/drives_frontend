@@ -24,14 +24,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "./authentication-context";
 import { View } from "react-native";
-import { useStopRequestsQuery } from "api/queries";
+import { useChatsQuery, useStopRequestsQuery } from "api/queries";
+import connectToWebSocket from "api/websocketConfig";
+import { useQueryClient } from "react-query";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export const AppRouter = () => {
-  const { userId } = useContext(AuthenticationContext);
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+export const AppRouter = ({ route }) => {
+  const { userId = route?.params?.loggedInId } = useContext(
+    AuthenticationContext
+  );
+  const { data } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+  });
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    connectToWebSocket(userId, queryClient);
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={createTabScreenOptions(data ? data.length : undefined)}

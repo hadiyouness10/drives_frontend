@@ -19,7 +19,7 @@ export const useChatQuery = (chatId) =>
         return {
           _id: message.ID,
           text: message.message,
-          createdAt: message.date.split("T")[0] + " " + message.time,
+          createdAt: message.date,
           user: {
             _id: message.studentId,
             name: "",

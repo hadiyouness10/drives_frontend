@@ -30,7 +30,7 @@ export const Login = ({ navigation }) => {
         loggedin.firstName,
         loggedin.lastName
       );
-      navigation.navigate("Home");
+      navigation.navigate("Home", { loggedInId: loggedin.userId });
     }
   }, [loggedin]);
 
