@@ -16,6 +16,7 @@ import { useUserDetailsQuery } from "api/queries";
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useUpdateUserMutation } from "api/mutations/users/update-user-mutation";
+import { CommonActions } from "@react-navigation/native";
 
 export const EditProfile = ({ navigation }) => {
   var id = 1;
@@ -34,7 +35,9 @@ export const EditProfile = ({ navigation }) => {
         userDetails.data?.phoneNumber ? userDetails.data.phoneNumber : ""
       );
       setDateOfBirth(
-        userDetails.data?.dateOfBirth ? userDetails.data.dateOfBirth : ""
+        userDetails.data?.dateOfBirth
+          ? userDetails.data.dateOfBirth.split("T")[0]
+          : ""
       );
     }
   }, []);
@@ -56,7 +59,8 @@ export const EditProfile = ({ navigation }) => {
         dateOfBirth: dateOfBirth,
       };
       updateUser(data);
-      console.log("saving data");
+      console.log("saving data!");
+      navigation.goBack();
     } else console.log("couldnt save data");
     //else do nothing
   };
