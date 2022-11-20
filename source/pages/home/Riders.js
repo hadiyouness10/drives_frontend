@@ -5,10 +5,10 @@ import { useRidesQuery } from "api/queries";
 import { AuthenticationContext } from "routes/authentication-context";
 
 export const Riders = ({ route, navigation }) => {
-  const [orderBy,setOrderBy] = useState("priceperRider")
-  const [descending,setDescending] = useState(false)
-  const [minPrice,setMinPrice] = useState(null)
-  const [maxPrice,setMaxPrice] = useState(null)
+  const [orderBy, setOrderBy] = useState("priceperRider");
+  const [descending, setDescending] = useState(false);
+  const [minPrice, setMinPrice] = useState(null);
+  const [maxPrice, setMaxPrice] = useState(null);
 
   const {
     departureLocation,
@@ -100,7 +100,6 @@ export const Riders = ({ route, navigation }) => {
                 numberOfSeats={numberOfSeats}
                 numberOfAvailableSeats={numberOfAvailableSeats}
                 navigation={navigation}
-                request={true}
               />
             );
           })}

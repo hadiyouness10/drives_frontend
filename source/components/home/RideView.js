@@ -30,7 +30,6 @@ export const RideView = ({
   navigation,
   pageIndex = 0,
   displayDriver = true,
-  request = false,
 }) => {
   const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
     useUserDetailsQuery(driverId);
@@ -48,7 +47,7 @@ export const RideView = ({
               pageIndex,
               pickupLocation,
               pickupCoordinates,
-              request,
+              stopRequest,
             }
           )
         }

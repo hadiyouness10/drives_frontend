@@ -8,7 +8,11 @@ import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
 import { decode } from "@mapbox/polyline";
-import { useStopRequestMutation } from "api/mutations";
+import {
+  useDeleteRideMutation,
+  useDeleteStopRequestMutation,
+  useStopRequestMutation,
+} from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
 
 const DetailView = ({ label, value, icon }) => {
@@ -28,6 +32,76 @@ const DetailView = ({ label, value, icon }) => {
     </View>
   );
 };
+
+const ActionButton = ({
+  navigation,
+  userId,
+  driverId,
+  rideId,
+  rideDetails,
+  pickupLocation,
+  pickupCoordinates,
+  stopRequest,
+}) => {
+  const { mutate: sendStopRequest, data: stopRequestResult } =
+    useStopRequestMutation();
+  const { mutate: cancelRide } = useDeleteRideMutation();
+  const { mutate: cancelStopRequest } = useDeleteStopRequestMutation();
+
+  useEffect(() => {
+    if (stopRequestResult) {
+      const now = new Date().toISOString();
+      navigation.navigate("Your Rides", {
+        screen: "/",
+        params: { defaultIndex: 0, date: now },
+      });
+    }
+  }, [JSON.stringify(stopRequestResult)]);
+
+  if (
+    userId === driverId &&
+    rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats
+  )
+    return (
+      <Button
+        color="red"
+        onPress={() => {
+          cancelRide(rideId);
+          navigation.goBack();
+        }}
+        title="Cancel Ride"
+      />
+    );
+  else if (userId !== driverId)
+    if (!stopRequest) {
+      return (
+        <Button
+          onPress={() => {
+            sendStopRequest({
+              rideId,
+              studentId: userId,
+              location: pickupLocation,
+              coordinates: JSON.stringify(pickupCoordinates),
+            });
+          }}
+          title="Request Pickup"
+        />
+      );
+    } else {
+      return (
+        <Button
+          color="red"
+          onPress={() => {
+            cancelStopRequest(stopRequest.ID);
+            navigation.goBack();
+          }}
+          title="Cancel Stop Request"
+        />
+      );
+    }
+  else return null;
+};
+
 export const RideDetails = ({ route, navigation }) => {
   const {
     rideId,
@@ -35,13 +109,11 @@ export const RideDetails = ({ route, navigation }) => {
     pageIndex,
     pickupLocation,
     pickupCoordinates,
-    request = false,
+    stopRequest,
   } = route?.params;
   const { data: rideDetails } = useRideDetailsQuery(rideId);
   const { data: driverDetails } = useUserDetailsQuery(driverId);
   const { userId } = useContext(AuthenticationContext);
-  const { mutate: sendStopRequest, data: stopRequestResult } =
-    useStopRequestMutation();
 
   const {
     departureLocation,
@@ -56,16 +128,6 @@ export const RideDetails = ({ route, navigation }) => {
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);
-
-  useEffect(() => {
-    if (stopRequestResult) {
-      const now = new Date().toISOString();
-      navigation.navigate("Your Rides", {
-        screen: "/",
-        params: { defaultIndex: 0, date: now },
-      });
-    }
-  });
 
   if (rideDetails && driverDetails)
     return (
@@ -134,20 +196,16 @@ export const RideDetails = ({ route, navigation }) => {
             value={destinationLocation}
             icon="location"
           />
-
-          {request && (
-            <Button
-              onPress={() => {
-                sendStopRequest({
-                  rideId,
-                  studentId: userId,
-                  location: pickupLocation,
-                  coordinates: JSON.stringify(pickupCoordinates),
-                });
-              }}
-              title="Request Pickup"
-            />
-          )}
+          <ActionButton
+            navigation={navigation}
+            userId={userId}
+            driverId={driverId}
+            rideId={rideId}
+            rideDetails={rideDetails}
+            pickupLocation={pickupLocation}
+            pickupCoordinates={pickupCoordinates}
+            stopRequest={stopRequest}
+          />
         </View>
         <MapComponent
           mapRef={mapRef}
