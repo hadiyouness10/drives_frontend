@@ -14,4 +14,6 @@ export * from "./rides/rides-query";
 export * from "./rides/stop-requests-query";
 
 export * from "./users/user-details-query";
+
 export * from "./chats/get-chat-query";
+export * from "./chats/get-all-chats-query";

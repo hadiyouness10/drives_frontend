@@ -7,14 +7,18 @@ import {
 } from "react-native";
 import React, { Component, useContext, useEffect, useState } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthenticationContext } from "routes/authentication-context";
-import { sendMessageQuery, useChatQuery } from "api/queries";
+import { useChatQuery } from "api/queries";
 import { useSendMessageMutation } from "api/mutations";
 
 export const Chat = ({ route, navigation }) => {
-  const chatId = route.params?.chatId;
-  const chatterName = route.params?.firstName + " " + route.params?.lastName;
+  const {
+    chatId,
+    firstName: chatterFirstName,
+    lastName: chatterLastName,
+    receiverId,
+  } = route.params;
+  const chatterName = chatterFirstName + " " + chatterLastName;
   const [messages, setMessages] = useState([]);
   const { userId, firstName } = useContext(AuthenticationContext);
   const { data: messagesList } = useChatQuery(chatId);
@@ -24,6 +28,7 @@ export const Chat = ({ route, navigation }) => {
       studentId: userId,
       chatId,
       message: message[0]["text"],
+      receiverId,
     };
     mutate(data);
   };
@@ -40,7 +45,7 @@ export const Chat = ({ route, navigation }) => {
       setMessages((previous) =>
         GiftedChat.append(previous.message, messagesList)
       );
-  }, [messagesList]);
+  }, [JSON.stringify(messagesList)]);
 
   const chat = (
     <GiftedChat
@@ -51,40 +56,59 @@ export const Chat = ({ route, navigation }) => {
   );
   if (Platform.OS === "android") {
     return (
-      <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: "white" }}
-        behavior="padding"
-        keyboardVerticalOffset={30}
-        enabled
-      >
-        {chat}
-      </KeyboardAvoidingView>
-    );
-  }
-  return (
-    <View style={{ height: "100%", borderWidth: 1 }}>
-      <View
-        style={{
-          backgroundColor: "#E0E0E0",
-          justifyContent: "center",
-          borderWidth: 1,
-        }}
-      >
-        <Text
+      <View style={{ height: "100%" }}>
+        <View
           style={{
-            marginTop: 50,
-            fontSize: 20,
-            fontWeight: "600",
-            paddingBottom: 10,
-            textAlign: "center",
+            backgroundColor: "#E0E0E0",
+            justifyContent: "center",
           }}
         >
-          {chatterName}
-        </Text>
+          <Text
+            style={{
+              marginTop: 50,
+              fontSize: 20,
+              fontWeight: "600",
+              paddingBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            {chatterName}
+          </Text>
+        </View>
+        <KeyboardAvoidingView
+          style={{ flex: 1, backgroundColor: "white" }}
+          behavior="padding"
+          keyboardVerticalOffset={30}
+          enabled
+        >
+          {chat}
+        </KeyboardAvoidingView>
       </View>
-      {chat}
-    </View>
-  );
+    );
+  } else
+    return (
+      <View style={{ height: "100%" }}>
+        <View
+          style={{
+            backgroundColor: "#E0E0E0",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              marginTop: 50,
+              fontSize: 20,
+              fontWeight: "600",
+              paddingBottom: 10,
+              textAlign: "center",
+            }}
+          >
+            {chatterName}
+          </Text>
+        </View>
+        {chat}
+      </View>
+    );
 };
 
 const styles = StyleSheet.create({});

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
+import { useChatsQuery } from "api/queries";
 import { dateTimeFormatter } from "utils";
 
 export const Chats = ({ navigation }) => {
@@ -16,9 +16,7 @@ export const Chats = ({ navigation }) => {
   const { userId } = useContext(AuthenticationContext);
   const { data: chatsList } = useChatsQuery(userId);
 
-  function navigateToChat(chatId, firstName, lastName) {
-    navigation.push("Chat", { chatId, firstName, lastName });
-  }
+  function navigateToChat(chatId, firstName, lastName) {}
 
   useEffect(() => {
     if (chatsList) {
@@ -60,8 +58,19 @@ export const Chats = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() => {
                     if (userId === driverId)
-                      navigateToChat(ID, riderFirstName, riderLastName);
-                    else navigateToChat(ID, driverFirstName, driverLastName);
+                      navigation.push("Chat", {
+                        chatId: ID,
+                        firstName: riderFirstName,
+                        lastName: riderLastName,
+                        receiverId: riderId,
+                      });
+                    else
+                      navigation.push("Chat", {
+                        chatId: ID,
+                        firstName: driverFirstName,
+                        lastName: driverLastName,
+                        receiverId: driverId,
+                      });
                   }}
                 >
                   <View
