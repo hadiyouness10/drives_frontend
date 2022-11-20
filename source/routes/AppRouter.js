@@ -104,7 +104,7 @@ export const LoginNavigator = () => {
           userId: authentication?.userId,
           firstName: authentication?.firstName,
           lastName: authentication?.lastName,
-
+          setAuthentication,
           signIn: async (token, userId, firstName, lastName) => {
             await AsyncStorage.setItem(
               "authentication",

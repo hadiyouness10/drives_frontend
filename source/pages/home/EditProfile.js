@@ -19,48 +19,45 @@ import { CommonActions } from "@react-navigation/native";
 import UserAvatar from "react-native-user-avatar";
 
 export const EditProfile = ({ navigation }) => {
-  var id = 1;
-  const { mutate: updateUser } = useUpdateUserMutation();
-  var userDetails = useUserDetailsQuery(id);
+  const { userId } = useContext(AuthenticationContext);
+  const { mutate: updateUser, isSuccess } = useUpdateUserMutation();
+  var { data } = useUserDetailsQuery(userId);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+
   useEffect(() => {
-    if (userDetails.data !== undefined) {
-      setFirstName(userDetails.data?.firstName);
-      setLastName(userDetails.data?.lastName);
-      setPhoneNumber(
-        userDetails.data?.phoneNumber ? userDetails.data.phoneNumber : ""
-      );
-      setDateOfBirth(
-        userDetails.data?.dateOfBirth
-          ? userDetails.data.dateOfBirth.split("T")[0]
-          : ""
-      );
+    if (data !== undefined) {
+      setFirstName(data?.firstName);
+      setLastName(data?.lastName);
+      setPhoneNumber(data?.phoneNumber ? data.phoneNumber : "");
+      setDateOfBirth(data?.dateOfBirth ? data.dateOfBirth.split("T")[0] : "");
     }
-  }, []);
+  }, [JSON.stringify(data)]);
+
+  useEffect(() => {
+    if (isSuccess) navigation.goBack();
+  }, [isSuccess]);
 
   const onSave = () => {
     if (
       firstName.length > 0 &&
       lastName.length > 0 &&
-      phoneNumber.length == 9 &&
+      phoneNumber.length == 11 &&
       !isNaN(phoneNumber) &&
       checkBirthValidity
     ) {
       //safe to update data
       var data = {
-        studentId: id,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        dateOfBirth: dateOfBirth,
+        id: userId,
+        firstName,
+        lastName,
+        phoneNumber,
+        dateOfBirth,
       };
       updateUser(data);
-      console.log("saving data!");
-      navigation.goBack();
-    } else console.log("couldnt save data");
+    }
     //else do nothing
   };
   const checkBirthValidity = () => {
@@ -103,7 +100,7 @@ export const EditProfile = ({ navigation }) => {
             <TextInput
               key={"FirstName"}
               style={
-                firstName.length == 0
+                firstName.length === 0
                   ? { borderWidth: 1, borderColor: "red" }
                   : { borderWidth: 0 }
               }
@@ -117,7 +114,7 @@ export const EditProfile = ({ navigation }) => {
             </Text>
             <TextInput
               style={
-                lastName.length == 0
+                lastName.length === 0
                   ? { borderWidth: 1, borderColor: "red" }
                   : { borderWidth: 0 }
               }
@@ -132,7 +129,7 @@ export const EditProfile = ({ navigation }) => {
           </Text>
           <TextInput
             style={
-              phoneNumber.length != 9 || isNaN(phoneNumber)
+              phoneNumber.length !== 11 || isNaN(phoneNumber)
                 ? { borderWidth: 1, borderColor: "red" }
                 : { borderWidth: 0 }
             }

@@ -5,6 +5,7 @@ export const AuthenticationContext = React.createContext({
   userId: null,
   firstName: null,
   lastName: null,
+  setAuthentication: () => {},
   signIn: () => {},
   signOut: () => {},
 });
