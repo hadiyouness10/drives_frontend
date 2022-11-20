@@ -16,6 +16,7 @@ export const useUpdateStopRequestMutation = () => {
     mutationFn: updateStopRequest,
     onSuccess: (data) => {
       queryClient.refetchQueries(["stopRequests", { studentId: userId }]);
+      queryClient.refetchQueries(["rides", { driverId: userId }]);
     },
   });
 };

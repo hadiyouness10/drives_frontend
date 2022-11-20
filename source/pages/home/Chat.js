@@ -36,7 +36,6 @@ export const Chat = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    console.log("updated message list");
     if (messagesList)
       setMessages((previous) =>
         GiftedChat.append(previous.message, messagesList)

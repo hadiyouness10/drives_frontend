@@ -181,10 +181,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(10, 10, 10, 0.07)",
   },
   dropPinIcon: {
-    marginRight: 5,
+    marginRight: 10,
     borderWidth: 1,
     borderRadius: 20,
-    borderStyle: "dashed",
     backgroundColor: "white",
     width: 40,
     height: 40,

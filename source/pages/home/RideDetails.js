@@ -63,40 +63,48 @@ const ActionButton = ({
     rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats
   )
     return (
-      <Button
-        color="red"
-        onPress={() => {
-          cancelRide(rideId);
-          navigation.goBack();
-        }}
-        title="Cancel Ride"
-      />
+      <View style={{ marginBottom: 20 }}>
+        <Button
+          color="red"
+          onPress={() => {
+            cancelRide(rideId);
+            navigation.goBack();
+          }}
+          title="Cancel Ride"
+          style={{ marginBottom: 20 }}
+        />
+      </View>
     );
   else if (userId !== driverId)
     if (!stopRequest) {
       return (
-        <Button
-          onPress={() => {
-            sendStopRequest({
-              rideId,
-              studentId: userId,
-              location: pickupLocation,
-              coordinates: JSON.stringify(pickupCoordinates),
-            });
-          }}
-          title="Request Pickup"
-        />
+        <View style={{ marginBottom: 20 }}>
+          <Button
+            onPress={() => {
+              sendStopRequest({
+                rideId,
+                studentId: userId,
+                location: pickupLocation,
+                coordinates: JSON.stringify(pickupCoordinates),
+              });
+            }}
+            title="Request Pickup"
+          />
+        </View>
       );
     } else {
       return (
-        <Button
-          color="red"
-          onPress={() => {
-            cancelStopRequest(stopRequest.ID);
-            navigation.goBack();
-          }}
-          title="Cancel Stop Request"
-        />
+        <View style={{ marginBottom: 20 }}>
+          <Button
+            color="red"
+            onPress={() => {
+              const { ID, requestStatus } = stopRequest;
+              cancelStopRequest({ stopRequestId: ID, requestStatus, rideId });
+              navigation.goBack();
+            }}
+            title="Cancel Stop Request"
+          />
+        </View>
       );
     }
   else return null;
@@ -132,7 +140,13 @@ export const RideDetails = ({ route, navigation }) => {
   if (rideDetails && driverDetails)
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
+        <View
+          style={{
+            backgroundColor: "white",
+            paddingHorizontal: 20,
+            paddingTop: 50,
+          }}
+        >
           <TouchableOpacity
             style={{ flexDirection: "row", marginBottom: 5 }}
             onPress={() =>

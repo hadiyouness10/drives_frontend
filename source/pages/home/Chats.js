@@ -17,14 +17,12 @@ export const Chats = ({ navigation }) => {
   const { id, firstName } = useContext(AuthenticationContext);
   const { data: chatsList } = useChatsQuery(1);
   function navigateToChat(chatId, firstName, lastName) {
-    console.log("navigating");
     navigation.push("Chat", { chatId, firstName, lastName });
   }
 
   useEffect(() => {
     if (chatsList) {
       setChats(chatsList);
-      console.log(chatsList);
     }
   }, [chatsList]);
 
@@ -80,7 +78,7 @@ export const Chats = ({ navigation }) => {
                     }}
                   >
                     <Text>{chat.time.substring(0, chat.time.length - 3)}</Text>
-                    <Text>{chat.date.split("T")[0].replaceAll("-", "/")}</Text>
+                    <Text>{chat.date.split("T")[0].replace(/-/g, "/")}</Text>
                   </View>
                 </View>
                 <View style={styles.drawLine}></View>

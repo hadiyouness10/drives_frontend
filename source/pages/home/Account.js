@@ -16,13 +16,18 @@ import { CommonActions } from "@react-navigation/native";
 import { useContext } from "react";
 import client from "api/client";
 import { useStopRequestsQuery } from "api/queries";
+import UserAvatar from "react-native-user-avatar";
 
 export const Account = ({ navigation }) => {
-  const { userId, signOut } = useContext(AuthenticationContext);
+  const { userId, signOut, firstName, lastName } = useContext(
+    AuthenticationContext
+  );
   const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+
   function navigateToInbox() {
     navigation.push("Chats");
   }
+
   const Logout = async () => {
     try {
       await client.delete("/logout");
@@ -56,16 +61,26 @@ export const Account = ({ navigation }) => {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <Image
+          <View
             style={{
               height: 150,
               width: 159,
               borderRadius: 10,
               marginTop: 300,
             }}
-            source={require("../../assets/MyPicture.png")}
-          />
-          <Text style={styles.nameTitle}>Hadi Youness</Text>
+          >
+            <UserAvatar
+              size={160}
+              name={""}
+              src={
+                "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+              }
+            />
+          </View>
+
+          <Text style={styles.nameTitle}>
+            {firstName} {lastName}
+          </Text>
           <Pressable style={styles.editProfile}>
             <View>
               <TouchableOpacity onPress={() => EditProfile()}>

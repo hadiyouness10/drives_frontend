@@ -93,9 +93,12 @@ export const InputDetails = ({
                 height: 44,
                 width: 44,
                 borderRadius: 22,
-                borderColor: "white",
+                borderColor: "black",
                 alignSelf: "flex-end",
                 marginRight: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                borderWidth: 1,
               }}
             >
               <TouchableOpacity
@@ -111,8 +114,9 @@ export const InputDetails = ({
                     return field === "destination" ? "start" : "destination";
                   });
                 }}
+                style={{ alignItems: "center", justifyContent: "center" }}
               >
-                <Icon size={40} name={"retweet"} color={"black"} />
+                <Icon size={30} name={"retweet"} color={"black"} />
               </TouchableOpacity>
             </View>
           </View>

@@ -11,16 +11,15 @@ import {
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
 import { useUserDetailsQuery } from "api/queries";
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useUpdateUserMutation } from "api/mutations/users/update-user-mutation";
 import { CommonActions } from "@react-navigation/native";
+import UserAvatar from "react-native-user-avatar";
 
 export const EditProfile = ({ navigation }) => {
   var id = 1;
-  const { ids } = useContext(AuthenticationContext);
   const { mutate: updateUser } = useUpdateUserMutation();
   var userDetails = useUserDetailsQuery(id);
   const [firstName, setFirstName] = useState("");
@@ -65,7 +64,7 @@ export const EditProfile = ({ navigation }) => {
     //else do nothing
   };
   const checkBirthValidity = () => {
-    return moment(dateOfBirth.replaceAll("/", "-")).isValid();
+    return moment(dateOfBirth.replace(/-/g, "-")).isValid();
   };
   return (
     <View style={{ height: "100%", paddingTop: 70 }}>
@@ -87,9 +86,12 @@ export const EditProfile = ({ navigation }) => {
             alignItems: "center",
           }}
         >
-          <Image
-            style={{ width: 120, height: 120, borderRadius: 60 }}
-            source={{ uri: "https://picsum.photos/200" }}
+          <UserAvatar
+            size={120}
+            name={""}
+            src={
+              "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+            }
           />
           {/* <Text style={{marginLeft: 20, fontSize: 18, fontWeight: '400'}}>Upload</Text> */}
         </View>

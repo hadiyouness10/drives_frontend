@@ -3,9 +3,14 @@ import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AuthenticationContext } from "routes/authentication-context";
 
-const deleteStopRequest = async (stopRequestId) => {
+const deleteStopRequest = async (data) => {
   return await client
-    .delete(`/rides/stopRequests/${stopRequestId}`)
+    .delete(`/rides/stopRequests/${data.stopRequestId}`, {
+      data: {
+        requestStatus: data.requestStatus,
+        rideId: data.rideId,
+      },
+    })
     .then((res) => res.data);
 };
 
@@ -15,7 +20,7 @@ export const useDeleteStopRequestMutation = () => {
   return useMutation({
     mutationFn: deleteStopRequest,
     onSuccess: () => {
-      queryClient.refetchQueries(["rides", { driverId: userId }]);
+      queryClient.refetchQueries(["stopRequests", { studentId: userId }]);
     },
   });
 };
