@@ -13,16 +13,23 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
-import { useContext } from "react";
+import { useContext,useState,useEffect } from "react";
 import client from "api/client";
 import { useStopRequestsQuery } from "api/queries";
 import UserAvatar from "react-native-user-avatar";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const Account = ({ navigation }) => {
+  const [photo,setPhoto] = useState(null)
   const { userId, signOut, firstName, lastName } = useContext(
     AuthenticationContext
   );
   const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+  const {data:image} = useUserPhotoQuery(userId)
+
+  useEffect(() => {
+    if (image !== undefined) setPhoto(image)
+  }, [image]);
 
   function navigateToInbox() {
     navigation.push("Chats");
@@ -72,7 +79,7 @@ export const Account = ({ navigation }) => {
             <UserAvatar
               size={160}
               name={""}
-              src={
+              src={photo? photo:
                 "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
               }
             />
