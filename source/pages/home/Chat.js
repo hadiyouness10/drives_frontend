@@ -16,20 +16,20 @@ export const Chat = ({ route, navigation }) => {
   const chatId = route.params?.chatId;
   const chatterName = route.params?.firstName + " " + route.params?.lastName;
   const [messages, setMessages] = useState([]);
-  const { id, firstName } = useContext(AuthenticationContext);
+  const { userId, firstName } = useContext(AuthenticationContext);
   const { data: messagesList } = useChatQuery(chatId);
-  const { mutate } = useSendMessageMutation();
+  const { mutate } = useSendMessageMutation(chatId, userId);
   const sendMessage = (message) => {
     const data = {
-      studentId: id ? id : 1,
-      chatID: chatId,
+      studentId: userId,
+      chatId,
       message: message[0]["text"],
     };
     mutate(data);
   };
   const getUser = () => {
     return {
-      _id: id ? id : 1,
+      _id: userId,
       name: firstName,
       avatar: "",
     };
@@ -52,7 +52,7 @@ export const Chat = ({ route, navigation }) => {
   if (Platform.OS === "android") {
     return (
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: "white" }}
         behavior="padding"
         keyboardVerticalOffset={30}
         enabled
@@ -62,8 +62,14 @@ export const Chat = ({ route, navigation }) => {
     );
   }
   return (
-    <View style={{ height: "100%" }}>
-      <View style={{ backgroundColor: "#E0E0E0", justifyContent: "center" }}>
+    <View style={{ height: "100%", borderWidth: 1 }}>
+      <View
+        style={{
+          backgroundColor: "#E0E0E0",
+          justifyContent: "center",
+          borderWidth: 1,
+        }}
+      >
         <Text
           style={{
             marginTop: 50,

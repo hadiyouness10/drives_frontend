@@ -30,12 +30,24 @@ import connectToWebSocket from "api/websocketConfig";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export const AppRouter = () => {
-  const { userId } = useContext(AuthenticationContext);
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+export const AppRouter = ({ route }) => {
+  const { userId = route?.params?.loggedInId } = useContext(
+    AuthenticationContext
+  );
+  const { data, refetch: refetchStopRequestsDriver } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+  });
+  const { refetch: refetchStopRequestsRider } = useStopRequestsQuery({
+    studentId: userId,
+  });
 
   useEffect(() => {
-    connectToWebSocket();
+    connectToWebSocket(
+      userId,
+      refetchStopRequestsDriver,
+      refetchStopRequestsRider
+    );
   }, []);
 
   return (
