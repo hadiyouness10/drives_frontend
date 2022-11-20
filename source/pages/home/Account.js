@@ -20,7 +20,9 @@ import { useStopRequestsQuery } from "api/queries";
 export const Account = ({ navigation }) => {
   const { userId, signOut } = useContext(AuthenticationContext);
   const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
-
+  function navigateToInbox() {
+    navigation.push("Chats");
+  }
   const Logout = async () => {
     try {
       await client.delete("/logout");
@@ -36,7 +38,9 @@ export const Account = ({ navigation }) => {
       })
     );
   };
-
+  const EditProfile = async () => {
+    navigation.push("EditProfile");
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ImageBackground
@@ -64,9 +68,11 @@ export const Account = ({ navigation }) => {
           <Text style={styles.nameTitle}>Hadi Youness</Text>
           <Pressable style={styles.editProfile}>
             <View>
-              <Text style={{ fontSize: 16, color: "#7D7BFF" }}>
-                Edit Profile
-              </Text>
+              <TouchableOpacity onPress={() => EditProfile()}>
+                <Text style={{ fontSize: 16, color: "#7D7BFF" }}>
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
             </View>
           </Pressable>
         </View>
@@ -113,14 +119,16 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
-          <View style={styles.optionsObject}>
-            <Text style={styles.options}>Inbox</Text>
-            <MaterialCommunityIcons
-              style={styles.icons}
-              name="inbox"
-              size={24}
-            />
-          </View>
+          <TouchableOpacity onPress={() => navigateToInbox()}>
+            <View style={styles.optionsObject}>
+              <Text style={styles.options}>Inbox</Text>
+              <MaterialCommunityIcons
+                style={styles.icons}
+                name="inbox"
+                size={24}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={Logout}>
           <View style={styles.drawLine} />

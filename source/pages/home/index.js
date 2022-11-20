@@ -5,4 +5,7 @@ export * from "./RideDetails";
 export * from "./DriverDetails";
 export * from "./Account";
 export * from "./YourRides";
+export * from "./Chat";
+export * from "./Chats";
 export * from "./StopRequests";
+export * from "./EditProfile";
