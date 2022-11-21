@@ -4,7 +4,9 @@ import { useMutation, useQueryClient } from "react-query";
 import { AuthenticationContext } from "routes/authentication-context";
 
 const updateUserPhoto = async (data) => {
-  return await client.patch(`/users/photo/${data.id}`, data).then((res) => res.data);
+  return await client
+    .patch(`/users/photo/${data.id}`, data)
+    .then((res) => res.data);
 };
 
 export const useUpdateUserPhotoMutation = () => {

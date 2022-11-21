@@ -18,20 +18,21 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useUpdateUserMutation } from "api/mutations/users/update-user-mutation";
 import UserAvatar from "react-native-user-avatar";
 import { useUpdateUserPhotoMutation } from "api/mutations/users/update-photo-mutation";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const EditProfile = ({ navigation }) => {
   const { userId } = useContext(AuthenticationContext);
   const { mutate: updateUser, isSuccess } = useUpdateUserMutation();
-  const {mutate: updateUserPhoto, isSuccess:isSuccessPhoto} = useUpdateUserPhotoMutation();
-  const {data:image} = useUserPhotoQuery(userId)
+  const { mutate: updateUserPhoto, isSuccess: isSuccessPhoto } =
+    useUpdateUserPhotoMutation();
+  const { data: image } = useUserPhotoQuery(userId);
   var { data } = useUserDetailsQuery(userId);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [photo,setPhoto] = useState(null)
+  const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
     if (data !== undefined) {
@@ -43,7 +44,7 @@ export const EditProfile = ({ navigation }) => {
   }, [JSON.stringify(data)]);
 
   useEffect(() => {
-    if (image !== undefined) setPhoto(image)
+    if (image !== undefined) setPhoto(image);
   }, [image]);
 
   useEffect(() => {
@@ -78,7 +79,6 @@ export const EditProfile = ({ navigation }) => {
     return moment(dateOfBirth.replace(/-/g, "-")).isValid();
   };
   const handleChoosePhoto = async () => {
-
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -89,14 +89,19 @@ export const EditProfile = ({ navigation }) => {
 
     if (!result.cancelled) {
       const image = {
-        uri: Platform.OS === 'android'? result.uri: result.uri.replace('file://', ''),
-        name: result.uri.substring(result.uri.lastIndexOf('/') + 1, result.uri.length),
-        type: `image/${result.uri.substr(result.uri.lastIndexOf('.') + 1)}`,
-        id:userId
-      }
-        updateUserPhoto(image);
+        uri:
+          Platform.OS === "android"
+            ? result.uri
+            : result.uri.replace("file://", ""),
+        name: result.uri.substring(
+          result.uri.lastIndexOf("/") + 1,
+          result.uri.length
+        ),
+        type: `image/${result.uri.substr(result.uri.lastIndexOf(".") + 1)}`,
+        id: userId,
+      };
+      updateUserPhoto(image);
     }
-
   };
   return (
     <View style={{ height: "100%" }}>
@@ -131,7 +136,9 @@ export const EditProfile = ({ navigation }) => {
             size={120}
             name={""}
             src={
-              photo?photo:'https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80'
+              photo
+                ? photo
+                : "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
             }
           />
         </View>

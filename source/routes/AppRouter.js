@@ -19,6 +19,7 @@ import {
   Chats,
   StopRequests,
   EditProfile,
+  Notifications,
 } from "pages";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext, useEffect, useState } from "react";
@@ -88,6 +89,7 @@ const AccountNavigator = () => {
       <Stack.Screen name="Chats" component={Chats} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Stop Requests" component={StopRequests} />
+      <Stack.Screen name="Notification" component={Notifications} />
       <Stack.Screen name="Your Rides" component={YourRides} />
       <Stack.Screen name="Ride Details" component={RideDetails} />
       <Stack.Screen name="Driver Details" component={DriverDetails} />

@@ -108,9 +108,14 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
-          <View style={styles.optionsObject}>
-            <Text style={styles.options}>Notifications</Text>
-            <Icon style={styles.icons} name="notifications" size={24} />
+          <View>
+            <TouchableOpacity
+              style={styles.optionsObject}
+              onPress={() => navigation.push("Notification")}
+            >
+              <Text style={styles.options}>Notifications</Text>
+              <Icon style={styles.icons} name="notifications" size={24} />
+            </TouchableOpacity>
           </View>
         </View>
         <View>
