@@ -134,10 +134,14 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
+          <TouchableOpacity
+            onPress={() => navigation.push("Your Rides",{history:true})}
+          >
           <View style={styles.optionsObject}>
             <Text style={styles.options}>Ride History</Text>
             <Icon style={styles.icons} name="list" size={24} />
           </View>
+          </TouchableOpacity>
         </View>
         <View>
           <View style={styles.drawLine} />

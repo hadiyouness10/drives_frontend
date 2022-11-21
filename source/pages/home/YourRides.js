@@ -30,7 +30,7 @@ const JoinedRideCard = ({ stopRequest, navigation }) => {
   else return <Text>Loading</Text>;
 };
 
-const Joined = ({ userId, navigation, dateOfPageRoute }) => {
+const Joined = ({ userId, navigation, dateOfPageRoute,history }) => {
   const { data, isLoading } = useStopRequestsQuery({ studentId: userId });
   const scrollRef = useRef(null);
   useEffect(() => {
@@ -76,7 +76,7 @@ const Joined = ({ userId, navigation, dateOfPageRoute }) => {
     );
 };
 
-const Started = ({ userId, navigation, dateOfPageRoute }) => {
+const Started = ({ userId, navigation, dateOfPageRoute,history }) => {
   const { data, isLoading } = useRidesQuery({ driverId: userId });
   const scrollRef = useRef(null);
 
@@ -88,7 +88,9 @@ const Started = ({ userId, navigation, dateOfPageRoute }) => {
       }, 500);
   }, [dateOfPageRoute]);
 
-  const startedRidesCards = data?.map((ride) => (
+  const startedRidesCards = data?.map((ride) => 
+    (
+      ride.rideStatus !=="SUCCESS"?
     <RideView
       key={ride.ID}
       pageIndex={1}
@@ -96,6 +98,7 @@ const Started = ({ userId, navigation, dateOfPageRoute }) => {
       navigation={navigation}
       {...ride}
     />
+    :null
   ));
   if (isLoading)
     return (
@@ -127,7 +130,7 @@ const Started = ({ userId, navigation, dateOfPageRoute }) => {
 };
 
 export const YourRides = ({ route, navigation }) => {
-  const { defaultIndex, date: dateOfPageRoute } = route?.params || {};
+  const { defaultIndex, date: dateOfPageRoute, history:history } = route?.params || {};
   const { userId } = useContext(AuthenticationContext);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -150,6 +153,7 @@ export const YourRides = ({ route, navigation }) => {
             userId={userId}
             navigation={navigation}
             dateOfPageRoute={dateOfPageRoute}
+            history={history}
           />
         );
       case "started":
@@ -158,6 +162,7 @@ export const YourRides = ({ route, navigation }) => {
             userId={userId}
             navigation={navigation}
             dateOfPageRoute={dateOfPageRoute}
+            history={history}
           />
         );
       default:

@@ -90,6 +90,7 @@ const AccountNavigator = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Stop Requests" component={StopRequests} />
       <Stack.Screen name="Ride Details (Account)" component={RideDetails} />
+      <Stack.Screen name="Your Rides" component={YourRides} />
     </Stack.Navigator>
   );
 };
