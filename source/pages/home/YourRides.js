@@ -16,24 +16,24 @@ import {
 import { TabView, TabBar } from "react-native-tab-view";
 import { AuthenticationContext } from "routes/authentication-context";
 
-const JoinedRideCard = ({ stopRequest, navigation }) => {
+const JoinedRideCard = ({ stopRequest, navigation, history }) => {
   const { data } = useRideDetailsQuery(stopRequest.rideId);
   if (data)
     return (
       <RideView
         {...data}
         stopRequest={stopRequest}
-        pageIndex={1}
         navigation={navigation}
+        history={history}
       />
     );
   else return <Text>Loading</Text>;
 };
 
-const Joined = ({ userId, navigation, dateOfPageRoute }) => {
+const Joined = ({ userId, navigation, dateOfPageRoute, history }) => {
   const { data, isLoading } = useStopRequestsQuery({
     studentId: userId,
-    requestStatus: "NOT_REJECTED",
+    requestStatus: history ? "ACCEPTED" : "NOT_REJECTED",
   });
   const scrollRef = useRef(null);
   useEffect(() => {
@@ -48,6 +48,7 @@ const Joined = ({ userId, navigation, dateOfPageRoute }) => {
       key={stopRequest.ID}
       stopRequest={stopRequest}
       navigation={navigation}
+      history={history}
     />
   ));
   if (isLoading)
@@ -67,7 +68,9 @@ const Joined = ({ userId, navigation, dateOfPageRoute }) => {
             textAlign: "center",
           }}
         >
-          You have not joined any rides.
+          {history
+            ? "You have not completed any rides."
+            : "You have not joined any rides."}
         </Text>
       </View>
     );
@@ -82,7 +85,7 @@ const Joined = ({ userId, navigation, dateOfPageRoute }) => {
 const Started = ({ userId, navigation, dateOfPageRoute, history }) => {
   const { data, isLoading } = useRidesQuery({
     driverId: userId,
-    rideStatus: "PENDING",
+    rideStatus: history ? "NOT_PENDING" : "PENDING",
   });
   const scrollRef = useRef(null);
 
@@ -94,17 +97,15 @@ const Started = ({ userId, navigation, dateOfPageRoute, history }) => {
       }, 500);
   }, [dateOfPageRoute]);
 
-  const startedRidesCards = data?.map((ride) =>
-    ride.rideStatus !== "SUCCESS" ? (
-      <RideView
-        key={ride.ID}
-        pageIndex={1}
-        displayDriver={false}
-        navigation={navigation}
-        {...ride}
-      />
-    ) : null
-  );
+  const startedRidesCards = data?.map((ride) => (
+    <RideView
+      key={ride.ID}
+      displayDriver={false}
+      navigation={navigation}
+      history={history}
+      {...ride}
+    />
+  ));
   if (isLoading)
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -122,7 +123,9 @@ const Started = ({ userId, navigation, dateOfPageRoute, history }) => {
             textAlign: "center",
           }}
         >
-          You have not started any rides.
+          {history
+            ? "You have not completed any rides."
+            : "You have not started any rides."}
         </Text>
       </View>
     );
@@ -135,11 +138,7 @@ const Started = ({ userId, navigation, dateOfPageRoute, history }) => {
 };
 
 export const YourRides = ({ route, navigation }) => {
-  const {
-    defaultIndex,
-    date: dateOfPageRoute,
-    history: history,
-  } = route?.params || {};
+  const { defaultIndex, date: dateOfPageRoute, history } = route?.params || {};
   const { userId } = useContext(AuthenticationContext);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -212,7 +211,7 @@ export const YourRides = ({ route, navigation }) => {
             marginLeft: 10,
           }}
         >
-          Scheduled Rides
+          {history ? "Ride History" : "Scheduled Rides"}
         </Text>
       </ImageBackground>
       <View

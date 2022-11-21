@@ -23,13 +23,14 @@ export const RideView = ({
   dateOfDeparture,
   pricePerRider,
   numberOfSeats,
+  rideStatus,
   numberOfAvailableSeats,
   departureCoordinates,
   pickupLocation,
   pickupCoordinates,
   navigation,
-  pageIndex = 0,
   displayDriver = true,
+  history,
 }) => {
   const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
     useUserDetailsQuery(driverId);
@@ -39,17 +40,14 @@ export const RideView = ({
       <TouchableOpacity
         style={styles.riderView}
         onPress={() =>
-          navigation.push(
-            pageIndex === 0 ? "Ride Details" : "Ride Details (Your Rides)",
-            {
-              rideId: id,
-              driverId,
-              pageIndex,
-              pickupLocation,
-              pickupCoordinates,
-              stopRequest,
-            }
-          )
+          navigation.push("Ride Details", {
+            rideId: id,
+            driverId,
+            pickupLocation,
+            pickupCoordinates,
+            stopRequest,
+            history,
+          })
         }
       >
         <View style={styles.mapContainer}>
@@ -82,17 +80,32 @@ export const RideView = ({
           }}
         >
           {displayDriver && <RiderCard name={`${firstName} ${lastName}`} />}
-          {stopRequest && stopRequest.requestStatus === "PENDING" && (
+          {rideStatus !== "CANCELED" &&
+            stopRequest &&
+            stopRequest.requestStatus === "PENDING" && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: -7,
+                  marginBottom: 3,
+                }}
+              >
+                <IonIcon name="alert-circle" size={14} color={"orange"} />
+                <Text style={{ marginLeft: 3 }}>Pending Request</Text>
+              </View>
+            )}
+          {rideStatus === "CANCELED" && (
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginTop: -7,
+                marginTop: 7,
                 marginBottom: 3,
               }}
             >
-              <IonIcon name="alert-circle" size={14} color={"orange"} />
-              <Text style={{ marginLeft: 3 }}>Pending Request</Text>
+              <IonIcon name="alert-circle" size={14} color={"red"} />
+              <Text style={{ marginLeft: 3 }}>Canceled</Text>
             </View>
           )}
           <View

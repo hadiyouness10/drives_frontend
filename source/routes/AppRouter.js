@@ -74,11 +74,8 @@ const YourRidesNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={YourRides} />
-      <Stack.Screen name="Ride Details (Your Rides)" component={RideDetails} />
-      <Stack.Screen
-        name="Driver Details (Your Rides)"
-        component={DriverDetails}
-      />
+      <Stack.Screen name="Ride Details" component={RideDetails} />
+      <Stack.Screen name="Driver Details" component={DriverDetails} />
     </Stack.Navigator>
   );
 };
@@ -91,8 +88,9 @@ const AccountNavigator = () => {
       <Stack.Screen name="Chats" component={Chats} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Stop Requests" component={StopRequests} />
-      <Stack.Screen name="Ride Details (Account)" component={RideDetails} />
       <Stack.Screen name="Your Rides" component={YourRides} />
+      <Stack.Screen name="Ride Details" component={RideDetails} />
+      <Stack.Screen name="Driver Details" component={DriverDetails} />
     </Stack.Navigator>
   );
 };

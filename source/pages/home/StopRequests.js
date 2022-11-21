@@ -2,7 +2,7 @@ import { useStopRequestsQuery } from "api/queries";
 import { useContext } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { AuthenticationContext } from "routes/authentication-context";
-import { RideView, StopRequestView } from "components";
+import { StopRequestView } from "components";
 
 export const StopRequests = ({ navigation }) => {
   const { userId } = useContext(AuthenticationContext);
@@ -13,7 +13,7 @@ export const StopRequests = ({ navigation }) => {
     rideStatus: "PENDING",
   });
 
-  if (data.length === 0)
+  if (data?.length === 0)
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text

@@ -86,6 +86,7 @@ export const Riders = ({ route, navigation }) => {
               pricePerRider,
               numberOfSeats,
               numberOfAvailableSeats,
+              rideStatus,
             } = ride;
             return (
               <RideView
@@ -99,6 +100,7 @@ export const Riders = ({ route, navigation }) => {
                 pricePerRider={pricePerRider}
                 numberOfSeats={numberOfSeats}
                 numberOfAvailableSeats={numberOfAvailableSeats}
+                rideStatus={rideStatus}
                 navigation={navigation}
               />
             );

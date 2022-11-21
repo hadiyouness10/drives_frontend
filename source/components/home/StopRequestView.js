@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
 import Icon from "react-native-vector-icons/Entypo";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { dateTimeFormatter } from "utils";
-import { useUserDetailsQuery } from "api/queries";
-import { useUpdateStopRequestMutation } from "api/mutations";
+import { useChatsQuery, useUserDetailsQuery } from "api/queries";
+import {
+  useCreateChatMutation,
+  useUpdateStopRequestMutation,
+} from "api/mutations";
 
 const Detail = ({ title, icon, value }) => (
   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -31,6 +34,26 @@ export const StopRequestView = ({
   const { data: { firstName, lastName } = { firstName: "", lastName: "" } } =
     useUserDetailsQuery(studentId);
   const { mutate } = useUpdateStopRequestMutation();
+  const { mutate: createChat, isSuccess: createChatSuccess } =
+    useCreateChatMutation();
+  const { refetch: fetchChatsList } = useChatsQuery(
+    userId,
+    false,
+    navigation,
+    createChat,
+    rideId,
+    firstName,
+    studentId
+  );
+
+  useEffect(() => {
+    if (createChatSuccess)
+      navigation.navigate("Account", {
+        screen: "Chats",
+        initial: false,
+      });
+  }, [createChatSuccess]);
+
   if (!firstName) return <View />;
   else
     return (
@@ -113,7 +136,12 @@ export const StopRequestView = ({
           >
             <Text style={styles.buttonText}>View Ride</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonDiv}>
+          <TouchableOpacity
+            style={styles.buttonDiv}
+            onPress={() => {
+              fetchChatsList();
+            }}
+          >
             <Text style={styles.buttonText}>Chat</Text>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", width: "100%", flex: 1 }}>

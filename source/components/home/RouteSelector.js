@@ -57,6 +57,7 @@ export const RouteSelector = ({
         >
           {routes.map((route, index) => (
             <TouchableOpacity
+              key={index}
               style={[
                 styles.buttonDiv,
                 displayedRoute === index ? { backgroundColor: "grey" } : {},

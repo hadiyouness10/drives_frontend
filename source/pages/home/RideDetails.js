@@ -67,73 +67,80 @@ const ActionButton = ({
     }
   }, [JSON.stringify(stopRequestResult)]);
 
-  if (userId === driverId)
-    if (rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats)
-      return (
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            color="red"
-            onPress={() => {
-              cancelRide(rideId);
-              navigation.goBack();
-            }}
-            title="Cancel Ride"
-            style={{ marginBottom: 20 }}
-          />
-        </View>
-      );
-    else
-      return (
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            onPress={() => {
-              updateRide({
-                id: rideId,
-                content: {
-                  newStatus: "COMPLETED",
-                  riderIdArr: stopRequests.map((stopReq) => stopReq.studentId),
-                },
-              });
-              navigation.goBack();
-            }}
-            color="green"
-            title="Mark as Complete"
-            style={{ marginBottom: 20 }}
-          />
-        </View>
-      );
-  else if (userId !== driverId)
-    if (!stopRequest)
-      return (
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            onPress={() => {
-              sendStopRequest({
-                rideId,
-                studentId: userId,
-                driverId,
-                location: pickupLocation,
-                coordinates: JSON.stringify(pickupCoordinates),
-              });
-            }}
-            title="Request Pickup"
-          />
-        </View>
-      );
-    else
-      return (
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            color="red"
-            onPress={() => {
-              const { ID, requestStatus } = stopRequest;
-              cancelStopRequest({ stopRequestId: ID, requestStatus, rideId });
-              navigation.goBack();
-            }}
-            title="Cancel Stop Request"
-          />
-        </View>
-      );
+  if (userId === driverId) {
+    if (rideDetails.rideStatus === "PENDING") {
+      if (rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats)
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              color="red"
+              onPress={() => {
+                cancelRide(rideId);
+                navigation.goBack();
+              }}
+              title="Cancel Ride"
+              style={{ marginBottom: 20 }}
+            />
+          </View>
+        );
+      else
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              onPress={() => {
+                updateRide({
+                  id: rideId,
+                  content: {
+                    newStatus: "COMPLETED",
+                    riderIdArr: stopRequests.map(
+                      (stopReq) => stopReq.studentId
+                    ),
+                  },
+                });
+                navigation.goBack();
+              }}
+              color="green"
+              title="Mark as Complete"
+              style={{ marginBottom: 20 }}
+            />
+          </View>
+        );
+    } else return null;
+  } else if (userId !== driverId) {
+    if (rideDetails.rideStatus === "PENDING") {
+      if (!stopRequest)
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              onPress={() => {
+                sendStopRequest({
+                  rideId,
+                  studentId: userId,
+                  driverId,
+                  location: pickupLocation,
+                  coordinates: JSON.stringify(pickupCoordinates),
+                });
+              }}
+              title="Request Pickup"
+            />
+          </View>
+        );
+      else
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              color="red"
+              onPress={() => {
+                const { ID, requestStatus } = stopRequest;
+                cancelStopRequest({ stopRequestId: ID, requestStatus, rideId });
+                navigation.goBack();
+              }}
+              title="Cancel Stop Request"
+            />
+          </View>
+        );
+    }
+  } else return null;
 };
 
 const RiderTile = ({ id }) => {
@@ -158,10 +165,10 @@ export const RideDetails = ({ route, navigation }) => {
   const {
     rideId,
     driverId,
-    pageIndex,
     pickupLocation,
     pickupCoordinates,
     stopRequest,
+    history,
   } = route?.params;
   const { data: rideDetails } = useRideDetailsQuery(rideId);
   const { data: driverDetails } = useUserDetailsQuery(driverId);
@@ -177,12 +184,13 @@ export const RideDetails = ({ route, navigation }) => {
     firstName,
     userId === driverId ? stopRequest?.studentId : driverId
   );
+
   const { data: stopRequests } = useStopRequestsQuery({
     isDriver: true,
     studentId: userId,
-    ID: rideId,
+    rideId,
     requestStatus: "ACCEPTED",
-    rideStatus: "PENDING",
+    rideStatus: history ? "NOT_PENDING" : "PENDING",
   });
 
   const {
@@ -224,14 +232,7 @@ export const RideDetails = ({ route, navigation }) => {
         >
           <TouchableOpacity
             style={{ flexDirection: "row", marginBottom: 5 }}
-            onPress={() =>
-              navigation.push(
-                pageIndex == 0
-                  ? "Driver Details"
-                  : "Driver Details (Your Rides)",
-                { driverDetails }
-              )
-            }
+            onPress={() => navigation.push("Driver Details", { driverDetails })}
           >
             <UserAvatar
               size={90}
