@@ -24,7 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "./authentication-context";
 import { View } from "react-native";
-import { useChatsQuery, useStopRequestsQuery } from "api/queries";
+import { useStopRequestsQuery } from "api/queries";
 import connectToWebSocket from "api/websocketConfig";
 import { useQueryClient } from "react-query";
 
@@ -38,6 +38,8 @@ export const AppRouter = ({ route }) => {
   const { data } = useStopRequestsQuery({
     isDriver: true,
     studentId: userId,
+    requestStatus: "PENDING",
+    rideStatus: "PENDING",
   });
   const queryClient = useQueryClient();
 

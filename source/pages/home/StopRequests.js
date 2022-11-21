@@ -6,7 +6,12 @@ import { RideView, StopRequestView } from "components";
 
 export const StopRequests = ({ navigation }) => {
   const { userId } = useContext(AuthenticationContext);
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+  const { data } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+    requestStatus: "PENDING",
+    rideStatus: "PENDING",
+  });
 
   if (data.length === 0)
     return (

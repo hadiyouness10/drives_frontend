@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
-import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
+import {
+  useRideDetailsQuery,
+  useStopRequestsQuery,
+  useUserDetailsQuery,
+} from "api/queries";
 import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
@@ -13,6 +17,7 @@ import {
   useDeleteRideMutation,
   useDeleteStopRequestMutation,
   useStopRequestMutation,
+  useUpdateRideMutation,
 } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
 import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
@@ -44,11 +49,13 @@ const ActionButton = ({
   pickupLocation,
   pickupCoordinates,
   stopRequest,
+  stopRequests,
 }) => {
   const { mutate: sendStopRequest, data: stopRequestResult } =
     useStopRequestMutation();
   const { mutate: cancelRide } = useDeleteRideMutation();
   const { mutate: cancelStopRequest } = useDeleteStopRequestMutation();
+  const { mutate: updateRide } = useUpdateRideMutation();
 
   useEffect(() => {
     if (stopRequestResult) {
@@ -79,6 +86,16 @@ const ActionButton = ({
       return (
         <View style={{ marginBottom: 20 }}>
           <Button
+            onPress={() => {
+              updateRide({
+                id: rideId,
+                content: {
+                  newStatus: "COMPLETED",
+                  riderIdArr: stopRequests.map((stopReq) => stopReq.studentId),
+                },
+              });
+              navigation.goBack();
+            }}
             color="green"
             title="Mark as Complete"
             style={{ marginBottom: 20 }}
@@ -119,6 +136,24 @@ const ActionButton = ({
       );
 };
 
+const RiderTile = ({ id }) => {
+  const { data: userDetails } = useUserDetailsQuery(id);
+  if (!userDetails) return <View />;
+  else
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <UserAvatar
+          size={40}
+          name={`${userDetails.firstName} ${userDetails.lastName}`}
+          src=""
+        />
+        <Text
+          style={{ fontSize: 16, marginLeft: 10 }}
+        >{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
+      </View>
+    );
+};
+
 export const RideDetails = ({ route, navigation }) => {
   const {
     rideId,
@@ -133,11 +168,22 @@ export const RideDetails = ({ route, navigation }) => {
   const { userId, firstName } = useContext(AuthenticationContext);
   const { mutate: createChat, isSuccess: createChatSuccess } =
     useCreateChatMutation();
-  const {
-    data: chatsList,
-    refetch: fetchChatsList,
-    isFetching,
-  } = useChatsQuery(userId, false, navigation, createChat, rideId, firstName);
+  const { refetch: fetchChatsList } = useChatsQuery(
+    userId,
+    false,
+    navigation,
+    createChat,
+    rideId,
+    firstName,
+    userId === driverId ? stopRequest?.studentId : driverId
+  );
+  const { data: stopRequests } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+    ID: rideId,
+    requestStatus: "ACCEPTED",
+    rideStatus: "PENDING",
+  });
 
   const {
     departureLocation,
@@ -243,6 +289,18 @@ export const RideDetails = ({ route, navigation }) => {
             value={destinationLocation}
             icon="location"
           />
+          {stopRequests && stopRequests.length !== 0 && (
+            <Text style={{ fontSize: 16 }}>Riders: </Text>
+          )}
+          {stopRequests && stopRequests.length !== 0 && (
+            <View style={{ marginVertical: 10 }}>
+              {stopRequests.map((stopRequest) => {
+                return (
+                  <RiderTile key={stopRequest.ID} id={stopRequest.studentId} />
+                );
+              })}
+            </View>
+          )}
           <ActionButton
             navigation={navigation}
             userId={userId}
@@ -252,6 +310,7 @@ export const RideDetails = ({ route, navigation }) => {
             pickupLocation={pickupLocation}
             pickupCoordinates={pickupCoordinates}
             stopRequest={stopRequest}
+            stopRequests={stopRequests}
           />
           {driverId !== userId && (
             <View style={{ marginBottom: 20 }}>

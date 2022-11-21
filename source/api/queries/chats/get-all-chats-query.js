@@ -18,7 +18,8 @@ export const useChatsQuery = (
   navigation,
   createChat,
   rideId,
-  firstName
+  firstName,
+  receiverId
 ) =>
   useQuery(["chatsQuery", studentId, autofetch], getChats(studentId), {
     enabled: autofetch,
@@ -34,7 +35,19 @@ export const useChatsQuery = (
             screen: "Chats",
             initial: false,
           });
-        } else createChat({ rideId, studentId, firstName });
+        } else {
+          const date = new Date().toISOString();
+          createChat({
+            rideId,
+            studentId,
+            firstName,
+            receiverId,
+            date: `${date.substring(0, 10)} ${date.substring(
+              date.indexOf("T") + 1,
+              date.indexOf("T") + 8
+            )}`,
+          });
+        }
       }
     },
   });

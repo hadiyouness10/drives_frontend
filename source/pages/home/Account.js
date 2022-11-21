@@ -13,22 +13,27 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
-import { useContext,useState,useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import client from "api/client";
 import { useStopRequestsQuery } from "api/queries";
 import UserAvatar from "react-native-user-avatar";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const Account = ({ navigation }) => {
-  const [photo,setPhoto] = useState(null)
+  const [photo, setPhoto] = useState(null);
   const { userId, signOut, firstName, lastName } = useContext(
     AuthenticationContext
   );
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
-  const {data:image} = useUserPhotoQuery(userId)
+  const { data } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+    requestStatus: "PENDING",
+    rideStatus: "PENDING",
+  });
+  const { data: image } = useUserPhotoQuery(userId);
 
   useEffect(() => {
-    if (image !== undefined) setPhoto(image)
+    if (image !== undefined) setPhoto(image);
   }, [image]);
 
   function navigateToInbox() {
@@ -76,13 +81,7 @@ export const Account = ({ navigation }) => {
               marginTop: 300,
             }}
           >
-            <UserAvatar
-              size={160}
-              name={""}
-              src={photo? photo:
-                "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
-              }
-            />
+            <UserAvatar size={160} name={""} src={photo ? photo : ""} />
           </View>
 
           <Text style={styles.nameTitle}>
@@ -135,12 +134,12 @@ export const Account = ({ navigation }) => {
         <View>
           <View style={styles.drawLine} />
           <TouchableOpacity
-            onPress={() => navigation.push("Your Rides",{history:true})}
+            onPress={() => navigation.push("Your Rides", { history: true })}
           >
-          <View style={styles.optionsObject}>
-            <Text style={styles.options}>Ride History</Text>
-            <Icon style={styles.icons} name="list" size={24} />
-          </View>
+            <View style={styles.optionsObject}>
+              <Text style={styles.options}>Ride History</Text>
+              <Icon style={styles.icons} name="list" size={24} />
+            </View>
           </TouchableOpacity>
         </View>
         <View>

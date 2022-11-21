@@ -30,8 +30,11 @@ const JoinedRideCard = ({ stopRequest, navigation }) => {
   else return <Text>Loading</Text>;
 };
 
-const Joined = ({ userId, navigation, dateOfPageRoute,history }) => {
-  const { data, isLoading } = useStopRequestsQuery({ studentId: userId });
+const Joined = ({ userId, navigation, dateOfPageRoute }) => {
+  const { data, isLoading } = useStopRequestsQuery({
+    studentId: userId,
+    requestStatus: "NOT_REJECTED",
+  });
   const scrollRef = useRef(null);
   useEffect(() => {
     // if (dateOfPageRoute)
@@ -76,8 +79,11 @@ const Joined = ({ userId, navigation, dateOfPageRoute,history }) => {
     );
 };
 
-const Started = ({ userId, navigation, dateOfPageRoute,history }) => {
-  const { data, isLoading } = useRidesQuery({ driverId: userId });
+const Started = ({ userId, navigation, dateOfPageRoute, history }) => {
+  const { data, isLoading } = useRidesQuery({
+    driverId: userId,
+    rideStatus: "PENDING",
+  });
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -88,18 +94,17 @@ const Started = ({ userId, navigation, dateOfPageRoute,history }) => {
       }, 500);
   }, [dateOfPageRoute]);
 
-  const startedRidesCards = data?.map((ride) => 
-    (
-      ride.rideStatus !=="SUCCESS"?
-    <RideView
-      key={ride.ID}
-      pageIndex={1}
-      displayDriver={false}
-      navigation={navigation}
-      {...ride}
-    />
-    :null
-  ));
+  const startedRidesCards = data?.map((ride) =>
+    ride.rideStatus !== "SUCCESS" ? (
+      <RideView
+        key={ride.ID}
+        pageIndex={1}
+        displayDriver={false}
+        navigation={navigation}
+        {...ride}
+      />
+    ) : null
+  );
   if (isLoading)
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -130,7 +135,11 @@ const Started = ({ userId, navigation, dateOfPageRoute,history }) => {
 };
 
 export const YourRides = ({ route, navigation }) => {
-  const { defaultIndex, date: dateOfPageRoute, history:history } = route?.params || {};
+  const {
+    defaultIndex,
+    date: dateOfPageRoute,
+    history: history,
+  } = route?.params || {};
   const { userId } = useContext(AuthenticationContext);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
