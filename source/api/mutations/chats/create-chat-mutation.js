@@ -13,7 +13,7 @@ export const useCreateChatMutation = () => {
   return useMutation({
     mutationFn: createChat,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["chatsQuery", userId]);
+      queryClient.refetchQueries(["chatsQuery", userId, true]);
     },
   });
 };

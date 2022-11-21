@@ -40,6 +40,7 @@ export const Riders = ({ route, navigation }) => {
           searcherId: userId,
           minPricePerRider: parseFloat(minPricePerRider) || 0,
           maxPricePerRider: parseFloat(maxPricePerRider) || 100,
+          rideStatus: "PENDING",
         }
       : {}
   );

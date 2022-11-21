@@ -9,6 +9,7 @@ const deleteStopRequest = async (data) => {
       data: {
         requestStatus: data.requestStatus,
         rideId: data.rideId,
+        driverId: data.driverId,
       },
     })
     .then((res) => res.data);

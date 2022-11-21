@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import RiderCard from "components/home/RiderCard";
@@ -10,6 +10,7 @@ import {
   useCreateChatMutation,
   useUpdateStopRequestMutation,
 } from "api/mutations";
+import { AuthenticationContext } from "routes/authentication-context";
 
 const Detail = ({ title, icon, value }) => (
   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -36,15 +37,18 @@ export const StopRequestView = ({
   const { mutate } = useUpdateStopRequestMutation();
   const { mutate: createChat, isSuccess: createChatSuccess } =
     useCreateChatMutation();
-  const { refetch: fetchChatsList } = useChatsQuery(
-    userId,
-    false,
+  const { firstName: driverFirstName } = useContext(AuthenticationContext);
+  const { refetch: fetchChatsList } = useChatsQuery({
+    isDriver: true,
+    riderId: studentId,
+    driverId: userId,
+    autofetch: false,
     navigation,
     createChat,
     rideId,
-    firstName,
-    studentId
-  );
+    firstName: driverFirstName,
+    receiverId: studentId,
+  });
 
   useEffect(() => {
     if (createChatSuccess)

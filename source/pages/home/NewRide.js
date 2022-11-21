@@ -105,9 +105,13 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
       "startRide"
     );
 
+  const dateToSend = inputDetailsProps.date.toISOString();
   const newRide = {
     studentId: userId,
-    dateOfDeparture: inputDetailsProps.date,
+    dateOfDeparture: `${dateToSend.substring(0, 10)} ${dateToSend.substring(
+      dateToSend.indexOf("T") + 1,
+      dateToSend.indexOf("T") + 8
+    )}`,
     rideStatus: "PENDING",
     departureCoordinates: JSON.stringify(inputDetailsProps.startCoordinates),
     destinationCoordinates: JSON.stringify(

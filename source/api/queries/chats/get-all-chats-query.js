@@ -12,42 +12,52 @@ const getChats = (studentId) => async () => {
     });
 };
 
-export const useChatsQuery = (
+export const useChatsQuery = ({
+  isDriver,
   studentId,
+  riderId,
+  driverId,
   autofetch = true,
   navigation,
   createChat,
   rideId,
   firstName,
-  receiverId
-) =>
-  useQuery(["chatsQuery", studentId, autofetch], getChats(studentId), {
-    enabled: autofetch,
-    cacheTime: autofetch ? 300 : 0,
-    onSuccess: (data) => {
-      if (data && !autofetch) {
-        if (
-          data.find(
-            (chat) => chat.riderId === studentId || chat.driverId === studentId
-          )
-        ) {
-          navigation.navigate("Account", {
-            screen: "Chats",
-            initial: false,
-          });
-        } else {
-          const date = new Date().toISOString();
-          createChat({
-            rideId,
-            studentId,
-            firstName,
-            receiverId,
-            date: `${date.substring(0, 10)} ${date.substring(
-              date.indexOf("T") + 1,
-              date.indexOf("T") + 8
-            )}`,
-          });
+  receiverId,
+}) => {
+  return useQuery(
+    ["chatsQuery", studentId ?? (isDriver ? driverId : riderId), autofetch],
+    getChats(studentId ?? (isDriver ? driverId : riderId)),
+    {
+      enabled: autofetch,
+      cacheTime: autofetch ? 300 : 0,
+      onSuccess: (data) => {
+        if (data && !autofetch) {
+          if (
+            data.find(
+              (chat) => chat.riderId === riderId && chat.driverId === driverId
+            )
+          ) {
+            navigation.navigate("Account", {
+              screen: "Chats",
+              initial: false,
+            });
+          } else {
+            const date = new Date().toISOString();
+            createChat({
+              isDriver,
+              riderId,
+              driverId,
+              rideId,
+              firstName,
+              receiverId,
+              date: `${date.substring(0, 10)} ${date.substring(
+                date.indexOf("T") + 1,
+                date.indexOf("T") + 8
+              )}`,
+            });
+          }
         }
-      }
-    },
-  });
+      },
+    }
+  );
+};
