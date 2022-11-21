@@ -9,3 +9,4 @@ export * from "./Chat";
 export * from "./Chats";
 export * from "./StopRequests";
 export * from "./EditProfile";
+export * from "./Notifications";
