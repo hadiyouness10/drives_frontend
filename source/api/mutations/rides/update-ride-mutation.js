@@ -3,19 +3,18 @@ import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AuthenticationContext } from "routes/authentication-context";
 
-const updateStopRequest = async (data) => {
+const updateRide = async (data) => {
   return await client
-    .patch(`/rides/stopRequests/${data.id}`, data.content)
+    .patch(`/rides/${data.id}`, data.content)
     .then((res) => res.data);
 };
 
-export const useUpdateStopRequestMutation = () => {
+export const useUpdateRideMutation = () => {
   const queryClient = useQueryClient();
   const { userId } = useContext(AuthenticationContext);
   return useMutation({
-    mutationFn: updateStopRequest,
+    mutationFn: updateRide,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["stopRequests", { studentId: userId }]);
       queryClient.refetchQueries(["rides", { driverId: userId }]);
     },
   });

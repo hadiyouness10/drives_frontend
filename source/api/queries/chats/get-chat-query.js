@@ -1,5 +1,7 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import client from "api/client";
+import { useContext } from "react";
+import { AuthenticationContext } from "routes/authentication-context";
 
 const getChat = (chatId) => async () => {
   if (!chatId) return undefined;
@@ -12,14 +14,16 @@ const getChat = (chatId) => async () => {
     });
 };
 
-export const useChatQuery = (chatId) =>
-  useQuery(["chatQuery", chatId], getChat(chatId), {
+export const useChatQuery = (chatId) => {
+  const queryClient = useQueryClient();
+  const { userId } = useContext(AuthenticationContext);
+  return useQuery(["chatQuery", chatId], getChat(chatId), {
     select: (data) =>
       data.map((message) => {
         return {
           _id: message.ID,
           text: message.message,
-          createdAt: message.date.split("T")[0] + " " + message.time,
+          createdAt: message.date,
           user: {
             _id: message.studentId,
             name: "",
@@ -27,4 +31,9 @@ export const useChatQuery = (chatId) =>
           },
         };
       }),
+
+    onSuccess: (data) => {
+      queryClient.refetchQueries(["chatsQuery", userId, true]);
+    },
   });
+};

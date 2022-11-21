@@ -3,13 +3,24 @@ import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
-import { useRideDetailsQuery, useUserDetailsQuery } from "api/queries";
+import {
+  useRideDetailsQuery,
+  useStopRequestsQuery,
+  useUserDetailsQuery,
+} from "api/queries";
 import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
 import UserAvatar from "react-native-user-avatar";
 import { decode } from "@mapbox/polyline";
-import { useStopRequestMutation } from "api/mutations";
+import {
+  useCreateChatMutation,
+  useDeleteRideMutation,
+  useDeleteStopRequestMutation,
+  useStopRequestMutation,
+  useUpdateRideMutation,
+} from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
+import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -28,20 +39,159 @@ const DetailView = ({ label, value, icon }) => {
     </View>
   );
 };
+
+const ActionButton = ({
+  navigation,
+  userId,
+  driverId,
+  rideId,
+  rideDetails,
+  pickupLocation,
+  pickupCoordinates,
+  stopRequest,
+  stopRequests,
+}) => {
+  const { mutate: sendStopRequest, data: stopRequestResult } =
+    useStopRequestMutation();
+  const { mutate: cancelRide } = useDeleteRideMutation();
+  const { mutate: cancelStopRequest } = useDeleteStopRequestMutation();
+  const { mutate: updateRide } = useUpdateRideMutation();
+
+  useEffect(() => {
+    if (stopRequestResult) {
+      const now = new Date().toISOString();
+      navigation.navigate("Your Rides", {
+        screen: "/",
+        params: { defaultIndex: 0, date: now },
+      });
+    }
+  }, [JSON.stringify(stopRequestResult)]);
+
+  if (userId === driverId) {
+    if (rideDetails.rideStatus === "PENDING") {
+      if (rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats)
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              color="red"
+              onPress={() => {
+                cancelRide(rideId);
+                navigation.goBack();
+              }}
+              title="Cancel Ride"
+              style={{ marginBottom: 20 }}
+            />
+          </View>
+        );
+      else
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              onPress={() => {
+                updateRide({
+                  id: rideId,
+                  content: {
+                    newStatus: "COMPLETED",
+                    riderIdArr: stopRequests.map(
+                      (stopReq) => stopReq.studentId
+                    ),
+                  },
+                });
+                navigation.goBack();
+              }}
+              color="green"
+              title="Mark as Complete"
+              style={{ marginBottom: 20 }}
+            />
+          </View>
+        );
+    } else return null;
+  } else if (userId !== driverId) {
+    if (rideDetails.rideStatus === "PENDING") {
+      if (!stopRequest)
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              onPress={() => {
+                sendStopRequest({
+                  rideId,
+                  studentId: userId,
+                  driverId,
+                  location: pickupLocation,
+                  coordinates: JSON.stringify(pickupCoordinates),
+                });
+              }}
+              title="Request Pickup"
+            />
+          </View>
+        );
+      else
+        return (
+          <View style={{ marginBottom: 20 }}>
+            <Button
+              color="red"
+              onPress={() => {
+                const { ID, requestStatus } = stopRequest;
+                cancelStopRequest({ stopRequestId: ID, requestStatus, rideId });
+                navigation.goBack();
+              }}
+              title="Cancel Stop Request"
+            />
+          </View>
+        );
+    }
+  } else return null;
+};
+
+const RiderTile = ({ id }) => {
+  const { data: userDetails } = useUserDetailsQuery(id);
+  if (!userDetails) return <View />;
+  else
+    return (
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <UserAvatar
+          size={40}
+          name={`${userDetails.firstName} ${userDetails.lastName}`}
+          src=""
+        />
+        <Text
+          style={{ fontSize: 16, marginLeft: 10 }}
+        >{`${userDetails.firstName} ${userDetails.lastName}`}</Text>
+      </View>
+    );
+};
+
 export const RideDetails = ({ route, navigation }) => {
   const {
     rideId,
     driverId,
-    pageIndex,
     pickupLocation,
     pickupCoordinates,
-    request = false,
+    stopRequest,
+    history,
   } = route?.params;
   const { data: rideDetails } = useRideDetailsQuery(rideId);
   const { data: driverDetails } = useUserDetailsQuery(driverId);
-  const { userId } = useContext(AuthenticationContext);
-  const { mutate: sendStopRequest, data: stopRequestResult } =
-    useStopRequestMutation();
+  const { userId, firstName } = useContext(AuthenticationContext);
+  const { mutate: createChat, isSuccess: createChatSuccess } =
+    useCreateChatMutation();
+  const { refetch: fetchChatsList } = useChatsQuery(
+    userId,
+    false,
+    navigation,
+    createChat,
+    rideId,
+    firstName,
+    userId === driverId ? stopRequest?.studentId : driverId
+  );
+
+  const { data: stopRequests } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+    rideId,
+    requestStatus: "ACCEPTED",
+    rideStatus: history ? "NOT_PENDING" : "PENDING",
+  });
 
   const {
     departureLocation,
@@ -52,35 +202,37 @@ export const RideDetails = ({ route, navigation }) => {
     route: routePolyline,
   } = rideDetails ?? {};
 
-  const { firstName, lastName, rating, completedRides } = driverDetails ?? {};
+  const {
+    firstName: driverFirstName,
+    lastName,
+    rating,
+    completedRides,
+  } = driverDetails ?? {};
   const date = new Date(dateOfDeparture);
 
   const mapRef = useRef(null);
 
   useEffect(() => {
-    if (stopRequestResult) {
-      const now = new Date().toISOString();
-      navigation.navigate("Your Rides", {
-        screen: "/",
-        params: { defaultIndex: 0, date: now },
+    if (createChatSuccess)
+      navigation.navigate("Account", {
+        screen: "Chats",
+        initial: false,
       });
-    }
-  });
+  }, [createChatSuccess]);
 
   if (rideDetails && driverDetails)
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ backgroundColor: "white", padding: 20, paddingTop: 50 }}>
+        <View
+          style={{
+            backgroundColor: "white",
+            paddingHorizontal: 20,
+            paddingTop: 50,
+          }}
+        >
           <TouchableOpacity
             style={{ flexDirection: "row", marginBottom: 5 }}
-            onPress={() =>
-              navigation.push(
-                pageIndex == 0
-                  ? "Driver Details"
-                  : "Driver Details (Your Rides)",
-                { driverDetails }
-              )
-            }
+            onPress={() => navigation.push("Driver Details", { driverDetails })}
           >
             <UserAvatar
               size={90}
@@ -90,7 +242,9 @@ export const RideDetails = ({ route, navigation }) => {
               }
             />
             <View style={styles.driverDetails}>
-              <Text style={{ fontSize: 34 }}>{`${firstName} ${lastName}`}</Text>
+              <Text
+                style={{ fontSize: 34 }}
+              >{`${driverFirstName} ${lastName}`}</Text>
               <View style={{ flexDirection: "row" }}>
                 <Text style={{ fontSize: 16 }}>Rating: </Text>
                 <Rating
@@ -136,19 +290,38 @@ export const RideDetails = ({ route, navigation }) => {
             value={destinationLocation}
             icon="location"
           />
-
-          {request && (
-            <Button
-              onPress={() => {
-                sendStopRequest({
-                  rideId,
-                  studentId: userId,
-                  location: pickupLocation,
-                  coordinates: JSON.stringify(pickupCoordinates),
-                });
-              }}
-              title="Request Pickup"
-            />
+          {stopRequests && stopRequests.length !== 0 && (
+            <Text style={{ fontSize: 16 }}>Riders: </Text>
+          )}
+          {stopRequests && stopRequests.length !== 0 && (
+            <View style={{ marginVertical: 10 }}>
+              {stopRequests.map((stopRequest) => {
+                return (
+                  <RiderTile key={stopRequest.ID} id={stopRequest.studentId} />
+                );
+              })}
+            </View>
+          )}
+          <ActionButton
+            navigation={navigation}
+            userId={userId}
+            driverId={driverId}
+            rideId={rideId}
+            rideDetails={rideDetails}
+            pickupLocation={pickupLocation}
+            pickupCoordinates={pickupCoordinates}
+            stopRequest={stopRequest}
+            stopRequests={stopRequests}
+          />
+          {driverId !== userId && (
+            <View style={{ marginBottom: 20 }}>
+              <Button
+                title="Send Message"
+                onPress={() => {
+                  fetchChatsList();
+                }}
+              />
+            </View>
           )}
         </View>
 

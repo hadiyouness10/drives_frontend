@@ -13,16 +13,33 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import client from "api/client";
 import { useStopRequestsQuery } from "api/queries";
+import UserAvatar from "react-native-user-avatar";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const Account = ({ navigation }) => {
-  const { userId, signOut } = useContext(AuthenticationContext);
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+  const [photo, setPhoto] = useState(null);
+  const { userId, signOut, firstName, lastName } = useContext(
+    AuthenticationContext
+  );
+  const { data } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+    requestStatus: "PENDING",
+    rideStatus: "PENDING",
+  });
+  const { data: image } = useUserPhotoQuery(userId);
+
+  useEffect(() => {
+    if (image !== undefined) setPhoto(image);
+  }, [image]);
+
   function navigateToInbox() {
     navigation.push("Chats");
   }
+
   const Logout = async () => {
     try {
       await client.delete("/logout");
@@ -56,16 +73,20 @@ export const Account = ({ navigation }) => {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <Image
+          <View
             style={{
               height: 150,
               width: 159,
               borderRadius: 10,
               marginTop: 300,
             }}
-            source={require("../../assets/MyPicture.png")}
-          />
-          <Text style={styles.nameTitle}>Hadi Youness</Text>
+          >
+            <UserAvatar size={160} name={""} src={photo ? photo : ""} />
+          </View>
+
+          <Text style={styles.nameTitle}>
+            {firstName} {lastName}
+          </Text>
           <Pressable style={styles.editProfile}>
             <View>
               <TouchableOpacity onPress={() => EditProfile()}>
@@ -117,10 +138,14 @@ export const Account = ({ navigation }) => {
         </View>
         <View>
           <View style={styles.drawLine} />
-          <View style={styles.optionsObject}>
-            <Text style={styles.options}>Ride History</Text>
-            <Icon style={styles.icons} name="list" size={24} />
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.push("Your Rides", { history: true })}
+          >
+            <View style={styles.optionsObject}>
+              <Text style={styles.options}>Ride History</Text>
+              <Icon style={styles.icons} name="list" size={24} />
+            </View>
+          </TouchableOpacity>
         </View>
         <View>
           <View style={styles.drawLine} />

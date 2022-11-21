@@ -10,7 +10,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { dateTimeFormatter } from "utils";
 import { InputLocation } from "./InputLocation";
 import { Picker } from "@react-native-picker/picker";
-import Icon from "react-native-vector-icons/Entypo";
+import Icon from "react-native-vector-icons/Ionicons";
 import { TextInput } from "react-native-gesture-handler";
 
 export const InputDetails = ({
@@ -76,26 +76,21 @@ export const InputDetails = ({
               setLocation={setStartLocation}
               {...inputLocationProps}
             />
-            <InputLocation
-              position="destination"
-              setLocationMarker={setDestinationCoordinates}
-              location={destinationLocation}
-              setLocation={setDestinationLocation}
-              {...inputLocationProps}
-            />
             <View
               style={{
                 backgroundColor: "white",
-                marginTop: -105,
-                marginLeft: 10,
-                marginBottom: 60,
+                marginTop: -30,
+                marginBottom: -15,
+                marginRight: 30,
                 borderWidth: 1,
                 height: 44,
                 width: 44,
                 borderRadius: 22,
-                borderColor: "white",
+                borderColor: "black",
                 alignSelf: "flex-end",
-                marginRight: 20,
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1,
               }}
             >
               <TouchableOpacity
@@ -111,10 +106,18 @@ export const InputDetails = ({
                     return field === "destination" ? "start" : "destination";
                   });
                 }}
+                style={{ alignItems: "center", justifyContent: "center" }}
               >
-                <Icon size={40} name={"retweet"} color={"black"} />
+                <Icon size={30} name={"swap-vertical"} color={"black"} />
               </TouchableOpacity>
             </View>
+            <InputLocation
+              position="destination"
+              setLocationMarker={setDestinationCoordinates}
+              location={destinationLocation}
+              setLocation={setDestinationLocation}
+              {...inputLocationProps}
+            />
           </View>
 
           {Platform.OS === "ios" ? (

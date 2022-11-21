@@ -2,8 +2,9 @@ import {
   Text,
   StyleSheet,
   View,
-  Platform,
-  KeyboardAvoidingView,
+  Button,
+  ImageBackground,
+  TouchableHighlight,
   TouchableOpacity,
   Image,
   ScrollView,
@@ -11,64 +12,108 @@ import {
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
 import { useUserDetailsQuery } from "api/queries";
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useUpdateUserMutation } from "api/mutations/users/update-user-mutation";
-import { CommonActions } from "@react-navigation/native";
+import UserAvatar from "react-native-user-avatar";
+import { useUpdateUserPhotoMutation } from "api/mutations/users/update-photo-mutation";
+import * as ImagePicker from "expo-image-picker";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const EditProfile = ({ navigation }) => {
-  var id = 1;
-  const { ids } = useContext(AuthenticationContext);
-  const { mutate: updateUser } = useUpdateUserMutation();
-  var userDetails = useUserDetailsQuery(id);
+  const { userId } = useContext(AuthenticationContext);
+  const { mutate: updateUser, isSuccess } = useUpdateUserMutation();
+  const { mutate: updateUserPhoto, isSuccess: isSuccessPhoto } =
+    useUpdateUserPhotoMutation();
+  const { data: image } = useUserPhotoQuery(userId);
+  var { data } = useUserDetailsQuery(userId);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+  const [photo, setPhoto] = useState(null);
+
   useEffect(() => {
-    if (userDetails.data !== undefined) {
-      setFirstName(userDetails.data?.firstName);
-      setLastName(userDetails.data?.lastName);
-      setPhoneNumber(
-        userDetails.data?.phoneNumber ? userDetails.data.phoneNumber : ""
-      );
-      setDateOfBirth(
-        userDetails.data?.dateOfBirth
-          ? userDetails.data.dateOfBirth.split("T")[0]
-          : ""
-      );
+    if (data !== undefined) {
+      setFirstName(data?.firstName);
+      setLastName(data?.lastName);
+      setPhoneNumber(data?.phoneNumber ? data.phoneNumber : "");
+      setDateOfBirth(data?.dateOfBirth ? data.dateOfBirth.split("T")[0] : "");
     }
-  }, []);
+  }, [JSON.stringify(data)]);
+
+  useEffect(() => {
+    if (image !== undefined) setPhoto(image);
+  }, [image]);
+
+  useEffect(() => {
+    if (isSuccess) navigation.goBack();
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isSuccessPhoto) navigation.goBack();
+  }, [isSuccessPhoto]);
 
   const onSave = () => {
     if (
       firstName.length > 0 &&
       lastName.length > 0 &&
-      phoneNumber.length == 9 &&
+      phoneNumber.length == 11 &&
       !isNaN(phoneNumber) &&
       checkBirthValidity
     ) {
       //safe to update data
       var data = {
-        studentId: id,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        dateOfBirth: dateOfBirth,
+        id: userId,
+        firstName,
+        lastName,
+        phoneNumber,
+        dateOfBirth,
       };
       updateUser(data);
-      console.log("saving data!");
-      navigation.goBack();
-    } else console.log("couldnt save data");
+    }
     //else do nothing
   };
   const checkBirthValidity = () => {
-    return moment(dateOfBirth.replaceAll("/", "-")).isValid();
+    return moment(dateOfBirth.replace(/-/g, "-")).isValid();
+  };
+  const handleChoosePhoto = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      const image = {
+        uri:
+          Platform.OS === "android"
+            ? result.uri
+            : result.uri.replace("file://", ""),
+        name: result.uri.substring(
+          result.uri.lastIndexOf("/") + 1,
+          result.uri.length
+        ),
+        type: `image/${result.uri.substr(result.uri.lastIndexOf(".") + 1)}`,
+        id: userId,
+      };
+      updateUserPhoto(image);
+    }
   };
   return (
-    <View style={{ height: "100%", paddingTop: 70 }}>
+    <View style={{ height: "100%" }}>
+      <ImageBackground
+        source={require("../../assets/background.jpg")}
+        style={{
+          flex: 1,
+          width: null,
+          height: 150,
+          borderRadius: 10,
+        }}
+      ></ImageBackground>
       <ScrollView>
         <View
           style={{
@@ -77,7 +122,7 @@ export const EditProfile = ({ navigation }) => {
             marginBottom: 40,
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "500" }}>My Profile</Text>
+          {/* <Text style={{ fontSize: 20, fontWeight: "500",marginTop:100, }}>My Profile</Text> */}
         </View>
         <View
           style={{
@@ -87,12 +132,18 @@ export const EditProfile = ({ navigation }) => {
             alignItems: "center",
           }}
         >
-          <Image
-            style={{ width: 120, height: 120, borderRadius: 60 }}
-            source={{ uri: "https://picsum.photos/200" }}
+          <UserAvatar
+            size={120}
+            name={""}
+            src={
+              photo
+                ? photo
+                : "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+            }
           />
-          {/* <Text style={{marginLeft: 20, fontSize: 18, fontWeight: '400'}}>Upload</Text> */}
         </View>
+        <Button title="Change Photo" onPress={handleChoosePhoto} />
+
         <View style={{ marginTop: 30, marginLeft: 20, flexDirection: "row" }}>
           <View style={{ width: "45%", marginRight: 10 }}>
             <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 5 }}>
@@ -101,7 +152,7 @@ export const EditProfile = ({ navigation }) => {
             <TextInput
               key={"FirstName"}
               style={
-                firstName.length == 0
+                firstName.length === 0
                   ? { borderWidth: 1, borderColor: "red" }
                   : { borderWidth: 0 }
               }
@@ -115,7 +166,7 @@ export const EditProfile = ({ navigation }) => {
             </Text>
             <TextInput
               style={
-                lastName.length == 0
+                lastName.length === 0
                   ? { borderWidth: 1, borderColor: "red" }
                   : { borderWidth: 0 }
               }
@@ -130,7 +181,7 @@ export const EditProfile = ({ navigation }) => {
           </Text>
           <TextInput
             style={
-              phoneNumber.length != 9 || isNaN(phoneNumber)
+              phoneNumber.length !== 11 || isNaN(phoneNumber)
                 ? { borderWidth: 1, borderColor: "red" }
                 : { borderWidth: 0 }
             }

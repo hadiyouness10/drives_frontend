@@ -26,13 +26,28 @@ import { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "./authentication-context";
 import { View } from "react-native";
 import { useStopRequestsQuery } from "api/queries";
+import connectToWebSocket from "api/websocketConfig";
+import { useQueryClient } from "react-query";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export const AppRouter = () => {
-  const { userId } = useContext(AuthenticationContext);
-  const { data } = useStopRequestsQuery({ isDriver: true, studentId: userId });
+export const AppRouter = ({ route }) => {
+  const { userId = route?.params?.loggedInId } = useContext(
+    AuthenticationContext
+  );
+  const { data } = useStopRequestsQuery({
+    isDriver: true,
+    studentId: userId,
+    requestStatus: "PENDING",
+    rideStatus: "PENDING",
+  });
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    connectToWebSocket(userId, queryClient);
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={createTabScreenOptions(data ? data.length : undefined)}
@@ -60,11 +75,8 @@ const YourRidesNavigator = () => {
   return (
     <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="/" component={YourRides} />
-      <Stack.Screen name="Ride Details (Your Rides)" component={RideDetails} />
-      <Stack.Screen
-        name="Driver Details (Your Rides)"
-        component={DriverDetails}
-      />
+      <Stack.Screen name="Ride Details" component={RideDetails} />
+      <Stack.Screen name="Driver Details" component={DriverDetails} />
     </Stack.Navigator>
   );
 };
@@ -78,7 +90,9 @@ const AccountNavigator = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Stop Requests" component={StopRequests} />
       <Stack.Screen name="Notification" component={Notifications} />
-      <Stack.Screen name="Ride Details (Account)" component={RideDetails} />
+      <Stack.Screen name="Your Rides" component={YourRides} />
+      <Stack.Screen name="Ride Details" component={RideDetails} />
+      <Stack.Screen name="Driver Details" component={DriverDetails} />
     </Stack.Navigator>
   );
 };
@@ -106,7 +120,7 @@ export const LoginNavigator = () => {
           userId: authentication?.userId,
           firstName: authentication?.firstName,
           lastName: authentication?.lastName,
-
+          setAuthentication,
           signIn: async (token, userId, firstName, lastName) => {
             await AsyncStorage.setItem(
               "authentication",

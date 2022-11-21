@@ -9,11 +9,16 @@ const updateUser = async (data) => {
 
 export const useUpdateUserMutation = () => {
   const queryClient = useQueryClient();
-  const { userId } = useContext(AuthenticationContext);
+  const { userId, setAuthentication } = useContext(AuthenticationContext);
   return useMutation({
     mutationFn: updateUser,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["Users", { studentId: userId }]);
+      queryClient.refetchQueries(["userDetails", userId]);
+      setAuthentication((oldAuth) => ({
+        ...oldAuth,
+        firstName: data.firstName,
+        lastName: data.lastName,
+      }));
     },
   });
 };
