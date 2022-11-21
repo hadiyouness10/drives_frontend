@@ -60,25 +60,33 @@ const ActionButton = ({
     }
   }, [JSON.stringify(stopRequestResult)]);
 
-  if (
-    userId === driverId &&
-    rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats
-  )
-    return (
-      <View style={{ marginBottom: 20 }}>
-        <Button
-          color="red"
-          onPress={() => {
-            cancelRide(rideId);
-            navigation.goBack();
-          }}
-          title="Cancel Ride"
-          style={{ marginBottom: 20 }}
-        />
-      </View>
-    );
+  if (userId === driverId)
+    if (rideDetails.numberOfSeats === rideDetails.numberOfAvailableSeats)
+      return (
+        <View style={{ marginBottom: 20 }}>
+          <Button
+            color="red"
+            onPress={() => {
+              cancelRide(rideId);
+              navigation.goBack();
+            }}
+            title="Cancel Ride"
+            style={{ marginBottom: 20 }}
+          />
+        </View>
+      );
+    else
+      return (
+        <View style={{ marginBottom: 20 }}>
+          <Button
+            color="green"
+            title="Mark as Complete"
+            style={{ marginBottom: 20 }}
+          />
+        </View>
+      );
   else if (userId !== driverId)
-    if (!stopRequest) {
+    if (!stopRequest)
       return (
         <View style={{ marginBottom: 20 }}>
           <Button
@@ -95,7 +103,7 @@ const ActionButton = ({
           />
         </View>
       );
-    } else {
+    else
       return (
         <View style={{ marginBottom: 20 }}>
           <Button
@@ -109,8 +117,6 @@ const ActionButton = ({
           />
         </View>
       );
-    }
-  else return null;
 };
 
 export const RideDetails = ({ route, navigation }) => {
@@ -250,7 +256,7 @@ export const RideDetails = ({ route, navigation }) => {
           {driverId !== userId && (
             <View style={{ marginBottom: 20 }}>
               <Button
-                title="Chat"
+                title="Send Message"
                 onPress={() => {
                   fetchChatsList();
                 }}

@@ -24,11 +24,16 @@ export const Chat = ({ route, navigation }) => {
   const { data: messagesList } = useChatQuery(chatId);
   const { mutate } = useSendMessageMutation(chatId, userId);
   const sendMessage = (message) => {
+    const date = new Date().toISOString();
     const data = {
       studentId: userId,
       chatId,
       message: message[0]["text"],
       receiverId,
+      date: `${date.substring(0, 10)} ${date.substring(
+        date.indexOf("T") + 1,
+        date.indexOf("T") + 8
+      )}`,
     };
     mutate(data);
   };
