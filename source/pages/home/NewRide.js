@@ -95,8 +95,8 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
   const { mutate: createRide, data } = useCreateRideMutation();
   const { userId } = useContext(AuthenticationContext);
   const [routeSelectorEnabled, setRouteSelectorEnabled] = useState(false);
-  const {data:carDetails} = useUserCarQuery(userId);
-  const {data:licenseData} = useUserLicenseQuery(userId);
+  const { data: carDetails } = useUserCarQuery(userId);
+  const { data: licenseData } = useUserLicenseQuery(userId);
 
   const [selectedRoute, setSelectedRoute] = useState(0);
 
@@ -129,8 +129,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
   };
 
   const validateCar = () => {
-    if (carDetails && licenseData
-    ) {
+    if (carDetails && licenseData?.drivingLicense) {
       console.log("can create car");
       validateLocations();
     } else console.log("access denied");

@@ -15,7 +15,7 @@ export const useuploadUserLicenseMutation = () => {
   return useMutation({
     mutationFn: uploadUserLicense,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["userLicense", { studentId: userId }]);
+      queryClient.refetchQueries(["userLicense", userId]);
     },
   });
 };

@@ -15,7 +15,7 @@ export const useUpdateUserPhotoMutation = () => {
   return useMutation({
     mutationFn: updateUserPhoto,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["userPhoto", { studentId: userId }]);
+      queryClient.refetchQueries(["userPhoto", userId]);
     },
   });
 };
