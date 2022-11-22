@@ -3,19 +3,19 @@ import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AuthenticationContext } from "routes/authentication-context";
 
-const updateUserPhoto = async (data) => {
+const uploadUserLicense = async (data) => {
   return await client
-    .patch(`/users/photo/${data.id}`, data)
+    .post(`/users/license/${data.id}`, data)
     .then((res) => res.data);
 };
 
-export const useUpdateUserPhotoMutation = () => {
+export const useuploadUserLicenseMutation = () => {
   const queryClient = useQueryClient();
   const { userId } = useContext(AuthenticationContext);
   return useMutation({
-    mutationFn: updateUserPhoto,
+    mutationFn: uploadUserLicense,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["userPhoto", { studentId: userId }]);
+      queryClient.refetchQueries(["userLicense", { studentId: userId }]);
     },
   });
 };

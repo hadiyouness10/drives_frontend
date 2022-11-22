@@ -14,6 +14,8 @@ import { TabBar, TabView } from "react-native-tab-view";
 import { HowItWorks } from "components/home/HowItWorks";
 import { useLocationCoordinatesQuery } from "api/queries";
 import { useCreateRideMutation } from "api/mutations";
+import { useUserCarQuery } from "api/queries/users/user-car-query";
+import { useUserLicenseQuery } from "api/queries/users/user-license-query";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
   const { data: backUpCoordinates, refetch: fetchCoordinates } =
@@ -93,6 +95,8 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
   const { mutate: createRide, data } = useCreateRideMutation();
   const { userId } = useContext(AuthenticationContext);
   const [routeSelectorEnabled, setRouteSelectorEnabled] = useState(false);
+  const {data:carDetails} = useUserCarQuery(userId);
+  const {data:licenseData} = useUserLicenseQuery(userId);
 
   const [selectedRoute, setSelectedRoute] = useState(0);
 
@@ -118,6 +122,14 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
     numberOfSeats: inputDetailsProps.numberOfSeats,
     numberOfAvailableSeats: inputDetailsProps.numberOfSeats,
     pricePerRider: parseFloat(inputDetailsProps.pricePerRider) || 0,
+  };
+
+  const validateCar = () => {
+    if (carDetails && licenseData
+    ) {
+      console.log("can create car");
+      validateLocations();
+    } else console.log("access denied");
   };
 
   const validateLocations = () => {
@@ -165,7 +177,7 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
       <View style={{ marginHorizontal: 10 }} pointerEvents="auto">
         <TouchableOpacity
           style={styles.ridersListButton}
-          onPress={() => validateLocations()}
+          onPress={() => validateCar()}
         >
           <Text style={{ color: "#ffffff", fontSize: 20 }}>Create Ride</Text>
         </TouchableOpacity>
