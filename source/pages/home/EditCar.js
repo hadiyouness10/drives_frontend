@@ -1,5 +1,11 @@
-import {  React, useState, useContext, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity,ScrollView } from "react-native";
+import { React, useState, useContext, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import UserAvatar from "react-native-user-avatar";
 import { useUserCarQuery } from "api/queries/users/user-car-query";
 import { useUpdateCarMutation } from "api/mutations/users/update-car-mutation";
@@ -10,22 +16,19 @@ import { TextInput } from "react-native-paper";
 import { useAddCarMutation } from "api/mutations/users/add-car-mutation";
 
 export const EditCar = ({ navigation, route }) => {
+  const { insert } = route?.params;
 
-  const {
-    insert
-  } = route?.params;
+  const [description, setDescription] = useState("");
+  const [model, setModel] = useState("");
+  const [number, setNumber] = useState("");
+  const [color, setColor] = useState("");
 
-const [description, setDescription] = useState("");
-const [model, setModel] = useState("")
-const [number, setNumber] = useState("")
-const [color, setColor] = useState("")
+  const { userId } = useContext(AuthenticationContext);
+  const { data } = useUserCarQuery(userId);
+  const { mutate: updateCar, isSuccess: carUpdated } = useUpdateCarMutation();
+  const { mutate: addCar, isSuccess: carAdded } = useAddCarMutation();
 
-const { userId } = useContext(AuthenticationContext);
-const {data} = useUserCarQuery(userId)
-const {mutate: updateCar, isSuccess:carUpdated} = useUpdateCarMutation();
-const {mutate: addCar, isSuccess: carAdded} = useAddCarMutation();
-
-useEffect(() => {
+  useEffect(() => {
     if (data !== undefined) {
       setModel(data?.model ? data.model : "");
       setNumber(data?.number ? data.number : "");
@@ -41,20 +44,18 @@ useEffect(() => {
   useEffect(() => {
     if (carAdded) navigation.goBack();
   }, [carAdded]);
-  
+
   const onSave = () => {
-    console.log(insert)
     if (
       model.length == 4 &&
-      number.length >1 &&
-      number.length <8 &&
+      number.length > 1 &&
+      number.length < 8 &&
       isNaN(number[0]) &&
       !isNaN(number.substring(1)) &&
-      color.length<10 &&
-      color.length>2 &&
+      color.length < 10 &&
+      color.length > 2 &&
       description.length < 200
     ) {
-      console.log("saving data")
       //safe to update data
       var data = {
         studentId: userId,
@@ -68,7 +69,7 @@ useEffect(() => {
     //else do nothing
   };
 
-return (
+  return (
     <View style={{ height: "100%" }}>
       <ScrollView>
         <View
@@ -77,8 +78,7 @@ return (
             justifyContent: "center",
             marginBottom: 40,
           }}
-        >
-        </View>
+        ></View>
         <View style={{ marginTop: 20, marginLeft: 20, width: "90%" }}>
           <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 5 }}>
             Car Model
@@ -99,7 +99,10 @@ return (
           </Text>
           <TextInput
             style={
-              number.length < 2 || number.length > 7 || !isNaN(number[0]) || isNaN(number.substring(1))
+              number.length < 2 ||
+              number.length > 7 ||
+              !isNaN(number[0]) ||
+              isNaN(number.substring(1))
                 ? { borderWidth: 1, borderColor: "red" }
                 : { borderWidth: 0 }
             }
@@ -113,7 +116,7 @@ return (
           </Text>
           <TextInput
             style={
-              color.length<3|| color.length>10 || !isNaN(color)
+              color.length < 3 || color.length > 10 || !isNaN(color)
                 ? { borderWidth: 1, borderColor: "red" }
                 : { borderWidth: 0 }
             }
@@ -127,7 +130,7 @@ return (
           </Text>
           <TextInput
             style={
-              description.length>200
+              description.length > 200
                 ? { borderWidth: 0 }
                 : { borderWidth: 1, borderColor: "red" }
             }
@@ -172,10 +175,10 @@ return (
 };
 
 const styles = StyleSheet.create({
-    drawLine: {
-      borderBottomColor: "gray",
-      marginTop: 20,
-      borderBottomWidth: 0.8,
-      width: "100%",
-    },
-  });
+  drawLine: {
+    borderBottomColor: "gray",
+    marginTop: 20,
+    borderBottomWidth: 0.8,
+    width: "100%",
+  },
+});

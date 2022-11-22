@@ -1,5 +1,5 @@
 export default (userId, queryClient) => {
-  var ws = new WebSocket("ws://192.168.0.103:8080");
+  var ws = new WebSocket("ws://192.168.90.187:8080");
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: "IDENTIFICATION", content: userId }));
   };
@@ -10,9 +10,10 @@ export default (userId, queryClient) => {
         "stopRequests",
         { studentId: userId, isDriver: true },
       ]);
-    else if (json.type === "UPDATE_STOP_REQUESTS")
+    else if (json.type === "UPDATE_STOP_REQUESTS") {
       queryClient.refetchQueries(["stopRequests", { studentId: userId }]);
-    else if (json.type === "UPDATE_CHATS") {
+      queryClient.refetchQueries(["rideDetails", json.content]);
+    } else if (json.type === "UPDATE_CHATS") {
       queryClient.refetchQueries("chatQuery");
       queryClient.refetchQueries(["chatsQuery", userId, true]);
     } else if (json.type === "UPDATE_RIDE_AFTER_STOPREQUEST_DELETE") {

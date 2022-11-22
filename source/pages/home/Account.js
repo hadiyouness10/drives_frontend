@@ -125,14 +125,6 @@ export const Account = ({ navigation }) => {
             onPress={() => navigation.push("Car Details")}
           >
             <Text style={styles.options}>Car Details</Text>
-            {data && data.length > 0 && (
-              <Icon
-                name="alert-circle"
-                size={24}
-                color={"red"}
-                style={{ marginLeft: 10, marginRight: "auto", marginTop: 10 }}
-              />
-            )}
             <Icon style={styles.icons} name="car" size={24} />
           </TouchableOpacity>
         </View>

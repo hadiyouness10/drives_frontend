@@ -189,8 +189,8 @@ export const RideDetails = ({ route, navigation }) => {
   const { refetch: fetchChatsList } = useChatsQuery({
     isDriver: false,
     autofetch: false,
-    riderId: userId === driverId ? stopRequest?.studentId : userId,
-    driverId: userId === driverId ? userId : stopRequest?.studentId,
+    riderId: stopRequest?.studentId || userId,
+    driverId,
     navigation,
     createChat,
     rideId,
