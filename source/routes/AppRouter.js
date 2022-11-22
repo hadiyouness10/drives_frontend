@@ -28,6 +28,8 @@ import { View } from "react-native";
 import { useStopRequestsQuery } from "api/queries";
 import connectToWebSocket from "api/websocketConfig";
 import { useQueryClient } from "react-query";
+import { CarDetails } from "pages/home/CarDetails";
+import { EditCar } from "pages/home/EditCar";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -91,8 +93,10 @@ const AccountNavigator = () => {
       <Stack.Screen name="Stop Requests" component={StopRequests} />
       <Stack.Screen name="Notification" component={Notifications} />
       <Stack.Screen name="Your Rides" component={YourRides} />
+      <Stack.Screen name="Car Details" component={CarDetails}/>
       <Stack.Screen name="Ride Details" component={RideDetails} />
       <Stack.Screen name="Driver Details" component={DriverDetails} />
+      <Stack.Screen name="Edit Car" component={EditCar} />
     </Stack.Navigator>
   );
 };
