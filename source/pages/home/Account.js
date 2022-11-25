@@ -81,7 +81,11 @@ export const Account = ({ navigation }) => {
               marginTop: 300,
             }}
           >
-            <UserAvatar size={160} name={""} src={photo ? photo : ""} />
+            <UserAvatar
+              size={160}
+              name={`${firstName} ${lastName}`}
+              src={photo}
+            />
           </View>
 
           <Text style={styles.nameTitle}>

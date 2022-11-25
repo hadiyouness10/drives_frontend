@@ -6,6 +6,7 @@ import CarouselCardItem, {
   SLIDER_WIDTH,
 } from "components/home/CarouselCardItem";
 import UserAvatar from "react-native-user-avatar";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const DriverDetails = ({ route }) => {
   const {
@@ -17,7 +18,9 @@ export const DriverDetails = ({ route }) => {
       completedRides,
       numberOfReviews,
     },
+    driverId,
   } = route?.params;
+  const { data: image } = useUserPhotoQuery(driverId);
   const mapRef = useRef(null);
   const data = [
     {
@@ -51,10 +54,8 @@ export const DriverDetails = ({ route }) => {
         <View style={styles.driverDetails}>
           <UserAvatar
             size={150}
-            name={""}
-            src={
-              "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
-            }
+            name={`${firstName} ${lastName}`}
+            src={image}
           />
           <Text
             style={{ fontSize: 30, marginTop: 10 }}
