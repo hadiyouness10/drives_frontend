@@ -1,5 +1,5 @@
 import { useRef, React } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import CarouselCardItem, {
   ITEM_WIDTH,
@@ -55,7 +55,18 @@ export const DriverDetails = ({ route }) => {
           <UserAvatar
             size={150}
             name={`${firstName} ${lastName}`}
-            src={image}
+            component={
+              image ? (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 75,
+                  }}
+                />
+              ) : undefined
+            }
           />
           <Text
             style={{ fontSize: 30, marginTop: 10 }}

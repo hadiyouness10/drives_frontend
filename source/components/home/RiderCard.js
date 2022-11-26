@@ -1,15 +1,31 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import UserAvatar from "react-native-user-avatar";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 const RiderCard = (props) => {
   const { id, name, size } = props;
   const { data: image } = useUserPhotoQuery(id);
+
   return (
     <View style={styles.container}>
-      <UserAvatar size={size || 36} name={name} src={image} />
+      <UserAvatar
+        size={size || 36}
+        name={name}
+        component={
+          image ? (
+            <Image
+              source={{ uri: image }}
+              style={{
+                width: size || 36,
+                height: size || 36,
+                borderRadius: 18,
+              }}
+            />
+          ) : undefined
+        }
+      />
       <Text numberOfLines={1} style={styles.textStyle}>
         {name}
       </Text>

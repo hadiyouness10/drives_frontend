@@ -4,7 +4,6 @@ import {
   View,
   Button,
   ImageBackground,
-  TouchableHighlight,
   TouchableOpacity,
   Image,
   ScrollView,
@@ -22,6 +21,8 @@ import * as ImagePicker from "expo-image-picker";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 import { useuploadUserLicenseMutation } from "api/mutations/users/update-license-mutation";
 import * as Permissions from "expo-permissions";
+import { Buffer } from "buffer";
+import ImageResizer from "react-native-image-resizer";
 
 export const EditProfile = ({ navigation }) => {
   const {
@@ -40,7 +41,6 @@ export const EditProfile = ({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
     if (data !== undefined) {
@@ -52,12 +52,8 @@ export const EditProfile = ({ navigation }) => {
   }, [JSON.stringify(data)]);
 
   useEffect(() => {
-    if (image !== undefined) setPhoto(image);
-  }, [image]);
-
-  useEffect(() => {
-    if (isSuccess) navigation.goBack();
-  }, [isSuccess]);
+    if (isSuccessLicense) navigation.goBack();
+  }, [isSuccessLicense]);
 
   useEffect(() => {
     if (isSuccessPhoto) navigation.goBack();
@@ -67,8 +63,7 @@ export const EditProfile = ({ navigation }) => {
     if (
       firstName.length > 0 &&
       lastName.length > 0 &&
-      phoneNumber.length == 11 &&
-      !isNaN(phoneNumber) &&
+      phoneNumber.length == 12 &&
       checkBirthValidity
     ) {
       //safe to update data
@@ -91,26 +86,18 @@ export const EditProfile = ({ navigation }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [3, 3],
+      base64: true,
       quality: 1,
     });
 
     if (!result.cancelled) {
-      const image = {
-        uri:
-          Platform.OS === "android"
-            ? result.uri
-            : result.uri.replace("file://", ""),
-        name: result.uri.substring(
-          result.uri.lastIndexOf("/") + 1,
-          result.uri.length
-        ),
-        type: `image/${result.uri.substr(result.uri.lastIndexOf(".") + 1)}`,
-        id: userId,
-      };
-      updateUserPhoto(image);
+      const formData = new FormData();
+      formData.append("base64", JSON.stringify(result.base64));
+      updateUserPhoto(formData);
     }
   };
+
   const uploadDrivingLicense = async () => {
     // No permissions request is necessary for launching the image library
     const permission = await Permissions.getAsync(Permissions.CAMERA);
@@ -177,7 +164,18 @@ export const EditProfile = ({ navigation }) => {
         <UserAvatar
           size={120}
           name={`${defaultFirstName} ${defaultLastName}`}
-          src={photo}
+          component={
+            image ? (
+              <Image
+                source={{ uri: image }}
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: 60,
+                }}
+              />
+            ) : undefined
+          }
         />
       </View>
       <Button title="Change Photo" onPress={handleChoosePhoto} />
@@ -219,7 +217,7 @@ export const EditProfile = ({ navigation }) => {
           </Text>
           <TextInput
             style={
-              phoneNumber.length !== 11 || isNaN(phoneNumber)
+              phoneNumber.length !== 12
                 ? { borderWidth: 1, borderColor: "red" }
                 : { borderWidth: 0 }
             }

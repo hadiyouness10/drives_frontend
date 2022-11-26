@@ -1,5 +1,12 @@
 import { useContext, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  Image,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
@@ -172,7 +179,18 @@ const RiderTile = ({ id }) => {
         <UserAvatar
           size={40}
           name={`${userDetails.firstName} ${userDetails.lastName}`}
-          src={image}
+          component={
+            image ? (
+              <Image
+                source={{ uri: image }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                }}
+              />
+            ) : undefined
+          }
         />
         <Text
           style={{ fontSize: 16, marginLeft: 10 }}
@@ -262,7 +280,18 @@ export const RideDetails = ({ route, navigation }) => {
             <UserAvatar
               size={90}
               name={`${driverFirstName} ${lastName}`}
-              src={driverImage}
+              component={
+                driverImage ? (
+                  <Image
+                    source={{ uri: driverImage }}
+                    style={{
+                      width: 91,
+                      height: 91,
+                      borderRadius: 45,
+                    }}
+                  />
+                ) : undefined
+              }
             />
             <View style={styles.driverDetails}>
               <Text

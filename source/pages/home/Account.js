@@ -20,7 +20,6 @@ import UserAvatar from "react-native-user-avatar";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const Account = ({ navigation }) => {
-  const [photo, setPhoto] = useState(null);
   const { userId, signOut, firstName, lastName } = useContext(
     AuthenticationContext
   );
@@ -31,10 +30,6 @@ export const Account = ({ navigation }) => {
     rideStatus: "PENDING",
   });
   const { data: image } = useUserPhotoQuery(userId);
-
-  useEffect(() => {
-    if (image !== undefined) setPhoto(image);
-  }, [image]);
 
   function navigateToInbox() {
     navigation.push("Chats");
@@ -76,7 +71,7 @@ export const Account = ({ navigation }) => {
           <View
             style={{
               height: 150,
-              width: 159,
+              width: 150,
               borderRadius: 10,
               marginTop: 300,
             }}
@@ -84,7 +79,18 @@ export const Account = ({ navigation }) => {
             <UserAvatar
               size={160}
               name={`${firstName} ${lastName}`}
-              src={photo}
+              component={
+                image ? (
+                  <Image
+                    source={{ uri: image }}
+                    style={{
+                      width: 160,
+                      height: 160,
+                      borderRadius: 80,
+                    }}
+                  />
+                ) : undefined
+              }
             />
           </View>
 
