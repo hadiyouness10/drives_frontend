@@ -3,17 +3,17 @@ import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { AuthenticationContext } from "routes/authentication-context";
 
-const createChat = async (data) => {
-  return await client.post("/chat", data).then((res) => res.data);
+const addCar = async (data) => {
+  return await client.post(`/users/car`, data).then((res) => res.data);
 };
 
-export const useCreateChatMutation = () => {
+export const useAddCarMutation = () => {
   const queryClient = useQueryClient();
-  const { userId } = useContext(AuthenticationContext);
+  const { userId, setAuthentication } = useContext(AuthenticationContext);
   return useMutation({
-    mutationFn: createChat,
+    mutationFn: addCar,
     onSuccess: (data) => {
-      queryClient.refetchQueries(["chatsQuery", userId, true]);
+      queryClient.refetchQueries(["userCar", userId]);
     },
   });
 };

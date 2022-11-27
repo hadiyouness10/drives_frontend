@@ -10,11 +10,15 @@ export default (userId, queryClient) => {
         "stopRequests",
         { studentId: userId, isDriver: true },
       ]);
-    else if (json.type === "UPDATE_STOP_REQUESTS")
+    else if (json.type === "UPDATE_STOP_REQUESTS") {
       queryClient.refetchQueries(["stopRequests", { studentId: userId }]);
-    else if (json.type === "UPDATE_CHATS") {
+      queryClient.refetchQueries(["rideDetails", json.content]);
+    } else if (json.type === "UPDATE_CHATS") {
       queryClient.refetchQueries("chatQuery");
       queryClient.refetchQueries(["chatsQuery", userId, true]);
+    } else if (json.type === "UPDATE_RIDE_AFTER_STOPREQUEST_DELETE") {
+      queryClient.refetchQueries(["rides", { driverId: userId }]);
+      queryClient.refetchQueries(["rideDetails", json.content]);
     }
   };
 };

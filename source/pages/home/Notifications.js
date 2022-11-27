@@ -1,22 +1,6 @@
-import {
-  Text,
-  StyleSheet,
-  View,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
-import moment from "moment";
-import React, { useContext, useEffect, useState } from "react";
-import { AuthenticationContext } from "routes/authentication-context";
-import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
-import { useUserDetailsQuery } from "api/queries";
-import { TextInput } from "react-native-paper";
+import { Text, StyleSheet, View, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { useUpdateUserMutation } from "api/mutations/users/update-user-mutation";
-import { CommonActions } from "@react-navigation/native";
 import { useGetNotificationsQuery } from "api/queries/notifications/get-notifications-query";
 
 export const Notifications = ({ navigation }) => {
@@ -44,12 +28,12 @@ export const Notifications = ({ navigation }) => {
       </View>
       <View>
         <ScrollView>
-          {notifications.map((notification) => {
+          {notifications?.map((notification) => {
             return (
               <View
                 style={{
                   width: "90%",
-                  borderRadius: "10",
+                  borderRadius: 10,
                   alignSelf: "center",
                   backgroundColor: "white",
                   marginBottom: 20,

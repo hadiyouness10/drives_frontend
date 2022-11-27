@@ -108,7 +108,7 @@ const ActionButton = ({
     } else return null;
   } else {
     if (rideDetails.rideStatus === "PENDING") {
-      if (!stopRequest)
+      if (!stopRequest) {
         return (
           <View style={{ marginBottom: 20 }}>
             <Button
@@ -125,14 +125,19 @@ const ActionButton = ({
             />
           </View>
         );
-      else
+      } else
         return (
           <View style={{ marginBottom: 20 }}>
             <Button
               color="red"
               onPress={() => {
-                const { ID, requestStatus } = stopRequest;
-                cancelStopRequest({ stopRequestId: ID, requestStatus, rideId });
+                const { ID, requestStatus, driverId } = stopRequest;
+                cancelStopRequest({
+                  stopRequestId: ID,
+                  requestStatus,
+                  rideId,
+                  driverId,
+                });
                 navigation.goBack();
               }}
               title="Cancel Stop Request"
@@ -148,7 +153,13 @@ const RiderTile = ({ id }) => {
   if (!userDetails) return <View />;
   else
     return (
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginVertical: 3,
+        }}
+      >
         <UserAvatar
           size={40}
           name={`${userDetails.firstName} ${userDetails.lastName}`}
@@ -175,19 +186,21 @@ export const RideDetails = ({ route, navigation }) => {
   const { userId, firstName } = useContext(AuthenticationContext);
   const { mutate: createChat, isSuccess: createChatSuccess } =
     useCreateChatMutation();
-  const { refetch: fetchChatsList } = useChatsQuery(
-    userId,
-    false,
+  const { refetch: fetchChatsList } = useChatsQuery({
+    isDriver: false,
+    autofetch: false,
+    riderId: stopRequest?.studentId || userId,
+    driverId,
     navigation,
     createChat,
     rideId,
     firstName,
-    userId === driverId ? stopRequest?.studentId : driverId
-  );
+    receiverId: userId === driverId ? stopRequest?.studentId : driverId,
+  });
 
   const { data: stopRequests } = useStopRequestsQuery({
     isDriver: true,
-    studentId: userId,
+    studentId: driverId,
     rideId,
     requestStatus: "ACCEPTED",
     rideStatus: history ? "NOT_PENDING" : "PENDING",
@@ -294,7 +307,7 @@ export const RideDetails = ({ route, navigation }) => {
             <Text style={{ fontSize: 16 }}>Riders: </Text>
           )}
           {stopRequests && stopRequests.length !== 0 && (
-            <View style={{ marginVertical: 10 }}>
+            <View style={{ marginVertical: 5 }}>
               {stopRequests.map((stopRequest) => {
                 return (
                   <RiderTile key={stopRequest.ID} id={stopRequest.studentId} />

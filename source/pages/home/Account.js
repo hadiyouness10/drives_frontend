@@ -122,6 +122,16 @@ export const Account = ({ navigation }) => {
           <View style={styles.drawLine} />
           <TouchableOpacity
             style={styles.optionsObject}
+            onPress={() => navigation.push("Car Details")}
+          >
+            <Text style={styles.options}>Car Details</Text>
+            <Icon style={styles.icons} name="car" size={24} />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <View style={styles.drawLine} />
+          <TouchableOpacity
+            style={styles.optionsObject}
             onPress={() => navigation.push("Stop Requests")}
           >
             <Text style={styles.options}>Stop Requests </Text>

@@ -14,9 +14,7 @@ import { dateTimeFormatter } from "utils";
 export const Chats = ({ navigation }) => {
   const [chats, setChats] = useState([]);
   const { userId } = useContext(AuthenticationContext);
-  const { data: chatsList } = useChatsQuery(userId);
-
-  function navigateToChat(chatId, firstName, lastName) {}
+  const { data: chatsList } = useChatsQuery({ studentId: userId });
 
   useEffect(() => {
     if (chatsList) {

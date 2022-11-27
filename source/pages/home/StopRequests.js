@@ -42,7 +42,7 @@ export const StopRequests = ({ navigation }) => {
           Stop Requests
         </Text>
         <ScrollView>
-          {data.map((stopRequest) => {
+          {data?.map((stopRequest) => {
             return (
               <StopRequestView
                 key={stopRequest.ID}

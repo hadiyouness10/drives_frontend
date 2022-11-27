@@ -36,6 +36,7 @@ const Joined = ({ userId, navigation, dateOfPageRoute, history }) => {
   const { data, isLoading } = useStopRequestsQuery({
     studentId: userId,
     requestStatus: history ? "ACCEPTED" : "NOT_REJECTED",
+    rideStatus: history ? "NOT_PENDING" : "PENDING",
   });
   const scrollRef = useRef(null);
   useEffect(() => {
