@@ -56,7 +56,7 @@ const ActionButton = ({
   const { mutate: cancelRide } = useDeleteRideMutation();
   const { mutate: cancelStopRequest } = useDeleteStopRequestMutation();
   const { mutate: updateRide } = useUpdateRideMutation();
-
+  console.log(driverId, rideDetails, stopRequest);
   useEffect(() => {
     if (stopRequestResult) {
       const now = new Date().toISOString();
@@ -106,7 +106,7 @@ const ActionButton = ({
           </View>
         );
     } else return null;
-  } else if (userId !== driverId) {
+  } else {
     if (rideDetails.rideStatus === "PENDING") {
       if (!stopRequest)
         return (
@@ -139,8 +139,8 @@ const ActionButton = ({
             />
           </View>
         );
-    }
-  } else return null;
+    } else return null;
+  }
 };
 
 const RiderTile = ({ id }) => {
