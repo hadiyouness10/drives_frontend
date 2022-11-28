@@ -1,22 +1,8 @@
-import { useRef, React, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from "react-native";
-import Carousel from "react-native-snap-carousel";
-import CarouselCardItem, {
-  ITEM_WIDTH,
-  SLIDER_WIDTH,
-} from "components/home/CarouselCardItem";
+import { React } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import UserAvatar from "react-native-user-avatar";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 import { Rating } from "react-native-ratings";
-import { TextInput } from "react-native-paper";
-import { useGetReviewsQuery } from "api/queries/reviews/review-query";
-import { Comments } from "components/home/Comments";
 import { Reviews } from "components/home/Reviews";
 
 export const DriverDetails = ({ route }) => {
@@ -25,11 +11,12 @@ export const DriverDetails = ({ route }) => {
       firstName,
       lastName,
       rating,
-      email,
       completedRides,
       numberOfReviews,
     },
+    driverId,
   } = route?.params;
+  const { data: image } = useUserPhotoQuery(driverId);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -43,9 +30,18 @@ export const DriverDetails = ({ route }) => {
         <View style={styles.driverDetails}>
           <UserAvatar
             size={150}
-            name={""}
-            src={
-              "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+            name={`${firstName} ${lastName}`}
+            component={
+              image ? (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 75,
+                  }}
+                />
+              ) : undefined
             }
           />
           <Text

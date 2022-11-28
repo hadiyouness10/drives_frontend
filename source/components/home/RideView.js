@@ -79,7 +79,9 @@ export const RideView = ({
             marginLeft: 15,
           }}
         >
-          {displayDriver && <RiderCard name={`${firstName} ${lastName}`} />}
+          {displayDriver && (
+            <RiderCard name={`${firstName} ${lastName}`} id={driverId} />
+          )}
           {rideStatus !== "CANCELED" &&
             stopRequest &&
             stopRequest.requestStatus === "PENDING" && (

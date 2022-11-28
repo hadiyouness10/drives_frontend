@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import UserAvatar from "react-native-user-avatar";
 import { useUserCarQuery } from "api/queries/users/user-car-query";
 import { useUpdateCarMutation } from "api/mutations/users/update-car-mutation";
 import { AuthenticationContext } from "routes/authentication-context";

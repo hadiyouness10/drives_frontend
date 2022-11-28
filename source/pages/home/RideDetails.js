@@ -1,5 +1,12 @@
 import { useContext, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  Image,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
@@ -21,6 +28,7 @@ import {
 } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
 import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -56,7 +64,12 @@ const ActionButton = ({
   const { mutate: cancelRide } = useDeleteRideMutation();
   const { mutate: cancelStopRequest } = useDeleteStopRequestMutation();
   const { mutate: updateRide } = useUpdateRideMutation();
-  console.log(driverId, rideDetails, stopRequest);
+  const { data: riderStopRequests } = useStopRequestsQuery({
+    isDriver: false,
+    studentId: userId,
+    rideId,
+  });
+
   useEffect(() => {
     if (stopRequestResult) {
       const now = new Date().toISOString();
@@ -109,22 +122,24 @@ const ActionButton = ({
   } else {
     if (rideDetails.rideStatus === "PENDING") {
       if (!stopRequest) {
-        return (
-          <View style={{ marginBottom: 20 }}>
-            <Button
-              onPress={() => {
-                sendStopRequest({
-                  rideId,
-                  studentId: userId,
-                  driverId,
-                  location: pickupLocation,
-                  coordinates: JSON.stringify(pickupCoordinates),
-                });
-              }}
-              title="Request Pickup"
-            />
-          </View>
-        );
+        if (riderStopRequests && riderStopRequests.length === 0) {
+          return (
+            <View style={{ marginBottom: 20 }}>
+              <Button
+                onPress={() => {
+                  sendStopRequest({
+                    rideId,
+                    studentId: userId,
+                    driverId,
+                    location: pickupLocation,
+                    coordinates: JSON.stringify(pickupCoordinates),
+                  });
+                }}
+                title="Request Pickup"
+              />
+            </View>
+          );
+        } else return null;
       } else
         return (
           <View style={{ marginBottom: 20 }}>
@@ -150,6 +165,7 @@ const ActionButton = ({
 
 const RiderTile = ({ id }) => {
   const { data: userDetails } = useUserDetailsQuery(id);
+  const { data: image } = useUserPhotoQuery(id);
   if (!userDetails) return <View />;
   else
     return (
@@ -163,7 +179,18 @@ const RiderTile = ({ id }) => {
         <UserAvatar
           size={40}
           name={`${userDetails.firstName} ${userDetails.lastName}`}
-          src=""
+          component={
+            image ? (
+              <Image
+                source={{ uri: image }}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                }}
+              />
+            ) : undefined
+          }
         />
         <Text
           style={{ fontSize: 16, marginLeft: 10 }}
@@ -223,6 +250,7 @@ export const RideDetails = ({ route, navigation }) => {
   } = driverDetails ?? {};
   const date = new Date(dateOfDeparture);
 
+  const { data: driverImage } = useUserPhotoQuery(driverId);
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -245,13 +273,24 @@ export const RideDetails = ({ route, navigation }) => {
         >
           <TouchableOpacity
             style={{ flexDirection: "row", marginBottom: 5 }}
-            onPress={() => navigation.push("Driver Details", { driverDetails })}
+            onPress={() =>
+              navigation.push("Driver Details", { driverDetails, driverId })
+            }
           >
             <UserAvatar
               size={90}
-              name={""}
-              src={
-                "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+              name={`${driverFirstName} ${lastName}`}
+              component={
+                driverImage ? (
+                  <Image
+                    source={{ uri: driverImage }}
+                    style={{
+                      width: 91,
+                      height: 91,
+                      borderRadius: 45,
+                    }}
+                  />
+                ) : undefined
               }
             />
             <View style={styles.driverDetails}>

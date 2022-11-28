@@ -92,7 +92,7 @@ export const StopRequestView = ({
               marginLeft: 15,
             }}
           >
-            <RiderCard name={`${firstName} ${lastName}`} />
+            <RiderCard name={`${firstName} ${lastName}`} id={studentId} />
             <View
               style={{
                 justifyContent: "space-between",
