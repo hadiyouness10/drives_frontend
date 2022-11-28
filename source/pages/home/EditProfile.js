@@ -30,7 +30,8 @@ export const EditProfile = ({ navigation }) => {
     firstName: defaultFirstName,
     lastName: defaultLastName,
   } = useContext(AuthenticationContext);
-  const { mutate: updateUser, isSuccess } = useUpdateUserMutation();
+  const { mutate: updateUser, isSuccess: isSuccessUser } =
+    useUpdateUserMutation();
   const { mutate: updateUserPhoto, isSuccess: isSuccessPhoto } =
     useUpdateUserPhotoMutation();
   const { mutate: uploadUserLicense, isSuccess: isSuccessLicense } =
@@ -43,10 +44,10 @@ export const EditProfile = ({ navigation }) => {
   const [dateOfBirth, setDateOfBirth] = useState("");
 
   useEffect(() => {
-    if (data !== undefined) {
+    if (data) {
       setFirstName(data?.firstName);
       setLastName(data?.lastName);
-      setPhoneNumber(data?.phoneNumber ? data.phoneNumber : "");
+      setPhoneNumber(data?.phoneNumber);
       setDateOfBirth(data?.dateOfBirth ? data.dateOfBirth.split("T")[0] : "");
     }
   }, [JSON.stringify(data)]);
@@ -54,6 +55,10 @@ export const EditProfile = ({ navigation }) => {
   useEffect(() => {
     if (isSuccessLicense) navigation.goBack();
   }, [isSuccessLicense]);
+
+  useEffect(() => {
+    if (isSuccessUser) navigation.goBack();
+  }, [isSuccessUser]);
 
   useEffect(() => {
     if (isSuccessPhoto) navigation.goBack();
@@ -81,6 +86,7 @@ export const EditProfile = ({ navigation }) => {
   const checkBirthValidity = () => {
     return moment(dateOfBirth.replace(/-/g, "-")).isValid();
   };
+
   const handleChoosePhoto = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
