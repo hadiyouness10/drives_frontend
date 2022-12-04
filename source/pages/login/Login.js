@@ -52,7 +52,7 @@ export const Login = ({ navigation }) => {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
-      <Logo />
+      <Logo mode="Login"/>
       <Header>Welcome back.</Header>
       <TextInput
         label="Email"
@@ -110,6 +110,6 @@ const styles = StyleSheet.create({
   },
   link: {
     fontWeight: "bold",
-    color: theme.colors.primary,
+    color: '#1D67E2',
   },
 });

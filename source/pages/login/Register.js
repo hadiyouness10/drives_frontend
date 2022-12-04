@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity,  Keyboard
+} from "react-native";
 import { Text } from "react-native-paper";
 import { theme } from "core";
 import { emailValidator, passwordValidator, nameValidator } from "utils";
@@ -100,9 +101,8 @@ export const Register = ({ navigation }) => {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
-      <Logo />
-      <Header>Create Account</Header>
-      <ScrollView>
+      <Logo mode="Register" />
+      <ScrollView keyboardShouldPersistTaps='handled'>
         <TextInput
           label="First Name"
           returnKeyType="next"
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   },
   link: {
     fontWeight: "bold",
-    color: theme.colors.primary,
+    color: '#1D67E2',
   },
   datePickerStyle: {
     width: 200,

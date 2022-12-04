@@ -3,12 +3,9 @@ import { Background, Logo, Header, Button, Paragraph } from "components";
 
 export const Start = ({ navigation }) => {
   return (
-    <Background>
-      <Logo />
-      <Header>Login Template</Header>
-      <Paragraph>
-        The easiest way to start with your amazing application.
-      </Paragraph>
+    <Background mode="Start">
+      <Logo mode="Start" />
+      <Header>Khedne Maak</Header>
       <Button mode="contained" onPress={() => navigation.navigate("Login")}>
         Login
       </Button>

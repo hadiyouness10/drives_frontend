@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Keyboard } from "react-native";
 import { TextInput as Input } from "react-native-paper";
 import { theme } from "core";
 
@@ -7,8 +7,9 @@ export const TextInput = ({ errorText, description, ...props }) => {
   return (
     <View style={styles.container}>
       <Input
+        on={Keyboard.dismiss}
         style={styles.input}
-        selectionColor={theme.colors.primary}
+        selectionColor='#1D67E2'
         underlineColor="transparent"
         mode="outlined"
         {...props}
