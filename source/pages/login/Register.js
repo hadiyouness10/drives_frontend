@@ -3,10 +3,15 @@ import { View, StyleSheet, TouchableOpacity,  Keyboard
 } from "react-native";
 import { Text } from "react-native-paper";
 import { theme } from "core";
-import { emailValidator, passwordValidator, nameValidator } from "utils";
+import {
+  emailValidator,
+  passwordValidator,
+  nameValidator,
+  dateTimeFormatter,
+} from "utils";
 import PhoneInput from "react-native-phone-number-input";
 import { ScrollView } from "react-native-gesture-handler";
-import DatePicker from "react-native-datepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Dropdown } from "react-native-element-dropdown";
 import {
@@ -26,7 +31,7 @@ export const Register = ({ navigation }) => {
   const [lastName, setLastName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [phoneNumber, setPhoneNumber] = useState({ value: "" });
-  const [birthDate, setBirthDate] = useState("2000-01-01");
+  const [birthDate, setBirthDate] = useState(new Date("2000-01-01"));
   const [password, setPassword] = useState({ value: "", error: "" });
   const [university, setUniversity] = useState({ value: "", label: "" });
   const [campus, setCampus] = useState({ value: "", label: "" });
@@ -34,9 +39,10 @@ export const Register = ({ navigation }) => {
   const [campuses, setCampuses] = useState([]);
   const [Focus, setFocus] = useState(false);
   const [CampusFocus, setCampusFocus] = useState(false);
+  const [dateTimePickerShown, setDateTimePickerShown] = useState(null);
 
   const { data: uniQ } = useUniversitiesQuery();
-  const { data: campusQ, refetch: fetchStart } = useCampusesQuery(
+  const { data: campusQ, refetch: fetchCampuses } = useCampusesQuery(
     university.value
   );
   const { mutate: createUser, data: registered } = useCreateUserMutation();
@@ -45,13 +51,17 @@ export const Register = ({ navigation }) => {
 
   useEffect(() => {
     if (uniQ) {
-      let dropDownData = [];
-      for (var i = 0; i < uniQ.length; i++) {
-        dropDownData.push({ value: uniQ[i].ID, label: uniQ[i].name }); // Create your array of data
-      }
-      setUniversities(dropDownData);
+      setUniversities(uniQ?.map((uni) => ({ value: uni.ID, label: uni.name })));
     }
+  }, [JSON.stringify(uniQ)]);
 
+  useEffect(() => {
+    setCampuses(
+      campusQ?.map((campus) => ({ value: campus.ID, label: campus.name }))
+    );
+  }, [JSON.stringify(campusQ)]);
+
+  useEffect(() => {
     if (registered) {
       signIn(
         registered.accessToken,
@@ -61,17 +71,7 @@ export const Register = ({ navigation }) => {
       );
       navigation.navigate("Home");
     }
-  }, [registered]);
-
-  const updateCampuses = async () => {
-    if (campusQ) {
-      let dropDownData2 = [];
-      for (var i = 0; i < campusQ.length; i++) {
-        dropDownData2.push({ value: campusQ[i].ID, label: campusQ[i].name }); // Create your array of data
-      }
-      setCampuses(dropDownData2);
-    }
-  };
+  }, [JSON.stringify(registered)]);
 
   const RegisterClicked = async () => {
     const firstnameError = nameValidator(firstName.value);
@@ -92,17 +92,29 @@ export const Register = ({ navigation }) => {
       lastname: lastName.value,
       universityEmail: email.value,
       phonenumber: phoneNumber.value,
-      dateOfBirth: birthDate,
+      dateOfBirth: birthDate.toISOString().substring(0, 10),
       campusid: campus.value,
       password: password.value,
     };
     createUser(newUser);
+    console.log("hello");
   };
+
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
       <Logo mode="Register" />
-      <ScrollView keyboardShouldPersistTaps='handled'>
+      {dateTimePickerShown && Platform.OS === "android" && (
+        <DateTimePicker
+          value={birthDate}
+          mode={dateTimePickerShown}
+          onChange={(e, selectedDate) => {
+            setBirthDate(selectedDate);
+            setDateTimePickerShown(null);
+          }}
+        />
+      )}
+      <ScrollView keyboardShouldPersistTaps='handled' style={{ width: "100%" }}>
         <TextInput
           label="First Name"
           returnKeyType="next"
@@ -142,32 +154,29 @@ export const Register = ({ navigation }) => {
           withShadow
           disableArrowIcon
         />
-        <DatePicker
-          style={styles.datePickerStyle}
-          date={birthDate} // Initial date from state
-          mode="date" // The enum of date, datetime and time
-          placeholder="select date"
-          format="YYYY-MM-DD"
-          minDate="2000-01-01"
-          maxDate="2019-01-01"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              //display: 'none',
-              position: "absolute",
-              left: 0,
-              top: 4,
-              marginLeft: 0,
-            },
-            dateInput: {
-              marginLeft: 36,
-            },
-          }}
-          onDateChange={(date) => {
-            setBirthDate(date);
-          }}
-        />
+
+        {Platform.OS === "ios" ? (
+          <DateTimePicker
+            style={{ width: 120, marginLeft: 30 }}
+            themeVariant="light"
+            value={birthDate}
+            mode={"date"}
+            onChange={(e, selectedDate) => {
+              setBirthDate(selectedDate);
+              setDateTimePickerShown(null);
+            }}
+          />
+        ) : (
+          <TouchableOpacity
+            style={[styles.buttonDiv, { marginRight: 10 }]}
+            onPress={() => setDateTimePickerShown("date")}
+          >
+            <Text style={styles.buttonText}>
+              {dateTimeFormatter(birthDate, "date")}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <Dropdown
           data={universities}
           style={[styles.dropdown, Focus && { borderColor: "blue" }]}
@@ -181,13 +190,12 @@ export const Register = ({ navigation }) => {
           valueField="value"
           placeholder={!Focus ? "Select University" : "..."}
           searchPlaceholder="Search..."
-          value={university.label}
+          value={university}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
           onChange={(item) => {
             setUniversity(item);
-            fetchStart();
-            updateCampuses();
+            fetchCampuses();
             setFocus(false);
           }}
           renderLeftIcon={() => (
@@ -212,7 +220,7 @@ export const Register = ({ navigation }) => {
           valueField="value"
           placeholder={!CampusFocus ? "Select Campus" : "..."}
           searchPlaceholder="Search..."
-          value={campus.label}
+          value={campus}
           onFocus={() => setCampusFocus(true)}
           onBlur={() => setCampusFocus(false)}
           onChange={(item) => {
@@ -259,6 +267,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     marginTop: 4,
+    marginBottom: 20,
   },
   link: {
     fontWeight: "bold",

@@ -1,11 +1,9 @@
-import { useRef, React } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Carousel from "react-native-snap-carousel";
-import CarouselCardItem, {
-  ITEM_WIDTH,
-  SLIDER_WIDTH,
-} from "components/home/CarouselCardItem";
+import { React } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import UserAvatar from "react-native-user-avatar";
+import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
+import { Rating } from "react-native-ratings";
+import { Reviews } from "components/home/Reviews";
 
 export const DriverDetails = ({ route }) => {
   const {
@@ -13,91 +11,58 @@ export const DriverDetails = ({ route }) => {
       firstName,
       lastName,
       rating,
-      email,
       completedRides,
       numberOfReviews,
     },
+    driverId,
   } = route?.params;
-  const mapRef = useRef(null);
-  const data = [
-    {
-      title: "Aenean leo",
-      body: "Ut tincidunt tincidunt erat. Sed cursus turpis vitae tortor. Quisque malesuada placerat nisl. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
-      imgUrl: "https://picsum.photos/id/11/200/300",
-    },
-    {
-      title: "In turpis",
-      body: "Aenean ut eros et nisl sagittis vestibulum. Donec posuere vulputate arcu. Proin faucibus arcu quis ante. Curabitur at lacus ac velit ornare lobortis. ",
-      imgUrl: "https://picsum.photos/id/11/200/300",
-    },
-    {
-      title: "Lorem Ipsum",
-      body: "Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.",
-      imgUrl: "https://picsum.photos/id/11/200/300",
-    },
-  ];
-  const isCarousel = useRef(null);
+  const { data: image } = useUserPhotoQuery(driverId);
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View
         style={{
           backgroundColor: "white",
           padding: 20,
-          alignItems: "center",
           marginTop: 40,
-          flex: 1,
         }}
       >
         <View style={styles.driverDetails}>
           <UserAvatar
             size={150}
-            name={""}
-            src={
-              "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
+            name={`${firstName} ${lastName}`}
+            component={
+              image ? (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 75,
+                  }}
+                />
+              ) : undefined
             }
           />
           <Text
             style={{ fontSize: 30, marginTop: 10 }}
           >{`${firstName} ${lastName}`}</Text>
+          <Rating
+            type="star"
+            startingValue={rating}
+            ratingCount={5}
+            imageSize={25}
+            readonly={true}
+          />
           <Text
             style={{
               fontSize: 20,
               color: "gray",
-              width: "100%",
               marginVertical: 10,
             }}
           >
             Description
           </Text>
-          <View style={{ flexDirection: "row", margin: 5 }}>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  borderRadius: 5,
-                  borderWidth: 2,
-                  padding: 10,
-                  borderColor: "#33B6FC",
-                  fontSize: 20,
-                  marginRight: 10,
-                }}
-              >
-                Message
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text
-                style={{
-                  borderRadius: 5,
-                  borderWidth: 2,
-                  padding: 10,
-                  borderColor: "#33B6FC",
-                  fontSize: 20,
-                }}
-              >
-                View Rides
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
         <View style={styles.container}>
           <View style={{ width: "33%", alignItems: "flex-start" }}>
@@ -119,19 +84,8 @@ export const DriverDetails = ({ route }) => {
             </View>
           </View>
         </View>
-        <View style={{ height: 220 }}>
-          <Carousel
-            layout="tinder"
-            layoutCardOffset={9}
-            ref={isCarousel}
-            data={data}
-            renderItem={CarouselCardItem}
-            sliderWidth={SLIDER_WIDTH}
-            itemWidth={ITEM_WIDTH}
-            sliderHeight={100}
-            // onSnapToItem={(index) => setIndex(index)}
-            useScrollView={true}
-          />
+        <View style={{ paddingBottom: 200 }}>
+          <Reviews studentId={2} />
         </View>
       </View>
     </View>
@@ -145,7 +99,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    flex: 1,
     marginTop: 30,
     flexDirection: "row",
     justifyContent: "space-between",

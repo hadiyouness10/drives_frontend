@@ -4,7 +4,6 @@ import {
   View,
   Button,
   ImageBackground,
-  TouchableHighlight,
   TouchableOpacity,
   Image,
   ScrollView,
@@ -21,38 +20,45 @@ import { useUpdateUserPhotoMutation } from "api/mutations/users/update-photo-mut
 import * as ImagePicker from "expo-image-picker";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 import { useuploadUserLicenseMutation } from "api/mutations/users/update-license-mutation";
-import * as Permissions from 'expo-permissions';
+import * as Permissions from "expo-permissions";
+import { Buffer } from "buffer";
+import ImageResizer from "react-native-image-resizer";
 
 export const EditProfile = ({ navigation }) => {
-  const { userId } = useContext(AuthenticationContext);
-  const { mutate: updateUser, isSuccess } = useUpdateUserMutation();
+  const {
+    userId,
+    firstName: defaultFirstName,
+    lastName: defaultLastName,
+  } = useContext(AuthenticationContext);
+  const { mutate: updateUser, isSuccess: isSuccessUser } =
+    useUpdateUserMutation();
   const { mutate: updateUserPhoto, isSuccess: isSuccessPhoto } =
     useUpdateUserPhotoMutation();
-  const { mutate: uploadUserLicense, isSuccess: isSuccessLicense } = useuploadUserLicenseMutation();
+  const { mutate: uploadUserLicense, isSuccess: isSuccessLicense } =
+    useuploadUserLicenseMutation();
   const { data: image } = useUserPhotoQuery(userId);
   var { data } = useUserDetailsQuery(userId);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [photo, setPhoto] = useState(null);
 
   useEffect(() => {
-    if (data !== undefined) {
+    if (data) {
       setFirstName(data?.firstName);
       setLastName(data?.lastName);
-      setPhoneNumber(data?.phoneNumber ? data.phoneNumber : "");
+      setPhoneNumber(data?.phoneNumber);
       setDateOfBirth(data?.dateOfBirth ? data.dateOfBirth.split("T")[0] : "");
     }
   }, [JSON.stringify(data)]);
 
   useEffect(() => {
-    if (image !== undefined) setPhoto(image);
-  }, [image]);
+    if (isSuccessLicense) navigation.goBack();
+  }, [isSuccessLicense]);
 
   useEffect(() => {
-    if (isSuccess) navigation.goBack();
-  }, [isSuccess]);
+    if (isSuccessUser) navigation.goBack();
+  }, [isSuccessUser]);
 
   useEffect(() => {
     if (isSuccessPhoto) navigation.goBack();
@@ -62,8 +68,7 @@ export const EditProfile = ({ navigation }) => {
     if (
       firstName.length > 0 &&
       lastName.length > 0 &&
-      phoneNumber.length == 11 &&
-      !isNaN(phoneNumber) &&
+      phoneNumber.length == 12 &&
       checkBirthValidity
     ) {
       //safe to update data
@@ -81,40 +86,33 @@ export const EditProfile = ({ navigation }) => {
   const checkBirthValidity = () => {
     return moment(dateOfBirth.replace(/-/g, "-")).isValid();
   };
+
   const handleChoosePhoto = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [3, 3],
+      base64: true,
       quality: 1,
     });
 
     if (!result.cancelled) {
-      const image = {
-        uri:
-          Platform.OS === "android"
-            ? result.uri
-            : result.uri.replace("file://", ""),
-        name: result.uri.substring(
-          result.uri.lastIndexOf("/") + 1,
-          result.uri.length
-        ),
-        type: `image/${result.uri.substr(result.uri.lastIndexOf(".") + 1)}`,
-        id: userId,
-      };
-      updateUserPhoto(image);
+      const formData = new FormData();
+      formData.append("base64", JSON.stringify(result.base64));
+      updateUserPhoto(formData);
     }
   };
+
   const uploadDrivingLicense = async () => {
     // No permissions request is necessary for launching the image library
     const permission = await Permissions.getAsync(Permissions.CAMERA);
-  if (permission.status !== 'granted') {
+    if (permission.status !== "granted") {
       const newPermission = await Permissions.askAsync(Permissions.CAMERA);
-      if (newPermission.status === 'granted') {
-        console.log(newPermission)
+      if (newPermission.status === "granted") {
+        console.log(newPermission);
       }
-  }
+    }
 
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -139,7 +137,7 @@ export const EditProfile = ({ navigation }) => {
       uploadUserLicense(image);
     }
   };
-  
+
   return (
     <View style={{ height: "100%" }}>
       <ImageBackground
@@ -151,36 +149,43 @@ export const EditProfile = ({ navigation }) => {
           borderRadius: 10,
         }}
       ></ImageBackground>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginBottom: 40,
-          }}
-        >
-          {/* <Text style={{ fontSize: 20, fontWeight: "500",marginTop:100, }}>My Profile</Text> */}
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-            marginTop:30,
-          }}
-        >
-          <UserAvatar
-            size={120}
-            name={""}
-            src={
-              photo
-                ? photo
-                : "https://images.unsplash.com/photo-1566807810030-3eaa60f3e670?ixlib=rb-1.2.1&auto=format&fit=crop&w=3334&q=80"
-            }
-          />
-        </View>
-        <Button title="Change Photo" onPress={handleChoosePhoto} />
-        <ScrollView>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginBottom: 40,
+        }}
+      >
+        {/* <Text style={{ fontSize: 20, fontWeight: "500",marginTop:100, }}>My Profile</Text> */}
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
+          marginTop: 30,
+        }}
+      >
+        <UserAvatar
+          size={120}
+          name={`${defaultFirstName} ${defaultLastName}`}
+          component={
+            image ? (
+              <Image
+                source={{ uri: image }}
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: 60,
+                }}
+              />
+            ) : undefined
+          }
+        />
+      </View>
+      <Button title="Change Photo" onPress={handleChoosePhoto} />
+      <ScrollView>
         <View style={{ marginTop: 30, marginLeft: 20, flexDirection: "row" }}>
           <View style={{ width: "45%", marginRight: 10 }}>
             <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 5 }}>
@@ -218,7 +223,7 @@ export const EditProfile = ({ navigation }) => {
           </Text>
           <TextInput
             style={
-              phoneNumber.length !== 11 || isNaN(phoneNumber)
+              phoneNumber.length !== 12
                 ? { borderWidth: 1, borderColor: "red" }
                 : { borderWidth: 0 }
             }
@@ -244,7 +249,8 @@ export const EditProfile = ({ navigation }) => {
         <View style={{ marginTop: 20, width: "90%", marginLeft: 20 }}>
           <TouchableOpacity
             onPress={() => onSave()}
-            style={{ backgroundColor: "green", height: 40, borderRadius: 10 }}>
+            style={{ backgroundColor: "green", height: 40, borderRadius: 10 }}
+          >
             <View style={{ flexDirection: "row" }}>
               <Text
                 style={{
@@ -271,26 +277,33 @@ export const EditProfile = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ marginTop: 20, marginLeft:20,width:'90%', marginBottom:50 }}>
-             
-             <TouchableOpacity
- 
-             onPress={() =>  {uploadDrivingLicense()}}
-             >
-               <Text
-                 style={{
-                   borderRadius: 5,
-                   borderWidth: 2,
-                   padding: 10,
-                   borderColor: "#33B6FC",
-                   fontSize: 20,
-                   textAlign:"center",
-                 }}
-               >
-                  Upload Driving License              
-                   </Text>
-             </TouchableOpacity>
-           </View>
+        <View
+          style={{
+            marginTop: 20,
+            marginLeft: 20,
+            width: "90%",
+            marginBottom: 50,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              uploadDrivingLicense();
+            }}
+          >
+            <Text
+              style={{
+                borderRadius: 5,
+                borderWidth: 2,
+                padding: 10,
+                borderColor: "#33B6FC",
+                fontSize: 20,
+                textAlign: "center",
+              }}
+            >
+              Upload Driving License
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );

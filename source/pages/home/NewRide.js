@@ -129,7 +129,11 @@ const StartRide = ({ inputDetailsProps, navigation }) => {
   };
 
   const validateCar = () => {
-    if (carDetails && licenseData?.drivingLicense) {
+    if (
+      carDetails &&
+      licenseData &&
+      licenseData?.verifiedDriver === "INSERTED"
+    ) {
       console.log("can create car");
       validateLocations();
     } else console.log("access denied");
