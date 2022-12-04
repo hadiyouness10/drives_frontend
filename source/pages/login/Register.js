@@ -8,6 +8,8 @@ import {
   passwordValidator,
   nameValidator,
   dateTimeFormatter,
+  phoneValidator,
+  birthDateValidator,
 } from "utils";
 import PhoneInput from "react-native-phone-number-input";
 import { ScrollView } from "react-native-gesture-handler";
@@ -78,8 +80,10 @@ export const Register = ({ navigation }) => {
     const lastnameError = nameValidator(lastName.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
+    const phoneError = phoneValidator(phoneNumber.value)
+    const birthDateError = birthDateValidator(birthDate)
 
-    if (emailError || passwordError || firstnameError || lastnameError) {
+    if (emailError || passwordError || firstnameError || lastnameError || phoneError || birthDateError) {
       setFirstName({ ...firstName, error: firstnameError });
       setLastName({ ...lastName, error: lastnameError });
       setEmail({ ...email, error: emailError });
@@ -87,6 +91,9 @@ export const Register = ({ navigation }) => {
       return;
     }
 
+    if(!campus.value){
+      return;
+    }
     const newUser = {
       firstname: firstName.value,
       lastname: lastName.value,
@@ -114,7 +121,7 @@ export const Register = ({ navigation }) => {
           }}
         />
       )}
-      <ScrollView keyboardShouldPersistTaps='handled' style={{ width: "100%" }}>
+      <ScrollView  style={{ width: "100%" }}>
         <TextInput
           label="First Name"
           returnKeyType="next"
@@ -157,7 +164,7 @@ export const Register = ({ navigation }) => {
 
         {Platform.OS === "ios" ? (
           <DateTimePicker
-            style={{ width: 120, marginLeft: 30 }}
+            style={[styles.datePickerStyle]}
             themeVariant="light"
             value={birthDate}
             mode={"date"}
@@ -274,8 +281,9 @@ const styles = StyleSheet.create({
     color: '#1D67E2',
   },
   datePickerStyle: {
-    width: 200,
-    marginTop: 20,
+    width: '40%', 
+    marginLeft:10, 
+    marginTop:20,
   },
   dropdown: {
     height: 50,

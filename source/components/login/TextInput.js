@@ -29,10 +29,11 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: theme.colors.surface,
+    color:'#1D67E2',
   },
   description: {
     fontSize: 13,
-    color: theme.colors.secondary,
+    color:'#1D67E2',
     paddingTop: 8,
   },
   error: {
