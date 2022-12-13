@@ -11,6 +11,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { MapComponent } from "components";
 import {
+  useReviewOverviewQuery,
   useRideDetailsQuery,
   useStopRequestsQuery,
   useUserDetailsQuery,
@@ -242,15 +243,12 @@ export const RideDetails = ({ route, navigation }) => {
     route: routePolyline,
   } = rideDetails ?? {};
 
-  const {
-    firstName: driverFirstName,
-    lastName,
-    rating,
-    completedRides,
-  } = driverDetails ?? {};
+  const { firstName: driverFirstName, lastName } = driverDetails ?? {};
   const date = new Date(dateOfDeparture);
 
   const { data: driverImage } = useUserPhotoQuery(driverId);
+  const { data: reviewOverview } = useReviewOverviewQuery(driverId);
+
   const mapRef = useRef(null);
 
   useEffect(() => {
@@ -301,14 +299,14 @@ export const RideDetails = ({ route, navigation }) => {
                 <Text style={{ fontSize: 16 }}>Rating: </Text>
                 <Rating
                   type="star"
-                  startingValue={rating}
+                  startingValue={reviewOverview?.average}
                   ratingCount={5}
                   imageSize={20}
                   readonly={true}
                 />
               </View>
               <Text style={{ fontSize: 16 }}>
-                Completed Rides: {completedRides}
+                Completed Rides: {reviewOverview?.count}
               </Text>
             </View>
             <SimpleLineIcons

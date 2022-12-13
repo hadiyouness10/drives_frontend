@@ -17,8 +17,6 @@ import { TabView, TabBar } from "react-native-tab-view";
 import { AuthenticationContext } from "routes/authentication-context";
 
 const JoinedRideCard = ({ stopRequest, navigation, history }) => {
-  console.log("Your rides");
-  console.log(stopRequest);
   const { data } = useRideDetailsQuery(stopRequest.rideId);
   if (data)
     return (

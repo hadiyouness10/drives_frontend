@@ -1,5 +1,5 @@
 export default (userId, queryClient) => {
-  var ws = new WebSocket("ws://192.168.0.107:8080");
+  var ws = new WebSocket("ws://192.168.0.104:8080");
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: "IDENTIFICATION", content: userId }));
   };

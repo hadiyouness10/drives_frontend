@@ -4,19 +4,16 @@ import UserAvatar from "react-native-user-avatar";
 import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 import { Rating } from "react-native-ratings";
 import { Reviews } from "components/home/Reviews";
+import { useReviewOverviewQuery, useRideCountQuery } from "api/queries";
 
 export const DriverDetails = ({ route }) => {
   const {
-    driverDetails: {
-      firstName,
-      lastName,
-      rating,
-      completedRides,
-      numberOfReviews,
-    },
+    driverDetails: { firstName, lastName },
     driverId,
   } = route?.params;
   const { data: image } = useUserPhotoQuery(driverId);
+  const { data: numOfRides } = useRideCountQuery(driverId);
+  const { data: reviewOverview } = useReviewOverviewQuery(driverId);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -25,6 +22,7 @@ export const DriverDetails = ({ route }) => {
           backgroundColor: "white",
           padding: 20,
           marginTop: 40,
+          flexGrow: 1,
         }}
       >
         <View style={styles.driverDetails}>
@@ -49,42 +47,27 @@ export const DriverDetails = ({ route }) => {
           >{`${firstName} ${lastName}`}</Text>
           <Rating
             type="star"
-            startingValue={rating}
+            startingValue={reviewOverview?.average}
             ratingCount={5}
             imageSize={25}
             readonly={true}
           />
-          <Text
-            style={{
-              fontSize: 20,
-              color: "gray",
-              marginVertical: 10,
-            }}
-          >
-            Description
-          </Text>
         </View>
         <View style={styles.container}>
-          <View style={{ width: "33%", alignItems: "flex-start" }}>
+          <View style={{ alignItems: "flex-start" }}>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.numbers}>{completedRides}</Text>
+              <Text style={styles.numbers}>{numOfRides?.count}</Text>
               <Text style={styles.labels}>Rides</Text>
             </View>
           </View>
-          <View style={{ width: "33%", alignItems: "center" }}>
+          <View style={{ alignItems: "flex-end" }}>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.numbers}>{rating}</Text>
-              <Text style={styles.labels}>Rating</Text>
-            </View>
-          </View>
-          <View style={{ width: "33%", alignItems: "flex-end" }}>
-            <View style={{ alignItems: "center" }}>
-              <Text style={styles.numbers}>{numberOfReviews}</Text>
+              <Text style={styles.numbers}>{reviewOverview?.count}</Text>
               <Text style={styles.labels}>Reviews</Text>
             </View>
           </View>
         </View>
-        <View style={{ paddingBottom: 200 }}>
+        <View style={{ flexGrow: 1 }}>
           <Reviews studentId={2} />
         </View>
       </View>
@@ -101,7 +84,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 30,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   square: {
     width: "33%",

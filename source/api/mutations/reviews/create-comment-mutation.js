@@ -13,7 +13,6 @@ export const useCreateCommentMutation = () => {
   return useMutation({
     mutationFn: createComment,
     onSuccess: (data) => {
-      console.log("succeeded");
       queryClient.refetchQueries(["getComments", data.reviewId]);
     },
   });

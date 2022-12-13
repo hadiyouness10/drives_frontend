@@ -26,11 +26,9 @@ export const Reviews = ({ studentId }) => {
   const { mutate: createComment } = useCreateCommentMutation();
 
   const updateComment = (index, value, reviewId) => {
-    console.log(index, value, reviewId);
     let comments = [...newComments];
     comments[index] = value;
     // setNewUpdate(newUpdate);
-    console.log(comments.toString());
     setnewComments(comments);
   };
   const sendComment = (index, reviewId) => {
@@ -45,16 +43,12 @@ export const Reviews = ({ studentId }) => {
     setnewComments(comments);
   };
 
-  useEffect(() => {
-    console.log("rerendering");
-    console.log(newComments);
-  }, [newComments]);
   return (
-    <View style={{ marginTop: 30 }}>
+    <View style={{ marginTop: 30, flexGrow: 1 }}>
       <Text style={{ fontSize: 20, fontWeight: "500" }}>
         Reviews & Comments
       </Text>
-      <ScrollView>
+      <ScrollView style={{ flex: 1 }}>
         <View>
           {reviews?.map((review, index) => {
             return (
@@ -91,7 +85,7 @@ export const Reviews = ({ studentId }) => {
                 </Text>
                 <View
                   style={{
-                    marginBottom: 100,
+                    marginBottom: 20,
                     marginLeft: 20,
                     marginTop: 10,
                     flexDirection: "row",

@@ -110,7 +110,6 @@ export const Register = ({ navigation }) => {
       password: password.value,
     };
     createUser(newUser);
-    console.log("hello");
   };
 
   return (

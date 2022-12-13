@@ -10,9 +10,7 @@ export const Notifications = ({ navigation }) => {
   ]);
   const { data } = useGetNotificationsQuery(id);
   useEffect(() => {
-    console.log("rerender");
     setNotifications(data);
-    console.log(data);
   }, [data]);
 
   return (

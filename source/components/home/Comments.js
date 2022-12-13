@@ -8,16 +8,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 export const Comments = ({ reviewId }) => {
   const { data } = useGetCommentsQuery(reviewId);
-  const [reviews, setReviews] = useState([]);
-  useEffect(() => {
-    if (data) {
-      setReviews([...data]);
-    }
-    console.log("rerendering comments");
-  }, [JSON.stringify(data)]);
   return (
     <View>
-      {reviews?.map((comment) => {
+      {data?.map((comment) => {
         return (
           <View key={comment.commentId}>
             <View
