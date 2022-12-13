@@ -24,7 +24,7 @@ export const ResetPassword = ({ navigation }) => {
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
-      <Logo />
+      <Logo mode="Reset" />
       <Header>Restore Password</Header>
       <TextInput
         label="E-mail address"
