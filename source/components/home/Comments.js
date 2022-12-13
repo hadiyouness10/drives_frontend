@@ -1,14 +1,23 @@
 import { useGetCommentsQuery } from "api/queries/reviews/comment-query";
 import { useGetReviewsQuery } from "api/queries/reviews/review-query";
 import React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 export const Comments = ({ reviewId }) => {
   const { data } = useGetCommentsQuery(reviewId);
+  const [reviews, setReviews] = useState([]);
+  useEffect(() => {
+    if (data) {
+      setReviews([...data]);
+    }
+    console.log("rerendering comments");
+  }, [JSON.stringify(data)]);
   return (
     <View>
-      {data?.map((comment) => {
+      {reviews?.map((comment) => {
         return (
           <View key={comment.commentId}>
             <View

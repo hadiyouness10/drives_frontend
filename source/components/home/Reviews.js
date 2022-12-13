@@ -1,7 +1,7 @@
 import { useCreateCommentMutation } from "api/mutations/reviews/create-comment-mutation";
 import { useGetCommentsQuery } from "api/queries/reviews/comment-query";
 import { useGetReviewsQuery } from "api/queries/reviews/review-query";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -13,6 +13,7 @@ import {
 import { TextInput } from "react-native-paper";
 import { Rating } from "react-native-ratings";
 import Icon from "react-native-vector-icons/Ionicons";
+import { AuthenticationContext } from "routes/authentication-context";
 import { Comments } from "./Comments";
 
 export const Reviews = ({ studentId }) => {
@@ -20,27 +21,34 @@ export const Reviews = ({ studentId }) => {
   const [newComments, setnewComments] = useState(
     Array(reviews?.length).fill("")
   );
+  const { userId } = useContext(AuthenticationContext);
+
   const { mutate: createComment } = useCreateCommentMutation();
 
-  const updateComment = (index, value) => {
-    console.log(index, value);
-    let comments = newComments;
-    comments[index] += value;
+  const updateComment = (index, value, reviewId) => {
+    console.log(index, value, reviewId);
+    let comments = [...newComments];
+    comments[index] = value;
+    // setNewUpdate(newUpdate);
+    console.log(comments.toString());
     setnewComments(comments);
   };
-  const sendComment = (index) => {
+  const sendComment = (index, reviewId) => {
     let newComment = {
-      studentId: studentId,
+      studentId: userId,
       reviewId: reviews[index].reviewId,
       comment: newComments[index],
     };
-    createComment(newComment);
-    let comments = newComments;
+    createComment(newComment, reviewId);
+    let comments = [...newComments];
     comments[index] = "";
     setnewComments(comments);
   };
 
-  useEffect(() => {}, [newComments.toString()]);
+  useEffect(() => {
+    console.log("rerendering");
+    console.log(newComments);
+  }, [newComments]);
   return (
     <View style={{ marginTop: 30 }}>
       <Text style={{ fontSize: 20, fontWeight: "500" }}>
@@ -50,7 +58,7 @@ export const Reviews = ({ studentId }) => {
         <View>
           {reviews?.map((review, index) => {
             return (
-              <View key={review.ID}>
+              <View key={review.ID + " " + index}>
                 <View
                   style={{
                     marginLeft: 10,
@@ -113,7 +121,9 @@ export const Reviews = ({ studentId }) => {
                         style={{ height: 30, width: 200, color: "#909090" }}
                         placeholder={"Write a comment"}
                         value={newComments[index]}
-                        onChangeText={(value) => updateComment(index, value)}
+                        onChangeText={(value) =>
+                          updateComment(index, value, review.ID)
+                        }
                       />
                       <TouchableOpacity onPress={() => sendComment(index)}>
                         <Icon
