@@ -13,11 +13,10 @@ import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { AuthenticationContext } from "routes/authentication-context";
 import { CommonActions } from "@react-navigation/native";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import client from "api/client";
-import { useStopRequestsQuery } from "api/queries";
+import { useStopRequestsQuery, useUserPhotoQuery } from "api/queries";
 import UserAvatar from "react-native-user-avatar";
-import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 export const Account = ({ navigation }) => {
   const { userId, signOut, firstName, lastName } = useContext(

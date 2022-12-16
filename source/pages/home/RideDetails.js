@@ -15,6 +15,8 @@ import {
   useRideDetailsQuery,
   useStopRequestsQuery,
   useUserDetailsQuery,
+  useChatsQuery,
+  useUserPhotoQuery,
 } from "api/queries";
 import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
@@ -28,8 +30,6 @@ import {
   useUpdateRideMutation,
 } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatsQuery } from "api/queries/chats/get-all-chats-query";
-import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 
 const DetailView = ({ label, value, icon }) => {
   return (

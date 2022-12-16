@@ -1,11 +1,29 @@
-import { useGetCommentsQuery } from "api/queries/reviews/comment-query";
-import { useGetReviewsQuery } from "api/queries/reviews/review-query";
+import { useGetCommentsQuery, useUserPhotoQuery } from "api/queries";
 import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import UserAvatar from "react-native-user-avatar";
 
+const CommentPhoto = ({ studentId, firstName, lastName }) => {
+  const { data: photo } = useUserPhotoQuery(studentId);
+  return (
+    <UserAvatar
+      size={30}
+      name={`${firstName} ${lastName}`}
+      component={
+        photo ? (
+          <Image
+            source={{ uri: photo }}
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+            }}
+          />
+        ) : undefined
+      }
+    />
+  );
+};
 export const Comments = ({ reviewId }) => {
   const { data } = useGetCommentsQuery(reviewId);
   return (
@@ -21,9 +39,10 @@ export const Comments = ({ reviewId }) => {
                 alignItems: "center",
               }}
             >
-              <Image
-                style={{ width: 30, height: 30, borderRadius: 25 }}
-                source={{ uri: "https://picsum.photos/200" }}
+              <CommentPhoto
+                studentId={comment.studentID}
+                firstName={comment.firstName}
+                lastName={comment.lastName}
               />
               <Text style={{ fontSize: 16, fontWeight: "400", marginLeft: 5 }}>
                 {comment.firstName} {comment.lastName}{" "}

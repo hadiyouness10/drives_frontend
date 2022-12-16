@@ -12,10 +12,12 @@ import { InputDetails, RouteSelector } from "components";
 import { AuthenticationContext } from "routes/authentication-context";
 import { TabBar, TabView } from "react-native-tab-view";
 import { HowItWorks } from "components/home/HowItWorks";
-import { useLocationCoordinatesQuery } from "api/queries";
+import {
+  useLocationCoordinatesQuery,
+  useUserCarQuery,
+  useUserLicenseQuery,
+} from "api/queries";
 import { useCreateRideMutation } from "api/mutations";
-import { useUserCarQuery } from "api/queries/users/user-car-query";
-import { useUserLicenseQuery } from "api/queries/users/user-license-query";
 
 const JoinRide = ({ inputDetailsProps, navigation }) => {
   const { data: backUpCoordinates, refetch: fetchCoordinates } =

@@ -1,6 +1,6 @@
 import { React, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useUserCarQuery } from "api/queries/users/user-car-query";
+import { useUserCarQuery } from "api/queries";
 import { AuthenticationContext } from "routes/authentication-context";
 import Icon from "react-native-vector-icons/Ionicons";
 

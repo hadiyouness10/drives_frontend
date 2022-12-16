@@ -12,7 +12,7 @@ import {
 import { theme } from "core";
 import { emailValidator, passwordValidator } from "utils";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useLoginUserMutation } from "api/mutations/authentication/login-user-mutation";
+import { useLoginUserMutation } from "api/mutations";
 
 export const Login = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });

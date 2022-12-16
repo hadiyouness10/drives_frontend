@@ -1,7 +1,7 @@
 import { Text, StyleSheet, View, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { useGetNotificationsQuery } from "api/queries/notifications/get-notifications-query";
+import { useGetNotificationsQuery } from "api/queries";
 
 export const Notifications = ({ navigation }) => {
   var id = 1;

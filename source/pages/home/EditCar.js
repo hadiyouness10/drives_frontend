@@ -6,13 +6,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useUserCarQuery } from "api/queries/users/user-car-query";
-import { useUpdateCarMutation } from "api/mutations/users/update-car-mutation";
+import { useUserCarQuery } from "api/queries";
+import { useUpdateCarMutation, useAddCarMutation } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
-import { ImageBackground } from "react-native-web";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TextInput } from "react-native-paper";
-import { useAddCarMutation } from "api/mutations/users/add-car-mutation";
 
 export const EditCar = ({ navigation, route }) => {
   const { insert } = route?.params;

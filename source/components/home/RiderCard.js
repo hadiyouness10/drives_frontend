@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Text, View, StyleSheet, Image } from "react-native";
 import UserAvatar from "react-native-user-avatar";
-import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
+import { useUserPhotoQuery } from "api/queries";
 
 const RiderCard = (props) => {
   const { id, name, size } = props;

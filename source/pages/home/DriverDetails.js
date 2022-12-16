@@ -1,10 +1,13 @@
 import { React } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import UserAvatar from "react-native-user-avatar";
-import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
 import { Rating } from "react-native-ratings";
 import { Reviews } from "components/home/Reviews";
-import { useReviewOverviewQuery, useRideCountQuery } from "api/queries";
+import {
+  useUserPhotoQuery,
+  useReviewOverviewQuery,
+  useRideCountQuery,
+} from "api/queries";
 
 export const DriverDetails = ({ route }) => {
   const {

@@ -1,7 +1,6 @@
-import { useCreateCommentMutation } from "api/mutations/reviews/create-comment-mutation";
-import { useGetCommentsQuery } from "api/queries/reviews/comment-query";
-import { useGetReviewsQuery } from "api/queries/reviews/review-query";
-import React, { useContext, useEffect, useState } from "react";
+import { useCreateCommentMutation } from "api/mutations";
+import { useGetReviewsQuery, useUserPhotoQuery } from "api/queries";
+import React, { useContext, useState } from "react";
 import {
   Text,
   View,
@@ -15,7 +14,29 @@ import { Rating } from "react-native-ratings";
 import Icon from "react-native-vector-icons/Ionicons";
 import { AuthenticationContext } from "routes/authentication-context";
 import { Comments } from "./Comments";
+import UserAvatar from "react-native-user-avatar";
 
+const ReviewPhoto = ({ studentId, firstName, lastName }) => {
+  const { data: photo } = useUserPhotoQuery(studentId);
+  return (
+    <UserAvatar
+      size={50}
+      name={`${firstName} ${lastName}`}
+      component={
+        photo ? (
+          <Image
+            source={{ uri: photo }}
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 25,
+            }}
+          />
+        ) : undefined
+      }
+    />
+  );
+};
 export const Reviews = ({ studentId }) => {
   const { data: reviews } = useGetReviewsQuery(studentId);
   const [newComments, setnewComments] = useState(
@@ -61,9 +82,10 @@ export const Reviews = ({ studentId }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Image
-                    style={{ width: 50, height: 50, borderRadius: 25 }}
-                    source={{ uri: "https://picsum.photos/200" }}
+                  <ReviewPhoto
+                    studentId={review.studentID}
+                    firstName={review.firstName}
+                    lastName={review.lastName}
                   />
                   <View>
                     <Text

@@ -15,16 +15,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Dropdown } from "react-native-element-dropdown";
-import {
-  Background,
-  Logo,
-  Header,
-  Button,
-  TextInput,
-  BackButton,
-} from "components";
+import { Background, Logo, Button, TextInput, BackButton } from "components";
 import { useCampusesQuery, useUniversitiesQuery } from "api/queries";
-import { useCreateUserMutation } from "api/mutations/authentication/create-user-mutation";
+import { useCreateUserMutation } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
 
 export const Register = ({ navigation }) => {

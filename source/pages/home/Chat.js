@@ -5,11 +5,12 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { Component, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatQuery } from "api/queries";
+import { useChatQuery, useUserPhotoQuery } from "api/queries";
 import { useSendMessageMutation } from "api/mutations";
+import UserAvatar from "react-native-user-avatar";
 
 export const Chat = ({ route, navigation }) => {
   const {
@@ -23,6 +24,8 @@ export const Chat = ({ route, navigation }) => {
   const { userId, firstName } = useContext(AuthenticationContext);
   const { data: messagesList } = useChatQuery(chatId);
   const { mutate } = useSendMessageMutation(chatId, userId);
+  const { data: receiverImage } = useUserPhotoQuery(receiverId);
+
   const sendMessage = (message) => {
     const date = new Date().toISOString();
     const data = {
@@ -32,7 +35,7 @@ export const Chat = ({ route, navigation }) => {
       receiverId,
       date: `${date.substring(0, 10)} ${date.substring(
         date.indexOf("T") + 1,
-        date.indexOf("T") + 8
+        date.indexOf("T") + 9
       )}`,
     };
     mutate(data);
@@ -57,6 +60,24 @@ export const Chat = ({ route, navigation }) => {
       messages={messages}
       onSend={(message) => sendMessage(message)}
       user={getUser()}
+      renderAvatar={(props) => (
+        <UserAvatar
+          size={35}
+          name={`${chatterFirstName} ${chatterLastName}`}
+          component={
+            receiverImage ? (
+              <Image
+                source={{ uri: receiverImage }}
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 18,
+                }}
+              />
+            ) : undefined
+          }
+        />
+      )}
     />
   );
   if (Platform.OS === "android") {

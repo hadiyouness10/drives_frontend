@@ -11,18 +11,17 @@ import {
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useUserDetailsQuery } from "api/queries";
+import { useUserDetailsQuery, useUserPhotoQuery } from "api/queries";
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useUpdateUserMutation } from "api/mutations/users/update-user-mutation";
+import {
+  useUpdateUserMutation,
+  useUpdateUserPhotoMutation,
+  useuploadUserLicenseMutation,
+} from "api/mutations";
 import UserAvatar from "react-native-user-avatar";
-import { useUpdateUserPhotoMutation } from "api/mutations/users/update-photo-mutation";
 import * as ImagePicker from "expo-image-picker";
-import { useUserPhotoQuery } from "api/queries/users/user-photo-query";
-import { useuploadUserLicenseMutation } from "api/mutations/users/update-license-mutation";
 import * as Permissions from "expo-permissions";
-import { Buffer } from "buffer";
-import ImageResizer from "react-native-image-resizer";
 
 export const EditProfile = ({ navigation }) => {
   const {

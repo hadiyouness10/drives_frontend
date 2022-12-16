@@ -8,8 +8,100 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { AuthenticationContext } from "routes/authentication-context";
-import { useChatsQuery } from "api/queries";
+import { useChatsQuery, useUserPhotoQuery } from "api/queries";
 import { dateTimeFormatter } from "utils";
+import UserAvatar from "react-native-user-avatar";
+
+const ChatCard = ({
+  ID,
+  driverId,
+  driverFirstName,
+  driverLastName,
+  riderId,
+  riderFirstName,
+  riderLastName,
+  message,
+  date,
+  userId,
+  navigation,
+}) => {
+  const dateTime = new Date(date);
+  const { data: chatImage } = useUserPhotoQuery(
+    userId === driverId ? riderId : driverId
+  );
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        if (userId === driverId)
+          navigation.push("Chat", {
+            chatId: ID,
+            firstName: riderFirstName,
+            lastName: riderLastName,
+            receiverId: riderId,
+          });
+        else
+          navigation.push("Chat", {
+            chatId: ID,
+            firstName: driverFirstName,
+            lastName: driverLastName,
+            receiverId: driverId,
+          });
+      }}
+    >
+      <View
+        style={{
+          height: 70,
+          alignContent: "center",
+          margin: "auto",
+          flexDirection: "row",
+        }}
+      >
+        <View style={{ width: 65, height: 65, margin: 12, marginRight: 0 }}>
+          <UserAvatar
+            size={65}
+            name={
+              userId === driverId
+                ? `${riderFirstName} ${riderLastName}`
+                : `${driverFirstName} ${driverLastName}`
+            }
+            component={
+              chatImage ? (
+                <Image
+                  source={{ uri: chatImage }}
+                  style={{
+                    width: 65,
+                    height: 65,
+                    borderRadius: 35,
+                  }}
+                />
+              ) : undefined
+            }
+          />
+        </View>
+        <View style={{ margin: 20 }}>
+          <Text style={{ fontSize: 18, fontWeight: "500" }}>
+            {userId === driverId ? riderFirstName : driverFirstName}{" "}
+            {userId === driverId ? riderLastName : driverLastName}
+          </Text>
+          <Text style={{ color: "#666666" }}>{message}</Text>
+        </View>
+        <View
+          style={{
+            marginLeft: "auto",
+            marginRight: 10,
+            marginTop: 20,
+          }}
+        >
+          <Text>{dateTimeFormatter(dateTime, "date")}</Text>
+          <Text style={{ textAlign: "right" }}>
+            {dateTimeFormatter(dateTime, "time")}
+          </Text>
+        </View>
+      </View>
+      <View style={styles.drawLine}></View>
+    </TouchableOpacity>
+  );
+};
 
 export const Chats = ({ navigation }) => {
   const [chats, setChats] = useState([]);
@@ -38,79 +130,14 @@ export const Chats = ({ navigation }) => {
         </Text>
       </View>
       <ScrollView>
-        {chats.map(
-          ({
-            ID,
-            driverId,
-            driverFirstName,
-            driverLastName,
-            riderId,
-            riderFirstName,
-            riderLastName,
-            message,
-            date,
-          }) => {
-            const dateTime = new Date(date);
-            return (
-              <View key={ID}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (userId === driverId)
-                      navigation.push("Chat", {
-                        chatId: ID,
-                        firstName: riderFirstName,
-                        lastName: riderLastName,
-                        receiverId: riderId,
-                      });
-                    else
-                      navigation.push("Chat", {
-                        chatId: ID,
-                        firstName: driverFirstName,
-                        lastName: driverLastName,
-                        receiverId: driverId,
-                      });
-                  }}
-                >
-                  <View
-                    style={{
-                      height: 70,
-                      alignContent: "center",
-                      margin: "auto",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <View style={{ width: 50, margin: 10 }}>
-                      <Image
-                        style={{ width: 60, height: 60, borderRadius: 30 }}
-                        source={{ uri: "https://picsum.photos/200" }}
-                      />
-                    </View>
-                    <View style={{ margin: 20 }}>
-                      <Text style={{ fontSize: 18, fontWeight: "500" }}>
-                        {userId === driverId ? riderFirstName : driverFirstName}{" "}
-                        {userId === driverId ? riderLastName : driverLastName}
-                      </Text>
-                      <Text style={{ color: "#666666" }}>{message}</Text>
-                    </View>
-                    <View
-                      style={{
-                        marginLeft: "auto",
-                        marginRight: 10,
-                        marginTop: 20,
-                      }}
-                    >
-                      <Text>{dateTimeFormatter(dateTime, "date")}</Text>
-                      <Text style={{ textAlign: "right" }}>
-                        {dateTimeFormatter(dateTime, "time")}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.drawLine}></View>
-                </TouchableOpacity>
-              </View>
-            );
-          }
-        )}
+        {chats.map((chat) => (
+          <ChatCard
+            key={chat.ID}
+            {...chat}
+            userId={userId}
+            navigation={navigation}
+          />
+        ))}
       </ScrollView>
     </View>
   );
