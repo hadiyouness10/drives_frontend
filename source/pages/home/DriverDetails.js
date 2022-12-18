@@ -71,7 +71,7 @@ export const DriverDetails = ({ route }) => {
           </View>
         </View>
         <View style={{ flexGrow: 1 }}>
-          <Reviews studentId={2} />
+          <Reviews studentId={driverId} />
         </View>
       </View>
     </View>

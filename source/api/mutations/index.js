@@ -9,6 +9,7 @@ export * from "./chats/send-message-mutation";
 export * from "./chats/create-chat-mutation";
 
 export * from "./reviews/create-comment-mutation";
+export * from "./reviews/create-review-mutation";
 
 export * from "./users/add-car-mutation";
 export * from "./users/update-car-mutation";

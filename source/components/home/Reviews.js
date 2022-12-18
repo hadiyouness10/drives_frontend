@@ -58,7 +58,7 @@ export const Reviews = ({ studentId }) => {
       reviewId: reviews[index].reviewId,
       comment: newComments[index],
     };
-    createComment(newComment, reviewId);
+    createComment(newComment);
     let comments = [...newComments];
     comments[index] = "";
     setnewComments(comments);
@@ -83,7 +83,7 @@ export const Reviews = ({ studentId }) => {
                   }}
                 >
                   <ReviewPhoto
-                    studentId={review.studentID}
+                    studentId={review.studentId}
                     firstName={review.firstName}
                     lastName={review.lastName}
                   />
