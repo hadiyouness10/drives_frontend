@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -28,8 +28,10 @@ import {
   useDeleteStopRequestMutation,
   useStopRequestMutation,
   useUpdateRideMutation,
+  useCreateReviewMutation,
 } from "api/mutations";
 import { AuthenticationContext } from "routes/authentication-context";
+import { TextInput } from "react-native-paper";
 
 const DetailView = ({ label, value, icon }) => {
   return (
@@ -212,6 +214,8 @@ export const RideDetails = ({ route, navigation }) => {
   const { data: rideDetails } = useRideDetailsQuery(rideId);
   const { data: driverDetails } = useUserDetailsQuery(driverId);
   const { userId, firstName } = useContext(AuthenticationContext);
+  const [review, setReview] = useState("");
+
   const { mutate: createChat, isSuccess: createChatSuccess } =
     useCreateChatMutation();
   const { refetch: fetchChatsList } = useChatsQuery({
@@ -226,6 +230,18 @@ export const RideDetails = ({ route, navigation }) => {
     receiverId: userId === driverId ? stopRequest?.studentId : driverId,
   });
 
+  const { mutate: createReview } = useCreateReviewMutation();
+
+  const sendReview = () => {
+    const data = {
+      studentId: userId,
+      rideID: rideId,
+      description: review,
+      rating: 4,
+    };
+    createReview(data);
+    setReview("");
+  };
   const { data: stopRequests } = useStopRequestsQuery({
     isDriver: true,
     studentId: driverId,
@@ -374,37 +390,54 @@ export const RideDetails = ({ route, navigation }) => {
             </View>
           )}
         </View>
-
-        <MapComponent
-          mapRef={mapRef}
-          initialRegion={{
-            longitude:
-              (departureCoordinates.longitude +
-                destinationCoordinates.longitude) /
-              2,
-            latitude:
-              (departureCoordinates.latitude +
-                destinationCoordinates.latitude) /
-              2,
-          }}
-          startLocationMarker={departureCoordinates}
-          destinationMarker={destinationCoordinates}
-          initialDelta={{
-            latitudeDelta:
-              Math.abs(
-                departureCoordinates.latitude - destinationCoordinates.latitude
-              ) * 1.75,
-            longitudeDelta:
-              Math.abs(
-                departureCoordinates.longitude -
-                  destinationCoordinates.longitude
-              ) * 1.75,
-          }}
-          route={decode(routePolyline).map((point) => ({
-            latitude: point[0],
-            longitude: point[1],
-          }))}
-        />
+        {rideDetails.rideStatus !== "COMPLETED" ? (
+          <View>
+            <MapComponent
+              mapRef={mapRef}
+              initialRegion={{
+                longitude:
+                  (departureCoordinates.longitude +
+                    destinationCoordinates.longitude) /
+                  2,
+                latitude:
+                  (departureCoordinates.latitude +
+                    destinationCoordinates.latitude) /
+                  2,
+              }}
+              startLocationMarker={departureCoordinates}
+              destinationMarker={destinationCoordinates}
+              initialDelta={{
+                latitudeDelta:
+                  Math.abs(
+                    departureCoordinates.latitude -
+                      destinationCoordinates.latitude
+                  ) * 1.75,
+                longitudeDelta:
+                  Math.abs(
+                    departureCoordinates.longitude -
+                      destinationCoordinates.longitude
+                  ) * 1.75,
+              }}
+              route={decode(routePolyline).map((point) => ({
+                latitude: point[0],
+                longitude: point[1],
+              }))}
+            />
+          </View>
+        ) : (
+          <View>
+            <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 5 }}>
+              Review
+            </Text>
+            <TextInput
+              value={review}
+              onChangeText={(text) => setReview(text)}
+            />
+            <TouchableOpacity onPress={() => sendReview()}>
+              <Text>Send Review</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   else
