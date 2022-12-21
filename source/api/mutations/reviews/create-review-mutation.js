@@ -11,6 +11,7 @@ export const useCreateReviewMutation = () => {
     mutationFn: createReview,
     onSuccess: (data) => {
       queryClient.refetchQueries(["getReviews", data?.studentId]);
+      queryClient.refetchQueries(["getReviewsOverview", data?.studentId]);
     },
   });
 };

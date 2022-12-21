@@ -17,6 +17,7 @@ import {
   useUserDetailsQuery,
   useChatsQuery,
   useUserPhotoQuery,
+  useRideCountQuery,
 } from "api/queries";
 import { dateTimeFormatter } from "utils";
 import { Rating } from "react-native-ratings";
@@ -215,6 +216,7 @@ export const RideDetails = ({ route, navigation }) => {
   const { data: driverDetails } = useUserDetailsQuery(driverId);
   const { userId, firstName } = useContext(AuthenticationContext);
   const [review, setReview] = useState("");
+  const [rating, setRating] = useState(3);
 
   const { mutate: createChat, isSuccess: createChatSuccess } =
     useCreateChatMutation();
@@ -233,14 +235,16 @@ export const RideDetails = ({ route, navigation }) => {
   const { mutate: createReview } = useCreateReviewMutation();
 
   const sendReview = () => {
-    const data = {
-      studentId: userId,
-      rideID: rideId,
-      description: review,
-      rating: 4,
-    };
-    createReview(data);
-    setReview("");
+    if (review) {
+      const data = {
+        studentId: userId,
+        rideID: rideId,
+        description: review,
+        rating,
+      };
+      createReview(data);
+      setReview("");
+    }
   };
   const { data: stopRequests } = useStopRequestsQuery({
     isDriver: true,
@@ -264,6 +268,7 @@ export const RideDetails = ({ route, navigation }) => {
 
   const { data: driverImage } = useUserPhotoQuery(driverId);
   const { data: reviewOverview } = useReviewOverviewQuery(driverId);
+  const { data: rideCount } = useRideCountQuery(driverId);
 
   const mapRef = useRef(null);
 
@@ -274,10 +279,9 @@ export const RideDetails = ({ route, navigation }) => {
         initial: false,
       });
   }, [createChatSuccess]);
-
   if (rideDetails && driverDetails)
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
         <View
           style={{
             backgroundColor: "white",
@@ -322,7 +326,7 @@ export const RideDetails = ({ route, navigation }) => {
                 />
               </View>
               <Text style={{ fontSize: 16 }}>
-                Completed Rides: {reviewOverview?.count}
+                Completed Rides: {rideCount?.count}
               </Text>
             </View>
             <SimpleLineIcons
@@ -390,52 +394,81 @@ export const RideDetails = ({ route, navigation }) => {
             </View>
           )}
         </View>
-        {rideDetails.rideStatus !== "COMPLETED" ? (
-          <View>
-            <MapComponent
-              mapRef={mapRef}
-              initialRegion={{
-                longitude:
-                  (departureCoordinates.longitude +
-                    destinationCoordinates.longitude) /
-                  2,
-                latitude:
-                  (departureCoordinates.latitude +
-                    destinationCoordinates.latitude) /
-                  2,
-              }}
-              startLocationMarker={departureCoordinates}
-              destinationMarker={destinationCoordinates}
-              initialDelta={{
-                latitudeDelta:
-                  Math.abs(
-                    departureCoordinates.latitude -
-                      destinationCoordinates.latitude
-                  ) * 1.75,
-                longitudeDelta:
-                  Math.abs(
-                    departureCoordinates.longitude -
-                      destinationCoordinates.longitude
-                  ) * 1.75,
-              }}
-              route={decode(routePolyline).map((point) => ({
-                latitude: point[0],
-                longitude: point[1],
-              }))}
-            />
-          </View>
+        {rideDetails.rideStatus !== "COMPLETED" ||
+        rideDetails.studentId === userId ? (
+          <MapComponent
+            mapRef={mapRef}
+            initialRegion={{
+              longitude:
+                (departureCoordinates.longitude +
+                  destinationCoordinates.longitude) /
+                2,
+              latitude:
+                (departureCoordinates.latitude +
+                  destinationCoordinates.latitude) /
+                2,
+            }}
+            startLocationMarker={departureCoordinates}
+            destinationMarker={destinationCoordinates}
+            initialDelta={{
+              latitudeDelta:
+                Math.abs(
+                  departureCoordinates.latitude -
+                    destinationCoordinates.latitude
+                ) * 1.75,
+              longitudeDelta:
+                Math.abs(
+                  departureCoordinates.longitude -
+                    destinationCoordinates.longitude
+                ) * 1.75,
+            }}
+            route={decode(routePolyline).map((point) => ({
+              latitude: point[0],
+              longitude: point[1],
+            }))}
+          />
         ) : (
-          <View>
-            <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 5 }}>
-              Review
-            </Text>
-            <TextInput
-              value={review}
-              onChangeText={(text) => setReview(text)}
+          <View style={{ margin: 15, alignItems: "flex-start" }}>
+            <View
+              style={{
+                width: "80%",
+                borderWidth: 0.2,
+                borderColor: "black",
+                alignSelf: "center",
+                marginBottom: 10,
+              }}
             />
-            <TouchableOpacity onPress={() => sendReview()}>
-              <Text>Send Review</Text>
-            </TouchableOpacity>
+            <Text style={{ fontSize: 18, fontWeight: "600", marginBottom: 5 }}>
+              Leave a review
+            </Text>
+            <Rating
+              type="star"
+              startingValue={rating}
+              ratingCount={5}
+              imageSize={25}
+              style={{ marginBottom: 10 }}
+              onFinishRating={setRating}
+            />
+            <View style={{ flexDirection: "row" }}>
+              <TextInput
+                style={{ flex: 1 }}
+                value={review}
+                onChangeText={(text) => setReview(text)}
+              />
+              <TouchableOpacity
+                onPress={() => sendReview()}
+                style={{
+                  backgroundColor: "rgb(0, 125, 200)",
+                  marginLeft: 10,
+                  padding: 10,
+                  paddingHorizontal: 20,
+                  justifyContent: "center",
+                  borderRadius: 10,
+                }}
+              >
+                <Icon name="send" size={20} color={"white"} />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>

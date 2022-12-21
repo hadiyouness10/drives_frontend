@@ -167,7 +167,7 @@ export const Reviews = ({ studentId }) => {
           </View>
         </ScrollView>
       ) : (
-        ""
+        <View />
       )}
     </View>
   );

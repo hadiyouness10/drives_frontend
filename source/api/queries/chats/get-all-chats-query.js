@@ -34,7 +34,9 @@ export const useChatsQuery = ({
         if (data && !autofetch) {
           if (
             data.find(
-              (chat) => chat.riderId === riderId && chat.driverId === driverId
+              (chat) =>
+                (chat.riderId === riderId && chat.driverId === driverId) ||
+                (chat.riderId === driverId && chat.driverId === riderId)
             )
           ) {
             navigation.navigate("Account", {
@@ -42,19 +44,21 @@ export const useChatsQuery = ({
               initial: false,
             });
           } else {
-            const date = new Date().toISOString();
-            createChat({
-              isDriver,
-              riderId,
-              driverId,
-              rideId,
-              firstName,
-              receiverId,
-              date: `${date.substring(0, 10)} ${date.substring(
-                date.indexOf("T") + 1,
-                date.indexOf("T") + 8
-              )}`,
-            });
+            if (riderId !== driverId) {
+              const date = new Date().toISOString();
+              createChat({
+                isDriver,
+                riderId,
+                driverId,
+                rideId,
+                firstName,
+                receiverId,
+                date: `${date.substring(0, 10)} ${date.substring(
+                  date.indexOf("T") + 1,
+                  date.indexOf("T") + 8
+                )}`,
+              });
+            }
           }
         }
       },

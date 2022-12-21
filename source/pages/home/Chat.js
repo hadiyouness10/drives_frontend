@@ -4,6 +4,7 @@ import {
   View,
   Platform,
   KeyboardAvoidingView,
+  Image,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
