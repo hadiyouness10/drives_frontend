@@ -13,4 +13,4 @@ const getReviewOverview = (studentId) => async () => {
 };
 
 export const useReviewOverviewQuery = (userId) =>
-  useQuery(["getReviews", userId], getReviewOverview(userId));
+  useQuery(["getReviewsOverview", userId], getReviewOverview(userId));

@@ -69,98 +69,106 @@ export const Reviews = ({ studentId }) => {
       <Text style={{ fontSize: 20, fontWeight: "500" }}>
         Reviews & Comments
       </Text>
-      <ScrollView style={{ flex: 1 }}>
-        <View>
-          {reviews?.map((review, index) => {
-            return (
-              <View key={review.ID + " " + index}>
-                <View
-                  style={{
-                    marginLeft: 10,
-                    marginTop: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <ReviewPhoto
-                    studentId={review.studentId}
-                    firstName={review.firstName}
-                    lastName={review.lastName}
-                  />
-                  <View>
-                    <Text
-                      style={{ fontSize: 18, fontWeight: "400", marginLeft: 5 }}
-                    >
-                      {review.firstName} {review.lastName}
-                    </Text>
-                    <Rating
-                      type="star"
-                      startingValue={review.rating}
-                      ratingCount={5}
-                      imageSize={20}
-                      readonly={true}
-                    />
-                  </View>
-                </View>
-                <Text style={{ marginLeft: 10, marginTop: 10 }}>
-                  {review.description}
-                </Text>
-                <View
-                  style={{
-                    marginBottom: 20,
-                    marginLeft: 20,
-                    marginTop: 10,
-                    flexDirection: "row",
-                  }}
-                >
+      {reviews ? (
+        <ScrollView style={{ flex: 1 }}>
+          <View>
+            {reviews?.map((review, index) => {
+              return (
+                <View key={review?.ID + " " + index}>
                   <View
                     style={{
-                      height: "100%",
-                      width: 1,
-                      backgroundColor: "#909090",
+                      marginLeft: 10,
+                      marginTop: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
-                  ></View>
-                  <View>
+                  >
+                    <ReviewPhoto
+                      studentId={review?.studentId}
+                      firstName={review?.firstName}
+                      lastName={review?.lastName}
+                    />
                     <View>
-                      <Comments reviewId={review.reviewId} />
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          fontWeight: "400",
+                          marginLeft: 5,
+                        }}
+                      >
+                        {review?.firstName} {review?.lastName}
+                      </Text>
+                      <Rating
+                        type="star"
+                        startingValue={review?.rating}
+                        ratingCount={5}
+                        imageSize={20}
+                        readonly={true}
+                      />
                     </View>
+                  </View>
+                  <Text style={{ marginLeft: 10, marginTop: 10 }}>
+                    {review?.description}
+                  </Text>
+                  <View
+                    style={{
+                      marginBottom: 20,
+                      marginLeft: 20,
+                      marginTop: 10,
+                      flexDirection: "row",
+                    }}
+                  >
                     <View
                       style={{
-                        marginLeft: 10,
-                        marginTop: 10,
-                        flexDirection: "row",
-                        alignItems: "center",
+                        height: "100%",
+                        width: 1,
+                        backgroundColor: "#909090",
                       }}
-                    >
-                      <TextInput
-                        key={"FirstName"}
-                        style={{ height: 30, width: 200, color: "#909090" }}
-                        placeholder={"Write a comment"}
-                        value={newComments[index]}
-                        onChangeText={(value) =>
-                          updateComment(index, value, review.ID)
-                        }
-                      />
-                      <TouchableOpacity onPress={() => sendComment(index)}>
-                        <Icon
-                          name={"send"}
-                          size={20}
-                          color={"green"}
-                          style={{
-                            marginBottom: 10,
-                            marginLeft: 10,
-                            marginTop: 10,
-                          }}
+                    ></View>
+                    <View>
+                      <View>
+                        <Comments reviewId={review?.reviewId} />
+                      </View>
+                      <View
+                        style={{
+                          marginLeft: 10,
+                          marginTop: 10,
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <TextInput
+                          key={"FirstName"}
+                          style={{ height: 30, width: 200, color: "#909090" }}
+                          placeholder={"Write a comment"}
+                          value={newComments[index]}
+                          onChangeText={(value) =>
+                            updateComment(index, value, review?.ID)
+                          }
                         />
-                      </TouchableOpacity>
+                        <TouchableOpacity onPress={() => sendComment(index)}>
+                          <Icon
+                            name={"send"}
+                            size={20}
+                            color={"green"}
+                            style={{
+                              marginBottom: 10,
+                              marginLeft: 10,
+                              marginTop: 10,
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
-              </View>
-            );
-          })}
-        </View>
-      </ScrollView>
+              );
+            })}
+          </View>
+        </ScrollView>
+      ) : (
+        <View />
+      )}
     </View>
   );
 };
